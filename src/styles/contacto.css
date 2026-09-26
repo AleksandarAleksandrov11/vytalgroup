@@ -1,0 +1,46 @@
+/* ==========================================================================
+   Contacto
+   ========================================================================== */
+.cto { position: relative; padding: calc(var(--hd) + 20px) 0 var(--sec); background: radial-gradient(70% 40% at 50% 0%, rgba(72, 160, 168, .1), transparent 70%), var(--bg); }
+.cto .bc ol { justify-content: center; }
+.cto__head { max-width: 1040px; margin: clamp(28px, 5vw, 56px) auto 0; text-align: center; }
+.cto__title { font-size: clamp(2.375rem, 1.7rem + 3.1vw, 4.5rem); }
+.cto__lead { max-width: 44ch; margin: 18px auto 0; }
+.cto__grid { display: grid; gap: 28px; max-width: 1060px; margin: clamp(28px, 4vw, 48px) auto 0; }
+.cto__form { margin-top: 0; }
+.cto__side { display: grid; gap: 12px; align-content: start; }
+.cto__side-t { font-size: 1.125rem; font-weight: 560; letter-spacing: -.01em; }
+@media (max-width: 899px) { .cto__side-t { text-align: center; } }
+@media (min-width: 900px) {
+  .cto__grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .cto__side { position: sticky; top: calc(var(--hd) + 24px); padding-top: 8px; }
+}
+
+/* Vías directas */
+.chan { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.chan__card { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr) 20px; gap: 14px; align-items: center; padding: 16px 18px; border-radius: var(--r-md); background: #FFF; color: inherit; text-decoration: none; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .45s var(--ease), box-shadow .3s ease; }
+.chan__ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(72, 160, 168, .12); color: var(--teal-ink); }
+.chan__ico .icon { width: 22px; height: 22px; }
+.chan__txt { display: grid; gap: 2px; min-width: 0; }
+.chan__k { font-size: .75rem; font-weight: 560; letter-spacing: .1em; text-transform: uppercase; color: var(--teal-ink); }
+.chan__v { font-size: 1.0625rem; font-weight: 560; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.chan__d { font-size: .875rem; line-height: 1.4; color: var(--ink-3); }
+.chan__go { width: 20px; height: 20px; color: var(--ink-3); transition: transform .35s var(--ease), color .2s ease; }
+@media (hover: hover) {
+  .chan__card:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line-2), var(--shadow-hover); }
+  .chan__card:hover .chan__go { transform: translate(2px, -2px); color: var(--ink); }
+}
+
+/* Quién te atiende */
+.cto__who { display: flex; align-items: center; gap: 14px; margin: 10px 0 0; padding: 16px 4px 0; border-top: 1px solid var(--line); }
+.cto__who picture { flex: none; }
+.cto__who-img { display: block; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: 50% 20%; }
+.cto__who figcaption { display: grid; gap: 2px; font-size: .875rem; line-height: 1.35; color: var(--ink-3); }
+.cto__who strong { font-size: .9375rem; font-weight: 560; color: var(--ink); }
+@media (max-width: 899px) { .cto__who { justify-content: center; } }
+@media (max-width: 374px) {
+  .chan__card { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 14px; }
+  .chan__ico { width: 40px; height: 40px; }
+  .chan__go { display: none; }
+  .chan__v { font-size: .9375rem; }
+}

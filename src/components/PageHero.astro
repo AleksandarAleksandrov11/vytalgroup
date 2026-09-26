@@ -1,0 +1,54 @@
+---
+// Cabecera de las páginas internas: migas de pan, H1 con el acento en cursiva (aparece por líneas),
+// una línea de apoyo, acciones opcionales y un visual opcional a la derecha. Clara u oscura.
+import Breadcrumbs from './Breadcrumbs.astro';
+import Sweep from './Sweep.astro';
+import { h1Html } from '../lib/texto';
+import type { Miga } from '../lib/seo';
+
+interface Props { migas: Miga[]; titulo: string; lead?: string; oscuro?: boolean; sweep?: boolean; compacto?: boolean; centrado?: boolean }
+const { migas, titulo, lead, oscuro = false, sweep = false, compacto = false, centrado = false } = Astro.props;
+const visual = Astro.slots.has('visual');
+---
+<section class:list={['phero', { 'phero--dark on-dark': oscuro, 'phero--compact': compacto, 'phero--center': centrado && !visual }]} data-hero aria-labelledby="page-title">
+  {sweep && <div class="phero__sweep" aria-hidden="true"><Sweep /></div>}
+  <div class="wrap">
+    <Breadcrumbs migas={migas} oscuro={oscuro} />
+    <div class:list={['phero__grid', { 'phero__grid--visual': visual }]}>
+      <div class="phero__copy">
+        <h1 class="h1 phero__title" id="page-title" set:html={h1Html(titulo)} />
+        {lead && <p class="lead phero__lead" data-enter style="--ed:.38s">{lead}</p>}
+        {Astro.slots.has('acciones') && <div class="phero__actions" data-enter style="--ed:.48s"><slot name="acciones" /></div>}
+      </div>
+      {visual && <div class="phero__visual" data-enter style="--ed:.3s"><slot name="visual" /></div>}
+    </div>
+  </div>
+</section>
+<style is:global>
+  .phero { position: relative; isolation: isolate; overflow: clip; padding: calc(var(--hd) + 20px) 0 clamp(56px, 7vw, 104px); }
+  .phero--compact { padding-bottom: clamp(40px, 5vw, 64px); }
+  .phero--dark { background: var(--navy); }
+  .phero--dark::before { content: ""; position: absolute; inset: 0; z-index: -2; background: radial-gradient(60% 70% at 78% 40%, rgba(72, 160, 168, .22), transparent 70%), radial-gradient(40% 60% at 10% 100%, rgba(47, 123, 208, .12), transparent 70%); }
+  .phero__sweep { position: absolute; z-index: -1; right: -12%; top: 18%; width: min(90vw, 620px); opacity: .55; pointer-events: none; }
+  .phero__grid { display: grid; gap: 36px; align-items: center; margin-top: clamp(28px, 5vw, 64px); }
+  .phero__title { font-size: clamp(2.375rem, 1.7rem + 3.1vw, 4.5rem); }
+  .phero--dark .phero__title em { color: var(--teal-light); }
+  .phero__lead { max-width: 44ch; margin-top: 18px; }
+  .phero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; margin-top: 28px; }
+  .phero--center .phero__copy { max-width: 900px; margin: 0 auto; text-align: center; }
+  .phero--center .phero__lead { margin-inline: auto; }
+  .phero--center .phero__actions { justify-content: center; }
+  .phero--center .bc ol { justify-content: center; }
+  .phero__visual { position: relative; }
+  @media (min-width: 900px) {
+    .phero__grid--visual { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); }
+    .phero__sweep { right: -4%; top: 10%; opacity: .7; }
+  }
+  @media (max-width: 899px) {
+    .phero__copy { text-align: center; }
+    .phero__lead { margin-inline: auto; }
+    .phero__actions { justify-content: center; }
+    .phero .bc ol { justify-content: center; }
+  }
+  @media (max-width: 479px) { .phero__actions { flex-direction: column; } }
+</style>

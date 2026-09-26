@@ -1,0 +1,18 @@
+---
+// Tarjeta de categoría: imagen y nombre (con número de equipos); al pasar, una línea de descripción.
+import '../styles/cards.css';
+import Img from './Img.astro';
+import type { Categoria } from '../data/categorias';
+import { deCategoria } from '../data/productos';
+
+interface Props { c: Categoria; cuenta?: boolean; big?: boolean; sizes?: string; nivel?: 'h2' | 'h3' }
+const { c, cuenta = true, big = false, sizes = '(min-width: 1200px) 370px, (min-width: 640px) 30vw, 46vw', nivel = 'h3' } = Astro.props;
+const n = deCategoria(c.id).length;
+const H = nivel;
+---
+<a class:list={['cc', { 'cc--big': big }]} href={c.ruta} data-halo>
+  <span class="cc__media" data-rvi><Img name={c.imagen} alt="" sizes={sizes} widths={[240, 360, 480, 640]} parallax /></span>
+  <span class="cc__arrow" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+  <H class="cc__name"><span>{c.nombre}</span>{cuenta && <span class="cc__count">{n} {n === 1 ? 'equipo' : 'equipos'}</span>}</H>
+  <span class="cc__desc">{c.descripcion}</span>
+</a>

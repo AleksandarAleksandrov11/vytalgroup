@@ -1,0 +1,26 @@
+---
+// Bloque final de todas las páginas (salvo legales y 404): "Cuéntanos qué necesitas." y el
+// formulario de 4 pasos, con la preselección de la página (modelo, categoría o equipo).
+import LeadForm, { type Preset } from './LeadForm.astro';
+import { EMPRESA, wa } from '../data/empresa';
+
+interface Props { preset?: Preset; subtitulo?: string }
+const { preset, subtitulo = 'Te asesoran fisioterapeutas. Te respondemos con una propuesta clara, sin letra pequeña.' } = Astro.props;
+const texto = preset?.modelo ? `Hola, vengo de la web y me interesa ${preset.modelo.replace(/\s*\([^)]*\)$/, '')}.` : undefined;
+---
+<section class="sec lead-sec" id="asesoramiento" aria-labelledby="form-title">
+  <div class="wrap lead-sec__head">
+    <h2 class="h2 lead-sec__title" id="form-title" data-lines>Cuéntanos qué <em>necesitas.</em></h2>
+    <p class="lead lead-sec__sub" data-rv>{subtitulo}</p>
+  </div>
+  <div class="wrap wrap--form">
+    <div class="fcard" data-rv>
+      <LeadForm preset={preset} />
+    </div>
+    <p class="lead-sec__alt" data-rv>
+      <span>¿Prefieres hablar ya?</span>
+      <a class="link" href={wa(texto)} target="_blank" rel="noopener" data-origen="bloque-final">WhatsApp</a>
+      <a class="link" href={EMPRESA.telefonoHref} data-origen="bloque-final">{EMPRESA.telefonoTexto}</a>
+    </p>
+  </div>
+</section>

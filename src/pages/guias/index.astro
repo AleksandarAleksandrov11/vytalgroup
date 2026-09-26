@@ -1,0 +1,45 @@
+---
+// Índice de guías: contenido para elegir equipo con criterio, firmado por Javier Ruiz.
+import '../../styles/cards.css';
+import '../../styles/guia.css';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { absUrl, collectionPage } from '../../lib/seo';
+import { plano } from '../../lib/texto';
+
+const guias = (await getCollection('guias')).sort((a, b) => a.data.orden - b.data.orden);
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Guías', href: '/guias' }];
+const lista = {
+  '@type': 'ItemList',
+  name: 'Guías de VytalGroup',
+  itemListElement: guias.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: absUrl(`/guias/${g.id}`), name: plano(g.data.titulo) })),
+};
+---
+<Base
+  title="Guías para elegir equipo de fisioterapia | VytalGroup"
+  description="Guías de Javier Ruiz, fisioterapeuta, para elegir ecógrafo o diatermia y saber qué revisar antes de comprar: garantía, mantenimiento y marcado CE / MDR."
+  path="/guias"
+  og="/og/guias.jpg"
+  seccion="guias"
+  migas={migas}
+  jsonld={[collectionPage('/guias', 'Guías para elegir equipo de fisioterapia'), lista]}
+>
+  <PageHero migas={migas} titulo="Antes de comprar, *lee esto.*" lead="Guías escritas por Javier Ruiz, fisioterapeuta, para elegir equipo con criterio: qué mirar, qué preguntar y qué no te tienen que vender." centrado />
+
+  <section class="sec sec--white" aria-labelledby="guias-title">
+    <div class="wrap">
+      <h2 class="sr-only" id="guias-title">Todas las guías</h2>
+      <ul class="grid grid--3 gl__list">
+        {guias.map((g) => <li data-rv><GuideCard g={g} /></li>)}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal subtitulo="¿Prefieres que te lo contemos? Te asesoran fisioterapeutas, sin letra pequeña." />
+</Base>

@@ -1,0 +1,65 @@
+---
+// 404: minimalista, con una línea de ecografía "sin señal" que barre la pantalla (solo transform).
+import Base from '../layouts/Base.astro';
+import { h1Html } from '../lib/texto';
+---
+<Base
+  title="Página no encontrada: esta dirección no existe en VytalGroup"
+  description="La página que buscas no existe o ha cambiado de dirección. Vuelve al inicio, entra en el catálogo de equipos o escríbenos desde la página de contacto."
+  path="/404"
+  noindex
+  conFormulario={false}
+>
+  <section class="nf" data-hero aria-labelledby="page-title">
+    <div class="wrap nf__in">
+      <div class="nf__monitor" aria-hidden="true">
+        <svg class="nf__svg" viewBox="0 0 640 140">
+          <defs>
+            <linearGradient id="nf-trail" gradientUnits="userSpaceOnUse" x1="-160" x2="0" y1="70" y2="70">
+              <stop offset="0" stop-color="#48A0A8" stop-opacity="0" />
+              <stop offset="1" stop-color="#7FD3D6" stop-opacity=".9" />
+            </linearGradient>
+          </defs>
+          <g class="nf__grid">
+            <path d="M0 35H640M0 70H640M0 105H640" />
+          </g>
+          <path class="nf__line" d="M0 70H96l8-14 8 26 8-18 6 6H640" />
+          <g class="nf__sweep">
+            <path class="nf__trail" d="M-160 70H0" stroke="url(#nf-trail)" />
+            <circle cx="0" cy="70" r="4.5" />
+          </g>
+        </svg>
+        <span class="nf__label">Sin señal</span>
+      </div>
+      <p class="nf__code">Error 404</p>
+      <h1 class="h1 nf__title" id="page-title" set:html={h1Html('Aquí no hay *señal.*')} />
+      <p class="lead nf__lead">La página que buscas no existe o ha cambiado de dirección.</p>
+      <nav class="nf__links" aria-label="Sigue navegando">
+        <a class="btn btn--dark" href="/">Ir al inicio</a>
+        <a class="btn btn--line" href="/catalogo">Ver el catálogo</a>
+        <a class="link" href="/contacto">Contacto<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .nf { display: grid; min-height: calc(100svh - 80px); padding: calc(var(--hd) + 40px) 0 clamp(72px, 9vw, 120px); background: radial-gradient(60% 50% at 50% 30%, rgba(72, 160, 168, .1), transparent 70%), var(--bg); }
+  .nf__in { display: grid; justify-items: center; align-content: center; text-align: center; }
+  .nf__monitor { position: relative; width: min(100%, 560px); padding: 18px 0 14px; border-radius: var(--r-lg); background: var(--navy); box-shadow: 0 30px 70px -40px rgba(11, 25, 41, .6); overflow: hidden; }
+  .nf__svg { display: block; width: 100%; height: auto; aspect-ratio: 640 / 140; overflow: visible; }
+  .nf__grid path { fill: none; stroke: rgba(255, 255, 255, .06); stroke-width: 1; }
+  .nf__line { fill: none; stroke: var(--teal-on-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .85; vector-effect: non-scaling-stroke; }
+  .nf__sweep { transform: translateX(0); animation: nf-sweep 3.2s linear infinite; }
+  .nf__trail { fill: none; stroke-width: 3; stroke-linecap: round; }
+  .nf__sweep circle { fill: #FFF; filter: drop-shadow(0 0 6px rgba(127, 211, 214, .9)); }
+  .nf__label { position: absolute; top: 12px; right: 16px; font-size: .6875rem; font-weight: 560; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-on-dark); animation: nf-blink 1.6s steps(2, jump-none) infinite; }
+  @keyframes nf-sweep { from { transform: translateX(0); } to { transform: translateX(640px); } }
+  @keyframes nf-blink { 50% { opacity: .35; } }
+  .nf__code { margin-top: 36px; font-size: .8125rem; font-weight: 560; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-ink); }
+  .nf__title { margin-top: 12px; font-size: clamp(2.5rem, 1.8rem + 3vw, 4.5rem); }
+  .nf__lead { max-width: 36ch; margin-top: 16px; }
+  .nf__links { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 20px; margin-top: 32px; }
+  @media (max-width: 479px) { .nf__links { flex-direction: column; } .nf__links .btn { width: 100%; max-width: 320px; } }
+  @media (prefers-reduced-motion: reduce) { .nf__sweep, .nf__label { animation: none; } .nf__sweep { transform: translateX(560px); } }
+</style>

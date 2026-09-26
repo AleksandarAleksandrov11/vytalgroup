@@ -1,0 +1,61 @@
+---
+// Comparador "Otras marcas frente a VytalGroup" (idéntico a la landing): filas que aparecen una a
+// una y checks que se dibujan con stroke-dashoffset.
+import { COMPARADOR } from '../data/empresa';
+interface Props { caption?: string }
+const { caption = 'Otras marcas frente a VytalGroup' } = Astro.props;
+---
+<div class="cmp" data-cmp>
+  <table class="cmp__table">
+    <caption class="sr-only">{caption}</caption>
+    <thead><tr><th scope="col">Otras marcas</th><th scope="col">VytalGroup</th></tr></thead>
+    <tbody>
+      {COMPARADOR.map(([no, si], i) => (
+        <tr style={`--r:${i}`}>
+          <td><span class="cmp__x" aria-hidden="true"></span><span class="cmp__no">{no}</span></td>
+          <td><svg class="cmp__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>{si}</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style is:global>
+  .cmp { max-width: 960px; margin: 0 auto; padding: 8px; border-radius: var(--r-lg); background: #FFF; color: var(--ink); box-shadow: 0 1px 2px rgba(11, 25, 41, .05), 0 28px 56px -32px rgba(11, 25, 41, .35); }
+  .cmp__table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+  .cmp__table th, .cmp__table td { width: 50%; padding: 14px 10px; text-align: center; vertical-align: middle; }
+  .cmp__table th { padding-top: 18px; padding-bottom: 10px; font-size: .8125rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .cmp__table td { font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
+  .cmp__table td:first-child { color: var(--ink-3); }
+  .cmp__table th + th, .cmp__table td + td { background: rgba(72, 160, 168, .1); color: var(--ink); font-weight: 500; }
+  .cmp__table th + th { color: #226870; border-radius: 16px 16px 0 0; }
+  .cmp__table tbody tr:last-child td { padding-bottom: 16px; }
+  .cmp__table tbody tr:last-child td + td { border-radius: 0 0 16px 16px; }
+  .cmp__no { text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: rgba(11, 25, 41, .3); }
+  .cmp__x, .cmp__check { display: block; flex: none; width: 26px; height: 26px; margin: 0 auto 8px; border-radius: 50%; }
+  .cmp__x { position: relative; background: rgba(11, 25, 41, .07); }
+  .cmp__x::before, .cmp__x::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 1.6px; margin: -.8px 0 0 -5px; border-radius: 1px; background: var(--ink-3); transform: rotate(45deg); }
+  .cmp__x::after { transform: rotate(-45deg); }
+  .cmp__check { padding: 5px; background: var(--teal); fill: none; stroke: #FFF; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 0; }
+  .cmp.is-armed tr { opacity: 0; transform: translateY(14px); }
+  .cmp.is-armed .cmp__check { stroke-dashoffset: 24; }
+  .cmp.is-armed.is-in tr { opacity: 1; transform: none; transition: opacity .6s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--r, 0) * 150ms); }
+  .cmp.is-armed.is-in .cmp__check { stroke-dashoffset: 0; transition: stroke-dashoffset .7s var(--ease); transition-delay: calc(var(--r, 0) * 150ms + 280ms); }
+  @media (min-width: 640px) {
+    .cmp { padding: 12px; border-radius: 30px; }
+    .cmp__table th, .cmp__table td { padding: 18px 26px; text-align: left; }
+    .cmp__table th { padding-top: 24px; padding-bottom: 12px; text-align: center; font-size: .875rem; }
+    .cmp__table td { position: relative; padding-left: 74px; font-size: 1.125rem; }
+    .cmp__x, .cmp__check { position: absolute; left: 26px; top: 50%; width: 30px; height: 30px; margin: -15px 0 0; }
+    .cmp__check { padding: 6px; }
+    .cmp__table tbody tr:last-child td { padding-bottom: 26px; }
+  }
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .cmp__table th, .cmp__table td { padding-right: 18px; }
+    .cmp__table td { padding-left: 64px; font-size: 1.0625rem; }
+    .cmp__x, .cmp__check { left: 20px; }
+  }
+  @media (min-width: 1024px) { .cmp__table td { font-size: 1.1875rem; } }
+  /* Sección propia con fondo turquesa claro y trama de puntos (como en la landing) */
+  .vs { position: relative; isolation: isolate; background: linear-gradient(170deg, var(--vs-a) 0%, var(--vs-b) 100%); }
+  .vs::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(rgba(43, 125, 134, .2) 1px, transparent 1.5px); background-size: 20px 20px; -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 10%, transparent 75%); }
+</style>

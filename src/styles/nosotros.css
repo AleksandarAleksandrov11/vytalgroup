@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Sobre nosotros
+   ========================================================================== */
+.ab-photo { position: relative; width: min(100%, 384px); margin: 0 auto; }
+.ab-photo > picture, .ab-photo > img { display: block; }
+.ab-photo picture { border-radius: var(--r-xl); overflow: hidden; aspect-ratio: 384 / 440; background: var(--navy-2); box-shadow: 0 30px 70px -36px rgba(11, 25, 41, .5); }
+.ab-photo img { width: 100%; height: 100%; object-fit: cover; transform: translate3d(0, var(--py, 0px), 0) scale(1.06); }
+.ab-photo figcaption { display: grid; justify-items: center; gap: 4px; margin-top: 14px; font-size: .8125rem; color: var(--ink-3); }
+.ab-photo .sign__svg { width: 132px; color: var(--ink); }
+
+/* La historia */
+.story__list { display: grid; gap: clamp(56px, 8vw, 112px); max-width: 1080px; margin: 0 auto; padding: 0; list-style: none; }
+.story__item { display: grid; gap: 24px; align-items: center; }
+.story__visual { position: relative; display: grid; place-items: center; aspect-ratio: 520 / 420; border-radius: var(--r-xl); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+.story__visual svg { width: 100%; height: 100%; overflow: visible; }
+.story__dots { fill: none; stroke: rgba(11, 25, 41, .24); stroke-width: 4; stroke-linecap: round; }
+.story__route { fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.story__pin { fill: #FFF; stroke: var(--teal-ink); stroke-width: 3; }
+.story__pin--to { fill: var(--teal); }
+.story__visual text { font: 600 22px/1 var(--sans); fill: var(--ink); letter-spacing: -.02em; paint-order: stroke; stroke: var(--bg); stroke-width: 6px; stroke-linejoin: round; }
+.story__item.rv:not(.is-in) .story__route { stroke-dashoffset: 1; }
+.story__item.rv.is-in .story__route { transition: stroke-dashoffset 1.4s var(--ease) .35s; }
+.story__visual--num { align-content: center; gap: 6px; padding: 24px; background: var(--navy); color: #FFF; box-shadow: none; }
+.story__big { font-size: clamp(3rem, 2rem + 5vw, 5.5rem); font-weight: 560; letter-spacing: -.05em; line-height: 1; }
+.story__small { font-family: var(--serif); font-style: italic; font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); color: var(--teal-light); }
+.story__visual--photo { background: var(--navy-2); }
+.story__visual--photo picture, .story__visual--photo img { width: 100%; height: 100%; }
+.story__visual--photo img { object-fit: cover; }
+.story__txt { display: grid; gap: 12px; }
+.story__n { font-family: var(--serif); font-style: italic; font-size: 1.75rem; line-height: 1; color: var(--teal-ink); }
+.story__t { font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem); font-weight: 560; line-height: 1.1; letter-spacing: -.03em; }
+.story__txt p:not(.story__n) { max-width: 46ch; font-size: var(--fs-lead); line-height: 1.5; color: var(--ink-2); }
+@media (min-width: 900px) {
+  .story__item { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(48px, 7vw, 104px); }
+  .story__item:nth-child(even) .story__visual { order: 2; }
+}
+
+/* Forma de trabajar (sección marina) */
+.ab-dark { isolation: isolate; }
+.ab-dark .h2 em { color: var(--teal-light); }
+.princ { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.princ__item { display: grid; gap: 10px; padding: 28px 26px; border-radius: var(--r-lg); background: rgba(255, 255, 255, .04); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.princ__ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(127, 211, 214, .14); color: var(--teal-on-dark); }
+.princ__ico .icon { width: 24px; height: 24px; }
+.princ__t { font-size: 1.3125rem; font-weight: 560; letter-spacing: -.02em; color: #FFF; }
+.princ__d { font-size: .9375rem; line-height: 1.55; color: var(--on-dark); }
+@media (min-width: 768px) { .princ { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
+
+/* Quiénes estamos detrás */
+.who { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.who__item { display: grid; gap: 10px; align-content: start; padding: 28px 26px; border-radius: var(--r-lg); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.who__name { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: 560; letter-spacing: -.03em; }
+.who__d { font-size: .9375rem; line-height: 1.55; color: var(--ink-2); }
+@media (min-width: 768px) { .who { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
+
+/* Marcas: solo texto, en una rejilla de celdas con filete fino */
+.brands-sec { background: var(--mist); }
+.brands { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; max-width: 960px; margin: 0 auto; padding: 0; list-style: none; border: 1px solid var(--line-2); border-radius: var(--r-lg); overflow: hidden; background: var(--line-2); }
+.brands li { display: grid; place-items: center; min-height: 116px; padding: 20px 12px; background: var(--mist); font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem); font-weight: 560; letter-spacing: -.04em; line-height: 1; color: var(--ink); text-align: center; }
+.brands li:nth-child(4n + 2), .brands li:nth-child(4n + 3) { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--teal-ink); }
+@media (min-width: 768px) {
+  .brands { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .brands li { min-height: 148px; }
+  .brands li:nth-child(n) { font-family: var(--sans); font-style: normal; font-weight: 560; letter-spacing: -.04em; color: var(--ink); }
+  .brands li:nth-child(even) { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--teal-ink); }
+}

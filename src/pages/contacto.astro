@@ -1,0 +1,85 @@
+---
+// Contacto: el formulario de la landing como protagonista, las 3 vías directas al lado (debajo en
+// móvil), qué pasa después de enviar y 3 dudas breves. Sin mapa ni dirección física.
+import '../styles/form.css';
+import '../styles/contacto.css';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Img from '../components/Img.astro';
+import Timeline from '../components/Timeline.astro';
+import Faq from '../components/Faq.astro';
+import { EMPRESA, wa } from '../data/empresa';
+import { FAQ_CONTACTO } from '../data/faqs';
+import { contactPage, faqPage, organization } from '../lib/seo';
+import { h1Html } from '../lib/texto';
+
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Contacto', href: '/contacto' }];
+const CANALES = [
+  { k: 'WhatsApp', v: EMPRESA.telefonoTexto, d: 'Escríbenos y te contesta un fisioterapeuta.', href: wa('Hola, vengo de la web de VytalGroup y quiero asesoramiento.'), icono: 'i-whatsapp', externo: true },
+  { k: 'Teléfono', v: EMPRESA.telefonoTexto, d: 'Si prefieres contarlo de viva voz.', href: EMPRESA.telefonoHref, icono: 'i-phone', externo: false },
+  { k: 'Email', v: EMPRESA.email, d: 'Para enviarnos detalles o documentación.', href: `mailto:${EMPRESA.email}`, icono: 'i-mail', externo: false },
+];
+const PASOS = [
+  { t: 'Te escribimos', d: 'Por WhatsApp o por correo, como hayas elegido en el formulario.' },
+  { t: 'Entendemos lo que necesitas', d: 'Nos cuentas cómo trabajas, qué tratas y dónde, y vemos qué equipos encajan contigo.' },
+  { t: 'Te enviamos una propuesta clara', d: 'Con el equipo, la configuración, la garantía y el mantenimiento explicados, sin letra pequeña.' },
+];
+---
+<Base
+  title="Contacto: pide asesoramiento sobre tu equipo | VytalGroup"
+  description="Cuéntanos qué equipo necesitas y te asesora un fisioterapeuta. Formulario de 4 pasos, WhatsApp, teléfono o email: +34 616 372 644 y vytalkinetech@gmail.com."
+  path="/contacto"
+  og="/og/contacto.jpg"
+  seccion="contacto"
+  migas={migas}
+  jsonld={[contactPage('/contacto'), organization(), faqPage(FAQ_CONTACTO)]}
+>
+  <section class="cto" id="asesoramiento" data-hero aria-labelledby="page-title">
+    <div class="wrap">
+      <Breadcrumbs migas={migas} />
+      <div class="cto__head">
+        <h1 class="h1 cto__title" id="page-title" set:html={h1Html('Cuéntanos qué *necesitas.*')} />
+        <p class="lead cto__lead" data-enter style="--ed:.38s">Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara, sin letra pequeña.</p>
+      </div>
+      <div class="cto__grid">
+        <div class="fcard cto__form" data-enter style="--ed:.46s">
+          <LeadForm tituloId="page-title" />
+        </div>
+        <aside class="cto__side" aria-labelledby="canales-title" data-enter style="--ed:.56s">
+          <h2 class="cto__side-t" id="canales-title">¿Prefieres hablar ya?</h2>
+          <ul class="chan">
+            {CANALES.map((c) => (
+              <li>
+                <a class="chan__card" href={c.href} data-origen="contacto" {...(c.externo ? { target: '_blank', rel: 'noopener' } : {})}>
+                  <span class="chan__ico" aria-hidden="true"><svg class="icon"><use href={`#${c.icono}`}/></svg></span>
+                  <span class="chan__txt">
+                    <span class="chan__k">{c.k}</span>
+                    <span class="chan__v">{c.v}</span>
+                    <span class="chan__d">{c.d}</span>
+                  </span>
+                  <svg class="icon chan__go" aria-hidden="true"><use href="#i-arrow-ne"/></svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <figure class="cto__who">
+            <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="56px" widths={[112, 168]} class="cto__who-img" />
+            <figcaption><strong>Javier Ruiz</strong><span>Fisioterapeuta y fundador de VytalGroup</span></figcaption>
+          </figure>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" aria-labelledby="despues-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="despues-title" data-lines>Qué pasa después <em>de enviar.</em></h2>
+      </div>
+      <Timeline pasos={PASOS} />
+    </div>
+  </section>
+
+  <Faq faqs={FAQ_CONTACTO} titulo="Dudas *rápidas.*" id="dudas" cta={true} />
+</Base>

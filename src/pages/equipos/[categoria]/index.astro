@@ -1,0 +1,89 @@
+---
+// Página de cada categoría del catálogo (salvo ecografía y diatermia, que tienen su pilar):
+// hero con la palabra clave, línea de apoyo, tarjetas de sus productos, qué es y para qué se usa,
+// preguntas frecuentes si hay información y el formulario con la categoría preseleccionada.
+import '../../../styles/cards.css';
+import '../../../styles/pilar.css';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Img from '../../../components/Img.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import Faq from '../../../components/Faq.astro';
+import CtaFinal from '../../../components/CtaFinal.astro';
+import { CATEGORIAS, type Categoria } from '../../../data/categorias';
+import { deCategoria, PRODUCTOS, altProducto } from '../../../data/productos';
+import { acento } from '../../../lib/texto';
+import { collectionPage, faqPage, itemList } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return CATEGORIAS.filter((c) => !c.pilar).map((c) => ({ params: { categoria: c.id }, props: { c } }));
+}
+interface Props { c: Categoria }
+const { c } = Astro.props;
+const productos = deCategoria(c.id);
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Equipos', href: '/equipos' }, { name: c.nombre, href: c.ruta }];
+const jsonld: object[] = [collectionPage(c.ruta, c.nombre), itemList(c.nombre, productos)];
+if (c.faqs?.length) jsonld.push(faqPage(c.faqs));
+const n = productos.length;
+const repr = PRODUCTOS.find((p) => p.imagenes[0] === c.imagen);
+const altHero = repr ? altProducto(repr) : c.nombre;
+---
+<Base
+  title={c.seoTitle}
+  description={c.seoDescription}
+  path={c.ruta}
+  og={`/og/${c.id}.jpg`}
+  seccion="equipos"
+  migas={migas}
+  jsonld={jsonld}
+>
+  <PageHero migas={migas} titulo={c.h1} lead={c.apoyo}>
+    <Fragment slot="acciones">
+      <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      <a class="link" href="#equipos-categoria">Ver {n === 1 ? 'el equipo' : `los ${n} equipos`}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </Fragment>
+    <div slot="visual" class="pil-visual">
+      <Img name={c.imagen} alt={altHero} sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
+    </div>
+  </PageHero>
+
+  <section class="sec sec--white" id="equipos-categoria" aria-labelledby="eq-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="eq-title" data-lines set:html={acento(n === 1 ? 'El *equipo.*' : `Los ${n} *equipos.*`)} />
+      </div>
+      <ul class:list={['grid cat-grid', { 'cat-grid--1': n === 1, 'cat-grid--2': n === 2, 'cat-grid--4': n === 4 }]}>
+        {productos.map((p) => <li><ProductCard p={p} vt /></li>)}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="que-title">
+    <div class="wrap">
+      <div class="what">
+        <h2 class="h2" id="que-title" data-lines>Qué es y para <em>qué se usa.</em></h2>
+        <div class="what__txt" data-rv>
+          {c.queEs.map((t) => <p>{t}</p>)}
+          <p><a class="link" href="/catalogo">Ver el catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {c.faqs && c.faqs.length > 0 && <Faq faqs={c.faqs} titulo={`Dudas sobre *${c.corto.toLowerCase()}.*`} id={`dudas-${c.id}`} fondo="blanco" />}
+
+  <CtaFinal preset={{ equipo: c.formEquipo, otro: c.formOtro }} />
+</Base>
+<style is:global>
+  .cat-grid { gap: 16px; }
+  @media (min-width: 640px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+  /* 4 equipos: 2 × 2 en tableta y 4 en fila en escritorio ancho (sin tarjetas huérfanas) */
+  @media (min-width: 1024px) { .cat-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; margin-inline: auto; } }
+  @media (min-width: 1200px) { .cat-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: none; } }
+  .cat-grid--1 { grid-template-columns: minmax(0, 400px) !important; justify-content: center; }
+  @media (min-width: 640px) { .cat-grid--2 { grid-template-columns: repeat(2, minmax(0, 380px)) !important; justify-content: center; } }
+</style>

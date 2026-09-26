@@ -1,0 +1,203 @@
+---
+// Sobre nosotros: "De fisio a fisio." La historia en la voz de Javier, la forma de trabajar,
+// quiénes están detrás, las marcas, el alcance internacional, el comparador y el formulario.
+import '../styles/nosotros.css';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Img from '../components/Img.astro';
+import WorldMap from '../components/WorldMap.astro';
+import Comparator from '../components/Comparator.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { EMPRESA, MARCAS } from '../data/empresa';
+import { EUROPA, IBERIA } from '../data/mapa';
+import { aboutPage, organization } from '../lib/seo';
+
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Sobre nosotros', href: '/sobre-nosotros' }];
+const curva = ([x1, y1]: [number, number], [x2, y2]: [number, number], k = 0.25) => {
+  const mx = (x1 + x2) / 2 - (y2 - y1) * k;
+  const my = (y1 + y2) / 2 + (x2 - x1) * k * -1;
+  return `M${x1} ${y1}Q${mx} ${my} ${x2} ${y2}`;
+};
+const PRINCIPIOS = [
+  { icono: 'i-shield', t: 'Sin timos, todo claro', d: 'Sin letra pequeña en la garantía, en el mantenimiento ni en la propuesta. Si algo no te conviene, te lo decimos.' },
+  { icono: 'i-users', t: 'Te asesoran fisioterapeutas', d: 'Hablas con gente de tu profesión, que entiende cómo trabajas y qué necesitas de verdad.' },
+  { icono: 'i-tool', t: 'Te acompañamos después', d: 'Instalación, formación y soporte según el proyecto, 2 años de garantía y un mantenimiento claro desde el día uno.' },
+];
+const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioterapeuta', worksFor: { '@type': 'Organization', name: EMPRESA.nombre }, sameAs: [EMPRESA.instagramJavier.url] };
+---
+<Base
+  title="Sobre VytalGroup: Javier Ruiz, fisioterapeuta y fundador"
+  description="VytalGroup nace de Javier Ruiz, fisioterapeuta, para que a otros profesionales no les engañen con los equipos ni el mantenimiento. De fisio a fisio."
+  path="/sobre-nosotros"
+  og="/og/sobre-nosotros.jpg"
+  seccion="sobre-nosotros"
+  migas={migas}
+  jsonld={[aboutPage('/sobre-nosotros'), organization(), persona]}
+>
+  <PageHero migas={migas} titulo="De fisio *a fisio.*" lead="Soy Javier Ruiz, fisioterapeuta. Monté VytalGroup para que a profesionales como tú no les engañen con los equipos, el mantenimiento ni los productos.">
+    <Fragment slot="acciones">
+      <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      <a class="link" href="#historia">Leer la historia<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </Fragment>
+    <figure slot="visual" class="ab-photo">
+      <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="(min-width: 900px) 384px, 72vw" widths={[320, 384]} priority parallax />
+      <figcaption><svg class="sign__svg" viewBox="0 0 3592 1230" role="img" aria-label="Firma de Javier Ruiz"><use href="#sig"/></svg><span>Javier Ruiz, fisioterapeuta y fundador</span></figcaption>
+    </figure>
+  </PageHero>
+
+
+  <section class="sec sec--white story" id="historia" aria-labelledby="historia-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="historia-title" data-lines>La <em>historia.</em></h2>
+      </div>
+      <ol class="story__list">
+        <li class="story__item" data-rv>
+          <div class="story__visual story__visual--map">
+            <svg viewBox={`0 0 ${IBERIA.w} ${IBERIA.h}`} role="img" aria-label="Mapa: de Huelva a Málaga">
+              <path class="story__dots" d={IBERIA.d} />
+              <path class="story__route" d={curva(IBERIA.huelva, IBERIA.malaga, 0.35)} pathLength="1" />
+              <circle class="story__pin" cx={IBERIA.huelva[0]} cy={IBERIA.huelva[1]} r="7" />
+              <circle class="story__pin story__pin--to" cx={IBERIA.malaga[0]} cy={IBERIA.malaga[1]} r="7" />
+              <text x={IBERIA.huelva[0] - 14} y={IBERIA.huelva[1] - 18} text-anchor="middle">Huelva</text>
+              <text x={IBERIA.malaga[0] + 16} y={IBERIA.malaga[1] + 34} text-anchor="middle">Málaga</text>
+            </svg>
+          </div>
+          <div class="story__txt">
+            <p class="story__n">01</p>
+            <h3 class="story__t">De Huelva a Málaga</h3>
+            <p>Soy de Huelva. Para estudiar Fisioterapia tuve que irme de mi tierra, a la Universidad de Málaga.</p>
+          </div>
+        </li>
+        <li class="story__item" data-rv>
+          <div class="story__visual story__visual--num" aria-hidden="true">
+            <span class="story__big">10 a 12 h</span>
+            <span class="story__small">de jornada, un día tras otro</span>
+          </div>
+          <div class="story__txt">
+            <p class="story__n">02</p>
+            <h3 class="story__t">Lo mejor y lo peor</h3>
+            <p>En la profesión encontré lo mejor: el contacto con el paciente y ayudar a los demás. Y lo peor: jornadas de 10 a 12 horas e impuestos abusivos que no dejan respirar al profesional.</p>
+          </div>
+        </li>
+        <li class="story__item" data-rv>
+          <div class="story__visual story__visual--map">
+            <svg viewBox={`0 0 ${EUROPA.w} ${EUROPA.h}`} role="img" aria-label="Mapa: de Málaga a Luxemburgo">
+              <path class="story__dots" d={EUROPA.d} />
+              <path class="story__route" d={curva(EUROPA.malaga, EUROPA.luxemburgo, 0.18)} pathLength="1" />
+              <circle class="story__pin" cx={EUROPA.malaga[0]} cy={EUROPA.malaga[1]} r="7" />
+              <circle class="story__pin story__pin--to" cx={EUROPA.luxemburgo[0]} cy={EUROPA.luxemburgo[1]} r="7" />
+              <text x={EUROPA.malaga[0] - 16} y={EUROPA.malaga[1] + 7} text-anchor="end">Málaga</text>
+              <text x={EUROPA.luxemburgo[0] + 22} y={EUROPA.luxemburgo[1] - 20} text-anchor="middle">Luxemburgo</text>
+            </svg>
+          </div>
+          <div class="story__txt">
+            <p class="story__n">03</p>
+            <h3 class="story__t">El burnout y Luxemburgo</h3>
+            <p>Acabé quemado. Dejé la clínica y me fui a Luxemburgo.</p>
+          </div>
+        </li>
+        <li class="story__item" data-rv>
+          <div class="story__visual story__visual--photo">
+            <Img name="fotos/diatermia-multifuncion-vytamed-en-consulta" alt="Diatermia Multifunción de VytaMeD en una consulta de fisioterapia" sizes="(min-width: 1080px) 488px, (min-width: 900px) 44vw, 92vw" />
+          </div>
+          <div class="story__txt">
+            <p class="story__n">04</p>
+            <h3 class="story__t">VytalGroup</h3>
+            <p>Allí fundé VytalGroup para ofrecer equipos de fisioterapia, rehabilitación y medicina a otros profesionales. Veía mucho aprovechamiento en las ventas y quería acabar con eso.</p>
+            <p>Lo importante para mí no es lo que facturamos. Es que a profesionales como yo no les engañen con el mantenimiento, los equipos ni los productos.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--dark grid-noise ab-dark" aria-labelledby="forma-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="forma-title" data-lines>Nuestra forma <em>de trabajar.</em></h2>
+      </div>
+      <ul class="princ">
+        {PRINCIPIOS.map((p, i) => (
+          <li class="princ__item" data-rv style={`--rd:${i * 80}ms`}>
+            <span class="princ__ico" aria-hidden="true"><svg class="icon"><use href={`#${p.icono}`}/></svg></span>
+            <h3 class="princ__t">{p.t}</h3>
+            <p class="princ__d">{p.d}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" aria-labelledby="detras-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="detras-title" data-lines>Quiénes estamos <em>detrás.</em></h2>
+      </div>
+      <ul class="who">
+        <li class="who__item" data-rv>
+          <p class="who__name">VytalGroup</p>
+          <p class="who__d">La empresa que fundó Javier Ruiz: asesoramiento en la selección y configuración del equipo, coordinación de la importación y la entrega internacional, e instalación, formación y soporte según el proyecto.</p>
+        </li>
+        <li class="who__item" data-rv style="--rd:80ms">
+          <p class="who__name">ADC Global Tech</p>
+          <p class="who__d">Trabajamos junto a ADC Global Tech y compartimos el catálogo internacional de equipamiento médico 2026.</p>
+        </li>
+        <li class="who__item" data-rv style="--rd:160ms">
+          <p class="who__name">VytaMeD</p>
+          <p class="who__d">Nuestra marca propia: equipos desarrollados bajo el Reglamento Europeo de Productos Sanitarios MDR (UE) 2017/745, con soporte técnico local en España.</p>
+        </li>
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--dark" href="/catalogo">Ver el catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec brands-sec" aria-labelledby="marcas-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="marcas-title" data-lines>Marcas con las que <em>trabajamos.</em></h2>
+      </div>
+      <ul class="brands" data-rv>
+        {MARCAS.map((m) => <li>{m}</li>)}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--line" href="/equipos">Ver equipos por categoría</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" aria-labelledby="alcance-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="alcance-title" data-lines>Alcance <em>internacional.</em></h2>
+        <p class="lead" data-rv>Envíos a la UE, USA y LATAM, con la aduana gestionada.</p>
+      </div>
+      <WorldMap />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec vs" aria-labelledby="vs-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="vs-title" data-lines>¿Por qué elegir <em>VytalGroup?</em></h2>
+      </div>
+      <Comparator />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal />
+</Base>

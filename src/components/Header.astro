@@ -1,0 +1,98 @@
+---
+// Cabecera: logo, navegación (Ecógrafos · Diatermias · Equipos · Catálogo · Sobre nosotros · Contacto)
+// y "Quiero asesoramiento". "Equipos" abre un desplegable con las categorías y su miniatura.
+// En móvil, panel a pantalla completa con los enlaces escalonados, el CTA y WhatsApp.
+// Transparente sobre el hero y con fondo desenfocado al hacer scroll; en móvil se oculta al bajar.
+import '../styles/header.css';
+import Img from './Img.astro';
+import { CATEGORIAS } from '../data/categorias';
+import { deCategoria } from '../data/productos';
+import { wa } from '../data/empresa';
+import type { Seccion } from '../layouts/Base.astro';
+
+interface Props { seccion: Seccion; oscuro: boolean; conFormulario: boolean; path: string }
+const { seccion, oscuro, conFormulario, path } = Astro.props;
+const cta = conFormulario ? '#asesoramiento' : '/contacto#asesoramiento';
+const nav = [
+  { id: 'ecografos', label: 'Ecógrafos', href: '/ecografos' },
+  { id: 'diatermias', label: 'Diatermias', href: '/diatermias' },
+  { id: 'equipos', label: 'Equipos', href: '/equipos', menu: true },
+  { id: 'catalogo', label: 'Catálogo', href: '/catalogo' },
+  { id: 'sobre-nosotros', label: 'Sobre nosotros', href: '/sobre-nosotros' },
+  { id: 'contacto', label: 'Contacto', href: '/contacto' },
+];
+const movil = [
+  { id: 'ecografos', label: 'Ecógrafos', href: '/ecografos' },
+  { id: 'diatermias', label: 'Diatermias', href: '/diatermias' },
+  { id: 'equipos', label: 'Equipos', href: '/equipos' },
+  { id: 'catalogo', label: 'Catálogo', href: '/catalogo' },
+  { id: 'sobre-nosotros', label: 'Sobre nosotros', href: '/sobre-nosotros' },
+  { id: 'guias', label: 'Guías', href: '/guias' },
+  { id: 'contacto', label: 'Contacto', href: '/contacto' },
+];
+const actual = (href: string) => (path === href ? 'page' : undefined);
+---
+<header class:list={['hd', { 'hd--dark': oscuro }]} data-header>
+  <div class="hd__bar wrap">
+    <a class="hd__logo" href="/" aria-label="VytalGroup, ir al inicio" aria-current={path === '/' ? 'page' : undefined}><svg class="logo" viewBox="0 0 1117 171" aria-hidden="true"><use href="#logo"/></svg></a>
+
+    <nav class="hd__nav" aria-label="Principal">
+      <ul class="hd__list">
+        {nav.map((n) => (
+          <li class:list={['hd__item', { 'is-active': seccion === n.id }]}>
+            {n.menu ? (
+              <>
+                <button class="hd__link hd__trigger" type="button" aria-expanded="false" aria-controls="menu-equipos" data-dropdown-btn>
+                  {n.label}<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                </button>
+                <div class="dd" id="menu-equipos" data-dropdown hidden>
+                  <div class="dd__in">
+                    <ul class="dd__grid">
+                      {CATEGORIAS.map((c, i) => (
+                        <li style={`--i:${i}`}>
+                          <a class="dd__cat" href={c.ruta} aria-current={actual(c.ruta)}>
+                            <span class="dd__thumb"><Img name={c.imagen} alt="" sizes="64px" widths={[96, 160]} /></span>
+                            <span class="dd__txt"><span class="dd__name">{c.nombre}</span><span class="dd__count">{deCategoria(c.id).length} {deCategoria(c.id).length === 1 ? 'equipo' : 'equipos'}</span></span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <div class="dd__foot">
+                      <a class="link" href="/equipos">Ver todas las categorías<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                      <a class="link" href="/catalogo">Catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <a class="hd__link" href={n.href} aria-current={actual(n.href)}>{n.label}</a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="hd__end">
+      <a class="btn btn--primary btn--sm hd__cta" href={cta} data-cta>Quiero asesoramiento</a>
+      <button class="hd__menu" type="button" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir el menú" data-menu-btn>
+        <span class="hd__burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mm" id="menu-movil" role="dialog" aria-modal="true" aria-label="Menú" data-menu hidden>
+  <div class="mm__in wrap">
+    <nav aria-label="Menú móvil">
+      <ul class="mm__list">
+        {movil.map((n, i) => (
+          <li style={`--i:${i}`}><a class="mm__link" href={n.href} aria-current={actual(n.href)}>{n.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="mm__foot" style={`--i:${movil.length}`}>
+      <a class="btn btn--primary btn--lg btn--block" href={cta} data-cta data-menu-close>Quiero asesoramiento</a>
+      <a class="btn btn--line btn--lg btn--block" href={wa()} target="_blank" rel="noopener" data-contact="whatsapp" data-origen="menu"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>Escríbenos por WhatsApp</a>
+    </div>
+  </div>
+</div>

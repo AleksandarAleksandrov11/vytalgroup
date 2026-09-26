@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Pie (mismo estilo que la landing, ampliado)
+   ========================================================================== */
+.ft { position: relative; overflow: hidden; background: var(--navy); color: rgba(255, 255, 255, .66); font-size: .9375rem; padding: 64px 0 calc(24px + env(safe-area-inset-bottom)); }
+.ft :focus-visible { outline-color: #FFF; }
+.ft__top { display: grid; gap: 40px; }
+.ft__brand { display: grid; justify-items: center; gap: 12px; text-align: center; }
+.ft__logo { display: flex; align-items: center; min-height: 44px; border-radius: 8px; }
+.ft__logo .logo { height: 30px; }
+.ft__claim { max-width: 26ch; font-size: 1.125rem; font-weight: 500; line-height: 1.35; letter-spacing: -.015em; color: #FFF; }
+.ft__claim em { display: block; font-family: var(--serif); font-size: 1.12em; font-weight: 400; color: var(--teal-light); }
+.ft__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 16px; text-align: center; }
+.ft__col--equipos { grid-column: 1 / -1; }
+.ft__h { margin-bottom: 8px; font-size: .75rem; font-weight: 560; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-on-dark); }
+.ft__list { display: grid; justify-items: center; }
+.ft__list--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+/* En móvil, las categorías con su nombre corto (el de los filtros del catálogo) para que no se partan */
+.ft__short { display: none; }
+@media (max-width: 639px) { .ft__full { display: none; } .ft__short { display: inline; } }
+.ft a, .ft button { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: rgba(255, 255, 255, .86); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font-size: inherit; text-align: inherit; line-height: 1.3; }
+.ft__list .icon { width: 18px; height: 18px; color: var(--teal-on-dark); }
+.ft a:hover, .ft button:hover { color: #FFF; text-decoration: underline; text-underline-offset: 4px; }
+.ft__contact { margin-top: 4px; }
+.ft__bottom { display: grid; justify-items: center; gap: 4px; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, .1); font-size: .8125rem; text-align: center; color: rgba(255, 255, 255, .56); }
+/* "VytalGroup" a todo el ancho: "Vytal" en blanco y "Group" en turquesa, como el logo */
+.ft__word { margin-top: 28px; }
+.ft__word-in { display: flex; justify-content: center; overflow: hidden; padding-bottom: .1em; font-size: calc((min(100vw, 1264px) - var(--g) * 2) / 5.1); font-weight: 600; line-height: .9; letter-spacing: -.05em; white-space: nowrap; color: rgba(255, 255, 255, .94); user-select: none; -webkit-mask-image: linear-gradient(180deg, #000 55%, rgba(0, 0, 0, .25)); mask-image: linear-gradient(180deg, #000 55%, rgba(0, 0, 0, .25)); }
+.ft__word-in span { display: inline-block; transition: transform .7s var(--ease), opacity .6s ease; transition-delay: calc(var(--i, 0) * 50ms); }
+.ft__word-in .ft__g { color: var(--logo-dark-b); }
+.ft__word.is-armed:not(.is-in) span { opacity: 0; transform: translateY(70%); transition: none; }
+@media (hover: hover) and (pointer: fine) {
+  .ft__word.is-in span:hover { transform: translateY(-6%); transition-duration: .5s; transition-delay: 0s; }
+  .ft a, .ft button { min-height: 36px; }
+}
+@media (max-width: 374px) { .ft { font-size: .875rem; } .ft__cols, .ft__list--2 { column-gap: 8px; } }
+@media (min-width: 640px) {
+  .ft__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .ft { padding-top: 88px; }
+  .ft__top { grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr); gap: 48px; align-items: start; }
+  .ft__brand { justify-items: start; text-align: left; }
+  .ft__logo .logo { height: 32px; }
+  .ft__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 24px; text-align: left; }
+  .ft__col--equipos { grid-column: 1 / -1; }
+  .ft__list--2 { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 24px; }
+  .ft__list { justify-items: start; }
+  .ft__bottom { grid-auto-flow: column; justify-content: space-between; text-align: left; }
+  .ft__word { margin-top: 40px; }
+}
+/* Móvil y tableta: el pie deja sitio a la barra fija de abajo */
+@media (max-width: 899px) { .ft { padding-bottom: calc(96px + env(safe-area-inset-bottom)); } }

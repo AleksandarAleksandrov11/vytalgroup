@@ -1,0 +1,27 @@
+---
+// Maqueta 3D del catálogo PDF: tres páginas (portada y dos interiores) que se abren en abanico al
+// llegar y se inclinan con el cursor en escritorio. Solo transform y variables CSS.
+import Img from './Img.astro';
+---
+<div class="mk" data-mockup aria-hidden="true">
+  <div class="mk__stage">
+    <div class="mk__page mk__page--3"><Img name="fotos/catalogo-interior-diatermia" alt="" sizes="(min-width: 900px) 280px, 56vw" widths={[280, 420, 560]} /></div>
+    <div class="mk__page mk__page--2"><Img name="fotos/catalogo-interior-ecografia" alt="" sizes="(min-width: 900px) 280px, 56vw" widths={[280, 420, 560]} /></div>
+    <div class="mk__page mk__page--1"><Img name="fotos/catalogo-portada" alt="" sizes="(min-width: 900px) 280px, 56vw" widths={[280, 420, 560]} /></div>
+  </div>
+</div>
+<style is:global>
+  .mk { --mk-x: 24%; --mk-r: 8deg; position: relative; width: min(48vw, 260px); margin: 0 auto; perspective: 1400px; }
+  /* El abanico abierto ocupa unas 1,9 veces el ancho de la portada en móvil y 2,25 en escritorio */
+  @media (min-width: 900px) { .mk { --mk-x: 34%; --mk-r: 12deg; } }
+  .mk__stage { position: relative; aspect-ratio: 560 / 792; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .6s var(--ease); }
+  .mk__page { position: absolute; inset: 0; border-radius: 6px; overflow: hidden; background: #FFF; box-shadow: 0 1px 2px rgba(11, 25, 41, .1), 0 30px 60px -30px rgba(11, 25, 41, .45); transform-origin: 50% 100%; transition: transform .9s var(--ease); }
+  .mk__page img { width: 100%; height: 100%; object-fit: cover; }
+  .mk__page--1 { transform: translateZ(3px); }
+  .mk__page--2 { transform: translateZ(2px) rotate(-1.5deg); }
+  .mk__page--3 { transform: translateZ(1px) rotate(1.5deg); }
+  .mk.is-open .mk__page--1 { transform: translateZ(30px) rotate(-2deg) translateY(-2%); }
+  .mk.is-open .mk__page--2 { transform: translateZ(12px) translateX(calc(var(--mk-x) * -1)) rotate(calc(var(--mk-r) * -1)); transition-delay: .06s; }
+  .mk.is-open .mk__page--3 { transform: translateZ(0) translateX(var(--mk-x)) rotate(var(--mk-r)); transition-delay: .12s; }
+  @media (prefers-reduced-motion: reduce) { .mk__stage { transform: none; } }
+</style>

@@ -268,10 +268,17 @@ save_png(stage(superinductiva(), box=(0.62, 0.84), area=0.3), 'magnetoterapia-su
 
 
 # ---------------------------------------------------------------- 4. Fotos de contexto (galería), con etalonaje suave
-def photo(name, im, crop=None, size=(960, 720)):
+def photo(name, im, crop=None, size=(960, 720), limpiar=()):
     im = im.convert('RGB')
     if crop:
         im = im.crop(crop)
+    # Restos de texto de la maqueta del catálogo sobre la foto: se rellenan con el fondo (inpainting)
+    if limpiar:
+        arr = np.array(im)
+        mask = np.zeros(arr.shape[:2], np.uint8)
+        for (x0, y0, x1, y1) in limpiar:
+            mask[y0:y1, x0:x1] = 255
+        im = Image.fromarray(cv2.inpaint(arr, mask, 6, cv2.INPAINT_TELEA))
     # Encaje 4:3 sin ampliar: se recorta al centro y se reduce solo si sobra resolución
     tw, th = size
     r = min(im.width / tw, im.height / th)
@@ -289,7 +296,7 @@ photo('diatermia-multifuncion-vytamed-en-consulta', src('i-004-016.jpg'))
 photo('diatermia-multifuncion-vytamed-pantalla', src('i-008-038.jpg'))
 photo('eco-wireless-vytamed-estuche', src('i-006-024.jpg'))
 photo('superinductiva-vytamed-en-consulta', src('i-005-017.jpg'), crop=(0, 100, 540, 505))
-photo('superinductiva-clinica-vytamed-en-consulta', src('i-007-031.jpg'), crop=(190, 0, 554, 369))
+photo('superinductiva-clinica-vytamed-en-consulta', src('i-007-031.jpg'), crop=(190, 0, 554, 369), limpiar=[(0, 44, 58, 90), (0, 92, 14, 116)])
 
 # Portada e interiores del catálogo para la maqueta 3D (renderizados con pdftoppm -r 110)
 for n, name in ((1, 'catalogo-portada'), (22, 'catalogo-interior-ecografia'), (8, 'catalogo-interior-diatermia')):

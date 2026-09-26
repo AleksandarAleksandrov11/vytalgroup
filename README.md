@@ -3,7 +3,7 @@
 Web multipágina de VytalGroup: **equipos médicos de alta calidad, sin letra pequeña**. Astro con salida 100 % estática, JavaScript vanilla solo donde hace falta (formulario, filtros, menús, cookies y animaciones), mismo sistema de diseño que la landing de campañas (https://vsl-vytalgroup.vercel.app/) y preparada para publicarse en **https://vytalgroup.org**.
 
 - 67 páginas HTML: inicio, 2 páginas pilar (ecógrafos y diatermias), índice de equipos, 10 páginas de categoría, 42 fichas de producto, catálogo navegable, sobre nosotros, contacto, índice de guías y 3 guías, 3 legales y 404.
-- 53 productos del catálogo 2026 en un único origen de datos (`src/data/productos/`), de los que 42 tienen ficha propia.
+- 53 productos en un único origen de datos (`src/data/productos/`): los 48 del catálogo 2026 y 5 modelos EDAN pendientes de confirmar. 42 tienen ficha propia.
 - Formulario de 4 pasos idéntico al de la landing, conectado a la **misma hoja de Google Sheets** (columnas nuevas Origen y Página).
 - Meta Pixel condicionado al consentimiento de cookies, con los eventos del brief.
 - Imágenes OG de 1200 × 630 generadas en el build para cada página, categoría, ficha y guía.
@@ -211,9 +211,13 @@ Los UTM y el `fbclid` se guardan en la primera visita (`sessionStorage`) y viaja
 | `qa-apps-script` | El Apps Script real contra una hoja simulada: hoja nueva, hoja de la landing (columnas por título), origen por defecto, duplicados, campo trampa y validaciones |
 | `qa-form` | Formulario completo con UTM, preselección desde ficha y desde tarjeta sin ficha, validación, error del servidor, endpoint vacío, antispam (3 s y campo trampa), consentimiento y todos los eventos del píxel (Meta simulado, sin salir a internet) |
 | `qa-ui` | Cabecera y menús (ratón y teclado), catálogo (filtros, búsqueda, orden, URL, sin JavaScript), segmentado, acordeón, galería, guías (índice y progreso), teclado, movimiento reducido, CSP sin violaciones, 404 real y caché |
+| `qa-a11y` | axe-core (WCAG 2.2 AA y buenas prácticas) en las 67 páginas a 390 y 1440 px, más un cálculo de contraste propio donde axe no puede resolver el fondo (degradados y pseudoelementos) |
+| `html-validate` | HTML válido en todas las páginas (reglas en `.htmlvalidate.json`) |
 | `qa-layout` | 14 plantillas en los 12 anchos del brief (320 a 1920): sin scroll horizontal, sin elementos fuera de pantalla, sin textos cortados, botones en una línea, áreas táctiles de 44 px, H1 en la primera pantalla y sin errores de consola. Guarda capturas de página completa en `tests/output/screenshots/` |
 
 Se puede lanzar una sola: `node tests/run.mjs qa-form`.
+
+**Lighthouse móvil** (no entra en `npm test` porque necesita descargar Lighthouse): `npm install --no-save lighthouse@12 && npm run build && node tests/lighthouse.mjs`. Audita inicio, las dos páginas pilar, una ficha, una categoría, el catálogo, sobre nosotros, contacto y una guía con la configuración móvil por defecto (Moto G Power emulado, CPU ×4 y 4G lenta) y deja los informes en `tests/output/lighthouse/`.
 
 ---
 

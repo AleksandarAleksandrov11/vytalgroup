@@ -87,6 +87,11 @@ const PAGES = [
           }
           if (tops.size > 1) wide.push(`${name(el)} (partido: "${el.textContent.trim().slice(0, 24)}")`);
         });
+        // Control segmentado: el indicador tiene el mismo ancho que la opción activa
+        document.querySelectorAll('.seg').forEach((seg) => {
+          const ind = seg.querySelector('.seg__ind'); const act = seg.querySelector('[aria-selected="true"]');
+          if (ind && act && shown(seg) && Math.abs(ind.getBoundingClientRect().width - act.getBoundingClientRect().width) > 3) wide.push(`seg (indicador ${Math.round(ind.getBoundingClientRect().width)} y opción ${Math.round(act.getBoundingClientRect().width)})`);
+        });
         const small = [];
         if (matchMedia('(pointer: coarse)').matches) {
           document.querySelectorAll('a, button, input, select, [role="tab"]').forEach((el) => {

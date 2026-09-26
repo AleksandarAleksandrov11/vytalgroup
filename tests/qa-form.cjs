@@ -91,6 +91,38 @@ async function block(name, fn) {
     await ctx.close();
   });
 
+  await block('UTM entre páginas, móvil, correo y doble clic', async () => {
+    const { ctx, p } = await open(b, '/?utm_source=facebook&utm_campaign=test&fbclid=abc123', { consent: true, width: 390, height: 844, mobile: true });
+    await p.goto(BASE + '/ecografos', { waitUntil: 'networkidle' });
+    await p.goto(BASE + '/contacto', { waitUntil: 'networkidle' });
+    const antes = posts().length;
+    await toForm(p);
+    await p.waitForTimeout(3100);
+    await p.tap('.qf__step.is-active label.opt:has(input[value="Diatermia"])');
+    await p.waitForTimeout(700);
+    await p.tap('.qf__step.is-active label.opt:has(input[value="Médico"])');
+    await p.waitForTimeout(700);
+    await p.fill('#f-name', 'Carmen Ruiz');
+    await p.tap('.qf__step.is-active [data-next]');
+    await p.waitForTimeout(600);
+    await p.tap('[data-switch="email"]');
+    await p.waitForTimeout(400);
+    ok(await p.isVisible('#f-email') && !(await p.isVisible('#f-tel')), 'correo: "Prefiero por correo" cambia el campo a email');
+    await p.fill('#f-email', 'carmen@clinica.es');
+    await p.check('input[name="consent"]');
+    await p.dblclick('[data-submit]');
+    await p.waitForSelector('[data-done]:not([hidden])', { timeout: 8000 });
+    await p.waitForTimeout(800);
+    const nuevos = posts().slice(antes);
+    ok(nuevos.length === 1, 'doble clic: un solo envío', `${nuevos.length}`);
+    const d = JSON.parse((nuevos[0] || {}).body || '{}');
+    ok(d.email === 'carmen@clinica.es' && d.canal === 'Correo' && !d.telefono, 'correo: payload con email y canal Correo');
+    ok(d.utm_source === 'facebook' && d.utm_campaign === 'test' && d.fbclid === 'abc123', 'UTM: viajan entre páginas hasta el envío', `${d.utm_source} ${d.utm_campaign} ${d.fbclid}`);
+    ok(/utm_source=facebook/.test(d.landing_url || '') && d.pagina === `${BASE}/contacto`, 'UTM: URL de entrada original y página de envío', `${d.landing_url} · ${d.pagina}`);
+    ok(d.equipo === 'Diatermia' && d.perfil === 'Médico', 'móvil: recorrido completo con toques');
+    await ctx.close();
+  });
+
   await block('Ficha con preselección', async () => {
     const { ctx, p } = await open(b, '/ecografos/acclarix-ax8', { consent: true });
     const antes = posts().length;

@@ -99,6 +99,20 @@ for (const [r, s] of pages) {
   }
   ok(rotos.length === 0, `${r}: enlaces internos y recursos existentes`, rotos.slice(0, 5).join(' '));
 }
+// Enlaces externos de contacto con el formato correcto
+const externos = new Set();
+for (const s of pages.values()) for (const m of s.matchAll(/href="((?:https:\/\/wa\.me|tel:|mailto:)[^"]*)"/g)) externos.add(decode(m[1]));
+for (const u of externos) {
+  const bien = u.startsWith('https://wa.me/34616372644') ? /^https:\/\/wa\.me\/34616372644(\?text=[^\s]+)?$/.test(u)
+    : u.startsWith('tel:') ? u === 'tel:+34616372644'
+    : /^mailto:vytalkinetech@gmail\.com(\?subject=[^\s]+)?$/.test(u);
+  ok(bien, 'enlace de WhatsApp, teléfono o email correcto', u);
+}
+ok([...externos].some((u) => u.startsWith('https://wa.me/')) && [...externos].some((u) => u.startsWith('tel:')) && [...externos].some((u) => u.startsWith('mailto:')), 'hay enlaces de WhatsApp, teléfono y email');
+const pdf = join(DIST, 'assets/docs/catalogo-vytalgroup-2026.pdf');
+ok(existsSync(pdf) && readFileSync(pdf).subarray(0, 5).toString() === '%PDF-', 'el PDF del catálogo existe y es un PDF');
+ok([...pages.values()].every((s) => /@view-transition\s*\{\s*navigation:\s*auto/.test(s)), 'transiciones de página (View Transitions) en todas las páginas');
+
 for (const [t, rs] of titles) ok(rs.length === 1, 'title único', `${t} → ${rs.join(', ')}`);
 for (const [d, rs] of descs) ok(rs.length === 1, 'description única', `${d.slice(0, 50)}… → ${rs.join(', ')}`);
 

@@ -25,6 +25,10 @@ mkdirSync(join(out, 'screenshots'), { recursive: true });
 const log = join(out, 'mock-log.jsonl');
 writeFileSync(log, '');
 
+// El puerto tiene que estar libre: otro servidor sin el Apps Script simulado en la CSP falsearía el resultado
+const ocupado = await fetch(`http://localhost:${PORT}/`).then(() => true, () => false);
+if (ocupado) { console.error(`El puerto ${PORT} ya está en uso. Ciérralo o usa PORT=otro npm test.`); process.exit(1); }
+
 const bg = [
   spawn(process.execPath, ['scripts/serve.mjs', 'dist', PORT], { stdio: 'ignore', env: { ...process.env, CSP_CONNECT_EXTRA: 'http://localhost:8090' } }),
   spawn(process.execPath, ['tests/mock-apps-script.cjs', log, '8090'], { stdio: 'ignore' }),

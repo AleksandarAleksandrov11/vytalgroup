@@ -25,7 +25,7 @@ const letras = 'VytalGroup'.split('');
         <div class="ft__col ft__col--equipos">
           <h2 class="ft__h">Equipos</h2>
           <ul class="ft__list ft__list--2">
-            {CATEGORIAS.map((c) => <li><a href={c.ruta}>{c.nombre}</a></li>)}
+            {CATEGORIAS.map((c) => <li><a href={c.ruta}><span class="ft__full">{c.nombre}</span><span class="ft__short">{c.corto}</span></a></li>)}
             <li><a href="/catalogo">Catálogo completo</a></li>
             <li><a href={EMPRESA.catalogoPdf} download data-catalog>Catálogo (PDF)</a></li>
           </ul>

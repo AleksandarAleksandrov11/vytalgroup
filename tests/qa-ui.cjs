@@ -123,6 +123,36 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await ctx.close();
   });
 
+  await block('Animaciones de Inicio', async () => {
+    const { ctx, p } = await open(b, '/');
+    const ir = async (sel, off = 0.5) => { await p.evaluate(([s, o]) => { const e = document.querySelector(s); window.scrollTo({ top: e.getBoundingClientRect().top + scrollY - innerHeight * o, behavior: 'instant' }); }, [sel, off]); await p.waitForTimeout(900); };
+    const steps = await p.$$('[data-sticky-eco] [data-step]');
+    const activos = [];
+    for (const s of steps) {
+      await s.evaluate((e) => window.scrollTo({ top: e.getBoundingClientRect().top + scrollY - innerHeight / 2 + e.offsetHeight / 2, behavior: 'instant' }));
+      await p.waitForTimeout(500);
+      activos.push(await p.$$eval('[data-sticky-eco] [data-shot]', (xs) => xs.findIndex((x) => x.classList.contains('is-active'))));
+    }
+    ok(activos.length >= 3 && new Set(activos).size === activos.length, 'sticky de ecografía: la imagen cambia con cada mensaje', activos.join(','));
+    await ir('[data-timeline]', 0.2);
+    ok(await p.$eval('[data-timeline]', (e) => Number(getComputedStyle(e).getPropertyValue('--tl')) > 0.5), 'línea temporal: se dibuja con el scroll');
+    await ir('[data-map]');
+    ok(await p.$eval('[data-map]', (e) => e.classList.contains('is-on')), 'mapa: los puntos se encienden');
+    await ir('[data-mockup]');
+    ok(await p.$eval('[data-mockup]', (e) => e.classList.contains('is-open')), 'maqueta 3D: se abre en abanico');
+    await p.mouse.move(700, 300);
+    await p.mouse.move(900, 380, { steps: 5 });
+    await p.waitForTimeout(200);
+    ok(await p.$eval('[data-mockup]', (e) => e.style.getPropertyValue('--ry') !== ''), 'maqueta 3D: se inclina con el cursor');
+    await ir('.why__photo', 0.15);
+    await p.mouse.wheel(0, 120);
+    await p.waitForTimeout(400);
+    const py = await p.$eval('.why__photo [data-parallax]', (x) => x.style.getPropertyValue('--py'));
+    ok(py && py !== '0.0px' && Math.abs(parseFloat(py)) <= 16, 'parallax: la foto de Javier se desplaza levemente (16 px como máximo)', py);
+    ok(await p.evaluate(() => [...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r.cssText.includes('@view-transition')); } catch (e) { return false; } }) || /@view-transition/.test(document.documentElement.innerHTML)), 'transiciones de página: @view-transition activo');
+    await ctx.close();
+  });
+
   await block('Ficha: galería', async () => {
     const { ctx, p } = await open(b, '/ecografos/acclarix-ax8');
     await p.click('[data-zoom-open]');

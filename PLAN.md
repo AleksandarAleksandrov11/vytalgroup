@@ -78,19 +78,25 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - [x] `sitemap.xml`
 
 ## 6. Revisión final (sección 16 del brief)
-- [ ] Coherencia con la landing (capturas lado a lado)
-- [ ] Capturas de página completa de cada plantilla en 12 anchos, revisadas una a una
-- [ ] Desbordes, solapes y scroll horizontal comprobados por código
-- [ ] Rastreo de enlaces (internos, anclas, PDF, WhatsApp, tel y mailto)
-- [ ] Catálogo: todos los productos, filtros, buscador, orden, URL, sin JS, descarga del PDF
-- [ ] Formulario y tracking con endpoint vacío y simulado, UTM entre páginas, doble clic, consentimiento, eventos
-- [ ] SEO: title y description únicos, un H1, canonical, OG, sitemap, robots, JSON-LD, noindex, alt, llms.txt
-- [ ] Contenido: sin rayas, sin veterinaria, sin datos inventados, ortografía, sin relleno
-- [ ] Lighthouse móvil ≥ 95 en las 4 categorías en todas las plantillas, CLS 0
-- [ ] Consola y CSP limpias, HTML válido, teclado, movimiento reducido, sin archivos muertos
-- [ ] Recorrido como fisioterapeuta que busca su primer ecógrafo
+- [x] Coherencia con la landing (capturas lado a lado)
+- [x] Capturas de página completa de cada plantilla en 12 anchos, revisadas una a una
+- [x] Desbordes, solapes y scroll horizontal comprobados por código
+- [x] Rastreo de enlaces (internos, anclas, PDF, WhatsApp, tel y mailto)
+- [x] Catálogo: todos los productos, filtros, buscador, orden, URL, sin JS, descarga del PDF
+- [x] Formulario y tracking con endpoint vacío y simulado, UTM entre páginas, doble clic, consentimiento, eventos
+- [x] SEO: title y description únicos, un H1, canonical, OG, sitemap, robots, JSON-LD, noindex, alt, llms.txt
+- [x] Contenido: sin rayas, sin veterinaria, sin datos inventados, ortografía, sin relleno
+- [x] Lighthouse móvil ≥ 95 en las 4 categorías en todas las plantillas, CLS 0
+- [x] Consola y CSP limpias, HTML válido, teclado, movimiento reducido, sin archivos muertos
+- [x] Recorrido como fisioterapeuta que busca su primer ecógrafo
 
 ## 7. Entrega
-- [ ] README (estructura, local, productos y guías, Google Sheets, píxel, despliegue, dominio, pendientes y decisiones)
+- [x] README (estructura, local, productos y guías, Google Sheets, píxel, despliegue, dominio, pendientes y decisiones)
 - [ ] Commit y push a `claude/eloquent-turing-1arlub`
 - [ ] Resumen final con Lighthouse por plantilla y lista de páginas
+
+## Registro de la revisión final
+- Capturas de página completa de las 14 plantillas en los 12 anchos (320 a 1920), revisadas una a una.
+- Corregido en la revisión: enlaces claros sobre fondo oscuro (hero y "Sin timos"), maqueta del catálogo que se salía en 1024, texto de CTA en la ficha, control segmentado de 3 opciones a 320, tarjetas huérfanas en categorías de 4 equipos y en el índice de equipos, ancho de lectura de legales y guías, email partido en contacto a 320, nombres del pie en móvil, foto con restos de texto del catálogo, cabecera de la tabla comparativa por debajo de AA, área táctil de la comparativa, clases duplicadas (.ct) entre contacto y la tabla comparativa.
+- Pruebas: SEO estático, HTML válido, Apps Script, formulario y píxel, interfaz y animaciones, accesibilidad (axe y contraste propio) y maquetación en 12 anchos. Lighthouse móvil 99 a 100 en todas las plantillas.
+

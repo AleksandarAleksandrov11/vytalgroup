@@ -1,9 +1,9 @@
 // Lighthouse móvil (configuración por defecto: Moto G Power emulado, CPU ×4 y red 4G lenta simulada)
 // sobre cada plantilla del brief, servida desde dist/ con las cabeceras y la compresión de Vercel.
-// Uso: npm run build && node tests/lighthouse.mjs   (necesita red la primera vez para "npx lighthouse";
-//      CHROME_PATH=/ruta/a/chrome si no se encuentra Chrome). Informes en tests/output/lighthouse/.
+// Uso: npm install --no-save lighthouse@12 && npm run build && node tests/lighthouse.mjs
+//      (CHROME_PATH=/ruta/a/chrome si no se encuentra Chrome). Informes en tests/output/lighthouse/.
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const PORT = process.env.PORT || '8083';
@@ -22,7 +22,7 @@ const PLANTILLAS = [
   ['contacto', '/contacto'],
   ['guia', '/guias/como-elegir-un-ecografo-para-fisioterapia'],
 ];
-const LH = process.env.LIGHTHOUSE_BIN || 'lighthouse';
+const LH = process.env.LIGHTHOUSE_BIN || (existsSync('node_modules/.bin/lighthouse') ? 'node_modules/.bin/lighthouse' : 'lighthouse');
 
 const server = spawn(process.execPath, ['scripts/serve.mjs', 'dist', PORT], { stdio: 'ignore' });
 await new Promise((r) => setTimeout(r, 800));

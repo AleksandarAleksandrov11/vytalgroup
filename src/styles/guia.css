@@ -84,3 +84,7 @@
 /* Índice de guías */
 .gl__list { gap: 20px; }
 .gd-more { max-width: 820px; margin-inline: auto; }
+/* Sin índice lateral (móvil y tableta): la columna de lectura, centrada */
+@media (max-width: 1099px) {
+  .gd__toc, .prose, .gd__end, .gd__bio { width: 100%; max-width: 40rem; margin-inline: auto; }
+}

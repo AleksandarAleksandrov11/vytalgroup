@@ -1,6 +1,6 @@
 // Validación de los datos de producto y categorías (se ejecuta con: npm run check:content).
 // Comprueba slugs únicos, relacionados existentes, imágenes, longitudes SEO, rayas prohibidas
-// (— y –), menciones veterinarias y que cada ficha tenga lo mínimo para su plantilla.
+// (U+2014 y U+2013), menciones veterinarias y que cada ficha tenga lo mínimo para su plantilla.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { PRODUCTOS, seoTitle, seoDescription, urlFicha } from '../src/data/productos/index.ts';
@@ -48,7 +48,7 @@ const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isD
 for (const f of walk('src').filter((f) => /\.(ts|astro|md|mdx|css|js|json)$/.test(f))) {
   const s = readFileSync(f, 'utf8');
   s.split('\n').forEach((line, i) => {
-    if (/[—–]/.test(line)) errors.push(`${f}:${i + 1}: raya prohibida`);
+    if (/[\u2014\u2013]/.test(line)) errors.push(`${f}:${i + 1}: raya prohibida`);
     if (/veterinari|\bvet\b/i.test(line)) errors.push(`${f}:${i + 1}: mención veterinaria`);
   });
 }

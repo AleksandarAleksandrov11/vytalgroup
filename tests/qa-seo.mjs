@@ -4,7 +4,7 @@
 //  · lang="es", canonical absoluto en SITE_URL, og:locale, Open Graph y Twitter con imagen 1200 × 630 existente
 //  · noindex, follow solo en legales y 404; el resto, index
 //  · JSON-LD válido y sin offers, aggregateRating ni review; tipos esperados por plantilla
-//  · ninguna raya ni guion largo (— y –) en ningún archivo publicado de texto
+//  · ninguna raya ni guion largo (U+2014 y U+2013) en ningún archivo publicado de texto
 //  · nada de veterinaria
 //  · ningún <script> en línea salvo JSON-LD (CSP) y ningún atributo on*
 //  · todas las imágenes con alt; alt no vacío salvo decorativas junto a su texto
@@ -119,7 +119,7 @@ for (const [d, rs] of descs) ok(rs.length === 1, 'description única', `${d.slic
 // Rayas, guiones largos y veterinaria en todo lo publicado (texto)
 for (const f of files.filter((f) => ['.html', '.xml', '.txt', '.css', '.js', '.json', '.webmanifest', '.svg'].includes(extname(f)))) {
   const s = readFileSync(f, 'utf8');
-  ok(!/[—–]/.test(s), `${f}: sin rayas ni guiones largos`);
+  ok(!/[\u2014\u2013]/.test(s), `${f}: sin rayas ni guiones largos`);
   ok(!/veterinari|\bVET\b/i.test(s), `${f}: sin veterinaria`);
 }
 

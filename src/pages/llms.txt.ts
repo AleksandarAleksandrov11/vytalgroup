@@ -59,6 +59,6 @@ export const GET: APIRoute = async () => {
   l.push('## Guías', '');
   for (const g of guias) l.push(`- [${g.data.corto}](${u(`/guias/${g.id}`)}): ${g.data.resumen}`);
   l.push('');
-  const txt = l.join('\n').replace(/[–—]/g, ':');
+  const txt = l.join('\n').replace(/[\u2013\u2014]/g, ':');
   return new Response(txt, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

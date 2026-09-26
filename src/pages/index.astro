@@ -1,0 +1,261 @@
+---
+// Inicio: hero, cinta de confianza, dos protagonistas, ecografía en profundidad (sticky), diatermias
+// destacadas, todo tu equipamiento, sin timos + comparador, así trabajamos, envíos, catálogo,
+// guías, preguntas frecuentes y el bloque final con el formulario.
+import '../styles/inicio.css';
+import '../styles/cards.css';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import HeroBg from '../components/HeroBg.astro';
+import Sweep from '../components/Sweep.astro';
+import Marquee from '../components/Marquee.astro';
+import Img from '../components/Img.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import SinTimos from '../components/SinTimos.astro';
+import Timeline from '../components/Timeline.astro';
+import WorldMap from '../components/WorldMap.astro';
+import CatalogMockup from '../components/CatalogMockup.astro';
+import GuideCard from '../components/GuideCard.astro';
+import Faq from '../components/Faq.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { CATEGORIAS } from '../data/categorias';
+import { producto, urlFicha, altProducto } from '../data/productos';
+import { FAQ_GENERAL } from '../data/faqs';
+import { EMPRESA } from '../data/empresa';
+import { h1Html } from '../lib/texto';
+import { faqPage, organization, website } from '../lib/seo';
+
+const ecoPasos = [
+  { p: producto('eco-wireless'), t: 'Inalámbrico', d: 'La sonda va contigo y la ecografía se ve en tu móvil, tablet u ordenador, por Wi-Fi o USB-C.' },
+  { p: producto('acclarix-ax8'), t: 'Portátil', d: 'Doble pantalla táctil y 128 canales en un formato sellado, pensado para ecoguiados, dolor y deporte.' },
+  { p: producto('acclarix-lx9'), t: 'De carro', d: 'Monitor de 21,5″ en brazo articulado y cinco puertos de sonda para una consulta completa.' },
+];
+const diatermias = ['diatermia-multifuncion', 'reatherm', 'hr-tek'].map(producto);
+const resto = CATEGORIAS.filter((c) => !c.pilar);
+const guias = (await getCollection('guias')).sort((a, b) => b.data.fecha.localeCompare(a.data.fecha) || a.data.orden - b.data.orden).slice(0, 3);
+const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
+---
+<Base
+  title="VytalGroup: equipos médicos de alta calidad, sin letra pequeña"
+  description="Ecógrafos, diatermias y todo el equipamiento de fisioterapia y rehabilitación. Te asesoran fisioterapeutas, con 2 años de garantía y envíos a UE, USA y LATAM."
+  path="/"
+  og="/og/inicio.jpg"
+  seccion="inicio"
+  heroOscuro
+  jsonld={[organization(), website(), faqPage(FAQ_GENERAL)]}
+>
+  <HeroBg slot="head" modo="preload" />
+
+  <!-- 1 · Hero -->
+  <section class="hero" data-hero aria-labelledby="hero-title">
+    <HeroBg />
+    <div class="hero__sweep" aria-hidden="true"><Sweep /></div>
+    <div class="wrap hero__wrap">
+      <div class="hero__copy">
+        <h1 class="h1 hero__title" id="hero-title" set:html={h1Html(titulo)} />
+        <p class="hero__lead" data-enter style="--ed:.42s">Ecógrafos, diatermias y todo lo que tu clínica necesita. Te asesoran fisioterapeutas.</p>
+        <div class="hero__actions" data-enter style="--ed:.52s">
+          <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+          <a class="link hero__more" href="/catalogo">Ver catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · Cinta de confianza -->
+  <Marquee />
+
+  <!-- 3 · Dos protagonistas -->
+  <section class="sec duo" aria-labelledby="duo-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="duo-title" data-lines>Lo más <em>pedido.</em></h2>
+      </div>
+      <ul class="duo__grid">
+        <li>
+          <a class="duo__card" href="/ecografos" data-halo>
+            <span class="duo__media" data-rvi><Img name="ecografo-portatil-acclarix-ax8-edan" alt="Ecógrafo portátil Acclarix AX8 de EDAN" sizes="(min-width: 900px) 580px, 92vw" widths={[320, 480, 640]} parallax /></span>
+            <span class="duo__body">
+              <span class="duo__kicker">Ecografía</span>
+              <span class="duo__title">Inalámbricos, portátiles y de carro.</span>
+              <span class="duo__link">Ver ecógrafos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="duo__card" href="/diatermias" data-halo>
+            <span class="duo__media" data-rvi><Img name="diatermia-multifuncion-vytamed" alt="Diatermia Multifunción de VytaMeD con pantalla táctil" sizes="(min-width: 900px) 580px, 92vw" widths={[320, 480, 640]} parallax /></span>
+            <span class="duo__body">
+              <span class="duo__kicker">Diatermia</span>
+              <span class="duo__title">Capacitiva, resistiva y bipolar.</span>
+              <span class="duo__link">Ver diatermias<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Ecografía en profundidad (sticky) -->
+  <section class="sec sec--white eco" aria-labelledby="eco-title" data-sticky-eco>
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="eco-title" data-lines>Un ecógrafo para cada <em>forma de trabajar.</em></h2>
+      </div>
+      <div class="eco__grid">
+        <div class="eco__stage" aria-hidden="true">
+          <div class="eco__frame">
+            {ecoPasos.map((s, i) => (
+              <div class:list={['eco__shot', { 'is-active': i === 0 }]} data-shot>
+                <Img name={s.p.imagenes[0]} alt="" sizes="(min-width: 900px) 560px, 1px" widths={[480, 640]} />
+              </div>
+            ))}
+            <span class="eco__bars">{ecoPasos.map((_, i) => <span class:list={{ 'is-active': i === 0 }} data-bar></span>)}</span>
+          </div>
+        </div>
+        <ol class="eco__steps">
+          {ecoPasos.map((s, i) => (
+            <li class:list={['eco__step', { 'is-active': i === 0 }]} data-step>
+              <div class="eco__inline" data-rvi><Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(max-width: 899px) 88vw, 1px" widths={[320, 480, 640]} /></div>
+              <p class="eco__kicker">{s.t}</p>
+              <h3 class="eco__name">{s.p.nombre} <span>{s.p.marca}</span></h3>
+              <p class="eco__txt">{s.d}</p>
+              <dl class="eco__data">
+                {s.p.datosClave.slice(0, 2).map((d) => <div><dt>{d.etiqueta}</dt><dd>{d.valor}</dd></div>)}
+              </dl>
+              <a class="link" href={urlFicha(s.p)}>Ver ficha del {s.p.nombre}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--dark" href="/ecografos" data-magnetic>Ver todos los ecógrafos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Diatermias destacadas -->
+  <section class="sec dia" aria-labelledby="dia-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="dia-title" data-lines>Diatermia para cada <em>consulta.</em></h2>
+        <div class="seg seg--3" role="tablist" aria-label="Diatermias destacadas" data-seg data-rv>
+          <span class="seg__ind" aria-hidden="true"></span>
+          {diatermias.map((p, i) => (
+            <button class="seg__btn" type="button" role="tab" id={`tab-dia-${i}`} aria-controls={`panel-dia-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'}>{p.nombre === 'Diatermia Multifunción' ? 'Multifunción' : p.nombre}</button>
+          ))}
+        </div>
+      </div>
+      <div class="panels" data-rv>
+        {diatermias.map((p, i) => (
+          <div class:list={['panel dia__panel', { 'is-active': i === 0 }]} role="tabpanel" id={`panel-dia-${i}`} aria-labelledby={`tab-dia-${i}`} inert={i !== 0}>
+            <div class="dia__media"><Img name={p.imagenes[0]} alt={altProducto(p)} sizes="(min-width: 900px) 560px, 92vw" widths={[320, 480, 640]} /></div>
+            <div class="dia__body">
+              <p class="dia__brand">{p.marca}</p>
+              <h3 class="dia__name">{p.nombre}</h3>
+              <p class="dia__txt">{p.resumen}</p>
+              <dl class="dia__data">
+                {p.datosClave.slice(0, 2).map((d) => <div><dt>{d.etiqueta}</dt><dd data-count>{d.valor}</dd></div>)}
+              </dl>
+              <a class="btn btn--line" href={urlFicha(p)}>Ver ficha</a>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--dark" href="/diatermias" data-magnetic>Ver todas las diatermias<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Todo tu equipamiento -->
+  <section class="sec more" aria-labelledby="more-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="more-title" data-lines>Todo lo que tu clínica <em>necesita.</em></h2>
+      </div>
+      <ul class="grid grid--3 more__grid">
+        {resto.map((c) => <li><CategoryCard c={c} /></li>)}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--dark" href="/catalogo" data-magnetic>Ver catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Sin timos. Sin letra pequeña. -->
+  <SinTimos />
+
+  <!-- 8 · Así trabajamos -->
+  <section class="sec sec--white" aria-labelledby="tl-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="tl-title" data-lines>Así <em>trabajamos.</em></h2>
+      </div>
+      <Timeline />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Enviamos a medio mundo -->
+  <section class="sec world" aria-labelledby="world-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="world-title" data-lines>Enviamos a <em>medio mundo.</em></h2>
+        <p class="lead" data-rv>Aduana gestionada en UE, USA y LATAM.</p>
+      </div>
+      <WorldMap />
+      <ul class="world__legend" data-rv>
+        <li><strong>UE</strong> Unión Europea</li>
+        <li><strong>USA</strong> Estados Unidos</li>
+        <li><strong>LATAM</strong> Latinoamérica</li>
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · Catálogo -->
+  <section class="sec sec--mist cat" aria-labelledby="cat-title">
+    <div class="wrap cat__grid">
+      <CatalogMockup />
+      <div class="cat__copy">
+        <h2 class="h2" id="cat-title" data-lines>53 páginas. <em>Sin dejar tus datos.</em></h2>
+        <p class="lead" data-rv>El catálogo internacional de equipamiento médico 2026, sin precios y de descarga directa.</p>
+        <div class="cat__actions" data-rv>
+          <a class="btn btn--dark btn--lg" href={EMPRESA.catalogoPdf} download data-catalog data-origen="inicio" data-magnetic><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Descargar catálogo</a>
+          <a class="link" href="/catalogo">O míralo en la web<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · Guías -->
+  {guias.length > 0 && (
+    <section class="sec guides" aria-labelledby="guias-title">
+      <div class="wrap">
+        <div class="sec__head">
+          <h2 class="h2" id="guias-title" data-lines>Guías para <em>elegir bien.</em></h2>
+        </div>
+        <ul class="grid grid--3">
+          {guias.map((g) => <li><GuideCard g={g} /></li>)}
+        </ul>
+        <div class="sec__cta" data-rv>
+          <a class="btn btn--line" href="/guias">Ver todas las guías</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- 12 · Preguntas frecuentes -->
+  <Faq faqs={FAQ_GENERAL} fondo="blanco" />
+
+  <!-- 13 · CTA final + formulario -->
+  <CtaFinal />
+</Base>

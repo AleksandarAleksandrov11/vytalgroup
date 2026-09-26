@@ -1,0 +1,79 @@
+---
+// Todas las categorías: ecografía y diatermia primero y más grandes; después el resto.
+import '../../styles/cards.css';
+import '../../styles/pilar.css';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CategoryCard from '../../components/CategoryCard.astro';
+import Reasons from '../../components/Reasons.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { CATEGORIAS } from '../../data/categorias';
+import { PRODUCTOS } from '../../data/productos';
+import { absUrl, collectionPage } from '../../lib/seo';
+
+const pilares = CATEGORIAS.filter((c) => c.pilar);
+const resto = CATEGORIAS.filter((c) => !c.pilar);
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Equipos', href: '/equipos' }];
+const total = PRODUCTOS.filter((p) => !p.confirmar).length;
+const lista = {
+  '@type': 'ItemList',
+  name: 'Categorías de equipos',
+  itemListElement: CATEGORIAS.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.nombre, url: absUrl(c.ruta) })),
+};
+---
+<Base
+  title="Equipos de fisioterapia y rehabilitación por categorías"
+  description="Ecógrafos, diatermias, ondas de choque, magnetoterapia, láser, electroterapia, presoterapia, camillas y más: todo tu equipamiento en un solo sitio, sin letra pequeña."
+  path="/equipos"
+  og="/og/equipos.jpg"
+  seccion="equipos"
+  migas={migas}
+  jsonld={[collectionPage('/equipos', 'Equipos por categorías'), lista]}
+>
+  <PageHero migas={migas} titulo="Todo lo que tu clínica *necesita.*" lead={`${CATEGORIAS.length} categorías y ${total} equipos del catálogo 2026, en un solo sitio. Ecografía y diatermia, primero.`} centrado compacto />
+
+  <section class="sec sec--tight eq-top" aria-label="Ecografía y diatermia">
+    <div class="wrap">
+      <ul class="grid eq-big">
+        {pilares.map((c) => <li><CategoryCard c={c} big sizes="(min-width: 768px) 580px, 92vw" nivel="h2" /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec more-cats" aria-labelledby="resto-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="resto-title" data-lines>Y el resto de <em>tu consulta.</em></h2>
+      </div>
+      <ul class="grid eq-grid">
+        {resto.map((c) => <li><CategoryCard c={c} /></li>)}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--dark" href="/catalogo">Ver catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" aria-labelledby="porque-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="porque-title" data-lines>Un solo proveedor. <em>Sin sorpresas.</em></h2>
+      </div>
+      <Reasons />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal />
+</Base>
+<style is:global>
+  .eq-top { padding-top: 0; }
+  .eq-big { gap: 16px; }
+  @media (min-width: 768px) { .eq-big { grid-template-columns: 1fr 1fr; gap: 20px; } }
+  .eq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  @media (min-width: 900px) { .eq-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+  @media (min-width: 1100px) { .eq-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  .more-cats { background: var(--mist); }
+</style>

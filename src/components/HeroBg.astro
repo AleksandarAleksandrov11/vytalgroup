@@ -1,0 +1,36 @@
+---
+// Fondo del hero: foto real de clínica del catálogo, difuminada en el propio archivo (barata de
+// pintar) y con velo marino. Versión vertical para móvil y horizontal para escritorio, en AVIF y
+// WebP. Con modo="preload" (en el slot "head" del layout) se precarga la que toca según el ancho.
+import { getImage } from 'astro:assets';
+import { imagen } from '../lib/imagenes';
+
+interface Props { modo?: 'picture' | 'preload' }
+const { modo = 'picture' } = Astro.props;
+const movil = imagen('fotos/clinica-fondo-hero-movil');
+const escritorio = imagen('fotos/clinica-fondo-hero');
+const [mA, mW, d1A, d1W, d2A, d2W] = await Promise.all([
+  getImage({ src: movil, width: 600, format: 'avif', quality: 60 }),
+  getImage({ src: movil, width: 600, format: 'webp', quality: 72 }),
+  getImage({ src: escritorio, width: 960, format: 'avif', quality: 60 }),
+  getImage({ src: escritorio, width: 960, format: 'webp', quality: 72 }),
+  getImage({ src: escritorio, width: 1600, format: 'avif', quality: 60 }),
+  getImage({ src: escritorio, width: 1600, format: 'webp', quality: 72 }),
+]);
+const dA = `${d1A.src} 960w, ${d2A.src} 1600w`;
+const dW = `${d1W.src} 960w, ${d2W.src} 1600w`;
+---
+{modo === 'preload' ? (
+  <>
+    <link rel="preload" as="image" type="image/avif" imagesrcset={`${mA.src} 600w`} imagesizes="100vw" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" imagesrcset={dA} imagesizes="100vw" media="(min-width: 900px)" fetchpriority="high" />
+  </>
+) : (
+  <picture class="hero__bg" aria-hidden="true">
+    <source media="(max-width: 899px)" type="image/avif" srcset={`${mA.src} 600w`} sizes="100vw" />
+    <source media="(max-width: 899px)" type="image/webp" srcset={`${mW.src} 600w`} sizes="100vw" />
+    <source type="image/avif" srcset={dA} sizes="100vw" />
+    <source type="image/webp" srcset={dW} sizes="100vw" />
+    <img src={d2W.src} width={escritorio.width} height={escritorio.height} alt="" fetchpriority="high" decoding="async" />
+  </picture>
+)}

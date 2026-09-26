@@ -1,0 +1,117 @@
+---
+// Página pilar de diatermia y tecarterapia: hero, capacitiva/resistiva/bipolar, las 4 diatermias,
+// comparativa, por qué VytalGroup, preguntas frecuentes y formulario con "Diatermia" preseleccionado.
+import '../../styles/pilar.css';
+import '../../styles/cards.css';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Img from '../../components/Img.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import CompareTable from '../../components/CompareTable.astro';
+import Reasons from '../../components/Reasons.astro';
+import Faq from '../../components/Faq.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { CAT } from '../../data/categorias';
+import { deCategoria } from '../../data/productos';
+import { COMPARATIVA_DIATERMIAS } from '../../data/comparativas';
+import { FAQ_DIATERMIA } from '../../data/faqs';
+import { collectionPage, faqPage, itemList } from '../../lib/seo';
+
+const c = CAT.diatermia;
+const todas = deCategoria('diatermia');
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Diatermias', href: '/diatermias' }];
+const MODOS = [
+  { t: 'Capacitiva', d: 'Trabaja sobre los tejidos blandos.', svg: '<circle cx="28" cy="28" r="20"/><circle cx="28" cy="28" r="12"/><circle cx="28" cy="28" r="4" fill="currentColor"/>' },
+  { t: 'Resistiva', d: 'Para articulaciones, tendones y huesos.', svg: '<circle cx="28" cy="28" r="20"/><circle cx="28" cy="28" r="12" fill="currentColor" fill-opacity=".18"/><path d="M8 50h40M14 54h28"/>' },
+  { t: 'Bipolar', d: 'Más comodidad y especificidad, sin placa de retorno.', svg: '<circle cx="18" cy="28" r="10"/><circle cx="38" cy="28" r="10"/><path d="M18 18c4-6 16-6 20 0"/>' },
+];
+---
+<Base
+  title={c.seoTitle}
+  description={c.seoDescription}
+  path="/diatermias"
+  og="/og/diatermias.jpg"
+  seccion="diatermias"
+  heroOscuro
+  migas={migas}
+  jsonld={[collectionPage('/diatermias', 'Diatermia para fisioterapia y tecarterapia'), itemList('Diatermias', todas), faqPage(FAQ_DIATERMIA)]}
+  viewContent={{ ids: todas.map((p) => p.slug), type: 'product_group', category: 'Diatermia', name: 'Diatermias' }}
+>
+  <PageHero migas={migas} titulo={c.h1} lead="Equipos de diatermia para fisioterapia: tecarterapia capacitiva, resistiva y bipolar de VytaMeD, I-Tech y EME. Cuatro equipos, cada uno con su sitio en la consulta." oscuro>
+    <Fragment slot="acciones">
+      <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      <a class="link" href="#comparativa">Ver la comparativa<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </Fragment>
+    <div slot="visual" class="pil-visual">
+      <Img name="diatermia-reatherm-i-tech" alt="Diatermia capacitiva y resistiva Reatherm de I-Tech con sus manípulos" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
+    </div>
+  </PageHero>
+
+  <section class="sec sec--white" aria-labelledby="modos-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="modos-title" data-lines>Capacitiva, resistiva <em>y bipolar.</em></h2>
+        <p class="lead" data-rv>La diatermia usa energía de radiofrecuencia para generar calor dentro de los tejidos. Según el fabricante del HR Tek, cada modo tiene su terreno:</p>
+      </div>
+      <ul class="modes">
+        {MODOS.map((m, i) => (
+          <li class="modes__item" data-rv style={`--rd:${i * 80}ms`}>
+            <svg class="modes__ico" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" set:html={m.svg} />
+            <span><span class="modes__t">{m.t}</span><span class="modes__d">{m.d}</span></span>
+          </li>
+        ))}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--line" href="/guias/diatermia-capacitiva-y-resistiva">Leer la guía de diatermia</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="gama" aria-labelledby="gama-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="gama-title" data-lines>Las cuatro <em>diatermias.</em></h2>
+      </div>
+      <ul class="grid dia-grid">
+        {todas.map((p) => <li><ProductCard p={p} vt /></li>)}
+      </ul>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" id="comparativa" aria-labelledby="cmp-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="cmp-title" data-lines>Comparativa, <em>sin letra pequeña.</em></h2>
+        <p class="lead" data-rv>Potencia, frecuencias, programas y para quién es cada una, con los datos del catálogo.</p>
+      </div>
+      <CompareTable columnas={COMPARATIVA_DIATERMIAS.columnas} filas={COMPARATIVA_DIATERMIAS.filas} caption="Comparativa de diatermias: potencia, frecuencias, programas, modos y para quién es" />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="porque-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="porque-title" data-lines>Por qué comprar tu diatermia <em>con VytalGroup.</em></h2>
+      </div>
+      <Reasons />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+        <a class="link" href="/guias/que-revisar-antes-de-comprar-un-equipo-medico">Qué revisar antes de comprar<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <Faq faqs={FAQ_DIATERMIA} titulo="Dudas sobre *diatermia.*" id="dudas-diatermia" fondo="blanco" />
+
+  <CtaFinal preset={{ equipo: 'Diatermia' }} subtitulo="Cuéntanos qué tratas y cómo trabajas, y te recomendamos la diatermia que encaja. Sin letra pequeña." />
+</Base>
+<style is:global>
+  @media (min-width: 640px) { .dia-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } }
+  @media (min-width: 1100px) { .dia-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+</style>

@@ -1,0 +1,13 @@
+---
+// Ficha de producto del resto del catálogo (/equipos/[categoria]/[modelo]), generada desde los datos.
+// Solo los equipos con información suficiente en el catálogo tienen ficha.
+import FichaProducto from '../../../components/FichaProducto.astro';
+import { PRODUCTOS } from '../../../data/productos';
+import { CAT } from '../../../data/categorias';
+
+export function getStaticPaths() {
+  return PRODUCTOS.filter((p) => p.ficha && !CAT[p.categoria].pilar).map((p) => ({ params: { categoria: p.categoria, modelo: p.slug }, props: { p } }));
+}
+const { p } = Astro.props;
+---
+<FichaProducto p={p} />

@@ -1,0 +1,145 @@
+---
+// Página pilar de ecografía: hero, cómo elegir en 3 preguntas, selector por tipo, comparativa,
+// ecografía + electrólisis percutánea, por qué VytalGroup, preguntas frecuentes y formulario.
+import '../../styles/pilar.css';
+import '../../styles/cards.css';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Img from '../../components/Img.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import CompareTable from '../../components/CompareTable.astro';
+import Reasons from '../../components/Reasons.astro';
+import Faq from '../../components/Faq.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { CAT } from '../../data/categorias';
+import { deCategoria, producto, urlFicha } from '../../data/productos';
+import { COMPARATIVA_ECOGRAFOS } from '../../data/comparativas';
+import { FAQ_ECOGRAFIA } from '../../data/faqs';
+import { collectionPage, faqPage, itemList } from '../../lib/seo';
+
+const c = CAT.ecografia;
+const todos = deCategoria('ecografia');
+const tipos = [
+  { id: 'inalambricos', label: 'Inalámbricos', items: todos.filter((p) => p.formato === 'inalambrico') },
+  { id: 'portatiles', label: 'Portátiles', items: todos.filter((p) => p.formato === 'portatil') },
+  { id: 'carro', label: 'De carro', items: todos.filter((p) => p.formato === 'carro') },
+];
+const physio = producto('physio-invasiva-2-0');
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Ecógrafos', href: '/ecografos' }];
+const PREGUNTAS = [
+  { n: '01', q: '¿Dónde trabajas?', a: 'En consulta, a domicilio o en campo. Si te mueves mucho, una sonda inalámbrica; si trabajas en un sitio fijo, un portátil o un carro.' },
+  { n: '02', q: '¿Qué procedimientos haces?', a: 'Ecoguiados, exploración musculoesquelética, vascular... Cada modelo tiene sus aplicaciones, y las verás en su ficha.' },
+  { n: '03', q: '¿Cuántas sondas necesitas?', a: 'Desde 1 puerto activo en la AX2 hasta 5 en la LX3, la LX9 y la LX85. Si usas varias a diario, cuenta puertos.' },
+];
+---
+<Base
+  title={c.seoTitle}
+  description={c.seoDescription}
+  path="/ecografos"
+  og="/og/ecografos.jpg"
+  seccion="ecografos"
+  heroOscuro
+  migas={migas}
+  jsonld={[collectionPage('/ecografos', 'Ecógrafos para fisioterapia'), itemList('Ecógrafos', todos), faqPage(FAQ_ECOGRAFIA)]}
+  viewContent={{ ids: todos.map((p) => p.slug), type: 'product_group', category: 'Ecografía', name: 'Ecógrafos' }}
+>
+  <PageHero migas={migas} titulo={c.h1} lead="Ecógrafos inalámbricos, portátiles y de carro para fisioterapia y medicina. Te ayudamos a elegir el que encaja con tu forma de trabajar." oscuro sweep>
+    <Fragment slot="acciones">
+      <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      <a class="link" href="#comparativa">Ver la comparativa<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </Fragment>
+    <div slot="visual" class="pil-visual">
+      <Img name="ecografo-portatil-acclarix-ax8-edan" alt="Ecógrafo portátil Acclarix AX8 de EDAN con doble pantalla táctil" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
+    </div>
+  </PageHero>
+
+  <section class="sec sec--white" aria-labelledby="elegir-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="elegir-title" data-lines>Cómo elegir en <em>3 preguntas.</em></h2>
+      </div>
+      <ol class="qs">
+        {PREGUNTAS.map((p, i) => (
+          <li class="qs__item" data-rv style={`--rd:${i * 80}ms`}>
+            <span class="qs__n" aria-hidden="true">{p.n}</span>
+            <h3 class="qs__q">{p.q}</h3>
+            <p class="qs__a">{p.a}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--line" href="/guias/como-elegir-un-ecografo-para-fisioterapia">Leer la guía para elegir ecógrafo</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="gama" aria-labelledby="gama-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="gama-title" data-lines>Toda la <em>gama.</em></h2>
+        <div class="seg seg--3" role="tablist" aria-label="Tipo de ecógrafo" data-seg data-rv>
+          <span class="seg__ind" aria-hidden="true"></span>
+          {tipos.map((t, i) => (
+            <button class="seg__btn" type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'}>{t.label}</button>
+          ))}
+        </div>
+      </div>
+      <div class="panels" data-rv>
+        {tipos.map((t, i) => (
+          <div class:list={['panel', { 'is-active': i === 0 }]} role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} inert={i !== 0}>
+            <ul class="rail rail--grid" data-rail style={`--n:${Math.min(3, t.items.length)}`}>
+              {t.items.map((p) => <li><ProductCard p={p} vt /></li>)}
+            </ul>
+            {t.items.length > 1 && <div class="dots" aria-hidden="true">{t.items.map((_, j) => <span class:list={{ 'is-on': j === 0 }}></span>)}</div>}
+          </div>
+        ))}
+      </div>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" id="comparativa" aria-labelledby="cmp-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="cmp-title" data-lines>Comparativa, <em>sin letra pequeña.</em></h2>
+        <p class="lead" data-rv>Formato, pantalla, puertos de sonda y batería de cada modelo, con los datos del catálogo.</p>
+      </div>
+      <CompareTable columnas={COMPARATIVA_ECOGRAFOS.columnas} filas={COMPARATIVA_ECOGRAFOS.filas} caption="Comparativa de ecógrafos: formato y peso, monitor, puertos de sonda, batería e ideal para" />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec combo" aria-labelledby="combo-title">
+    <div class="wrap combo__grid">
+      <div class="combo__media" data-rvi><Img name={physio.imagenes[0]} alt="Equipo de electrólisis percutánea ecoguiada Physio Invasiva 2.0 de EasyTech" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480]} parallax /></div>
+      <div class="combo__copy">
+        <h2 class="h2" id="combo-title" data-lines>Ecografía y electrólisis, <em>mejor juntas.</em></h2>
+        <p class="lead" data-rv>La electrólisis percutánea ecoguiada (USGET) se hace con guía ecográfica. Physio Invasiva 2.0 de EasyTech reúne galvánica, PES, microcorrientes y TENS en 1,05 kg, y trabaja junto a un portátil o a la sonda inalámbrica.</p>
+        <div class="combo__cta" data-rv>
+          <a class="btn btn--dark" href={urlFicha(physio)}>Ver Physio Invasiva 2.0<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--white" aria-labelledby="porque-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="porque-title" data-lines>Por qué comprar tu ecógrafo <em>con VytalGroup.</em></h2>
+      </div>
+      <Reasons />
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+        <a class="link" href="/guias/que-revisar-antes-de-comprar-un-equipo-medico">Qué revisar antes de comprar<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <Faq faqs={FAQ_ECOGRAFIA} titulo="Dudas sobre *ecografía.*" id="dudas-ecografia" />
+
+  <CtaFinal preset={{ equipo: 'Ecógrafo' }} subtitulo="Cuéntanos cómo trabajas y te recomendamos el ecógrafo y las sondas que encajan. Sin letra pequeña." />
+</Base>

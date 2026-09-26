@@ -1,0 +1,66 @@
+---
+// Pie como el de la landing, ampliado: marca, contacto, Equipos (categorías), Empresa, Legal y
+// Síguenos (@vytalgroup y @fisioruiz_). Al final, "VytalGroup" a todo el ancho con las letras que suben.
+import '../styles/footer.css';
+import { CATEGORIAS } from '../data/categorias';
+import { EMPRESA, wa } from '../data/empresa';
+
+interface Props { conFormulario: boolean }
+const { conFormulario } = Astro.props;
+const letras = 'VytalGroup'.split('');
+---
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft__top">
+      <div class="ft__brand">
+        <a class="ft__logo" href="/" aria-label="VytalGroup, ir al inicio"><svg class="logo logo--dark" viewBox="0 0 1117 171" aria-hidden="true"><use href="#logo"/></svg></a>
+        <p class="ft__claim">Equipos médicos de alta calidad. <em>Sin letra pequeña.</em></p>
+        <ul class="ft__list ft__contact">
+          <li><a href={EMPRESA.telefonoHref} data-contact="telefono" data-origen="pie"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>{EMPRESA.telefono}</a></li>
+          <li><a href={wa()} target="_blank" rel="noopener" data-contact="whatsapp" data-origen="pie" data-ft-wa><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a></li>
+          <li><a href={`mailto:${EMPRESA.email}`} data-contact="email" data-origen="pie"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>{EMPRESA.email}</a></li>
+        </ul>
+      </div>
+      <div class="ft__cols">
+        <div class="ft__col ft__col--equipos">
+          <h2 class="ft__h">Equipos</h2>
+          <ul class="ft__list ft__list--2">
+            {CATEGORIAS.map((c) => <li><a href={c.ruta}>{c.nombre}</a></li>)}
+            <li><a href="/catalogo">Catálogo completo</a></li>
+            <li><a href={EMPRESA.catalogoPdf} download data-catalog>Catálogo (PDF)</a></li>
+          </ul>
+        </div>
+        <div class="ft__col">
+          <h2 class="ft__h">Empresa</h2>
+          <ul class="ft__list">
+            <li><a href="/sobre-nosotros">Sobre nosotros</a></li>
+            <li><a href="/guias">Guías</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+            <li><a href={conFormulario ? '#asesoramiento' : '/contacto#asesoramiento'} data-cta>Pedir asesoramiento</a></li>
+          </ul>
+        </div>
+        <div class="ft__col">
+          <h2 class="ft__h">Legal</h2>
+          <ul class="ft__list">
+            <li><a href="/aviso-legal">Aviso legal</a></li>
+            <li><a href="/privacidad">Privacidad</a></li>
+            <li><a href="/cookies">Cookies</a></li>
+            <li><button type="button" data-cookie-settings>Configurar cookies</button></li>
+          </ul>
+        </div>
+        <div class="ft__col">
+          <h2 class="ft__h">Síguenos</h2>
+          <ul class="ft__list">
+            <li><a href={EMPRESA.instagramMarca.url} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-insta"/></svg>@{EMPRESA.instagramMarca.usuario}</a></li>
+            <li><a href={EMPRESA.instagramJavier.url} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-insta"/></svg>@{EMPRESA.instagramJavier.usuario}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="ft__bottom">
+      <p>© 2026 VytalGroup. Todos los derechos reservados.</p>
+      <p>Información dirigida a profesionales sanitarios.</p>
+    </div>
+  </div>
+  <div class="wrap ft__word" aria-hidden="true" data-word><p class="ft__word-in">{letras.map((l, i) => <span style={`--i:${i}`} class={i > 4 ? 'ft__g' : undefined}>{l}</span>)}</p></div>
+</footer>

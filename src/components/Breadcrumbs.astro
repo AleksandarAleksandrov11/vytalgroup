@@ -1,0 +1,28 @@
+---
+// Migas de pan visibles (el marcado BreadcrumbList lo añade el layout con los mismos datos).
+import type { Miga } from '../lib/seo';
+interface Props { migas: Miga[]; oscuro?: boolean }
+const { migas, oscuro = false } = Astro.props;
+---
+<nav class:list={['bc', { 'bc--dark': oscuro }]} aria-label="Migas de pan">
+  <ol>
+    {migas.map((m, i) => (
+      <li>
+        {i < migas.length - 1 ? <a href={m.href}>{m.name}</a> : <span aria-current="page">{m.name}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+<style is:global>
+  .bc { font-size: .875rem; color: var(--ink-3); }
+  .bc ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; margin: 0; padding: 0; list-style: none; }
+  .bc li { display: inline-flex; align-items: center; min-width: 0; }
+  .bc li + li::before { content: "/"; margin: 0 8px; color: var(--line-2); }
+  .bc a { display: inline-flex; align-items: center; min-height: 32px; color: var(--ink-3); text-decoration: none; }
+  .bc a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+  .bc [aria-current] { color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60vw; }
+  .bc--dark, .bc--dark a { color: rgba(255, 255, 255, .66); }
+  .bc--dark li + li::before { color: rgba(255, 255, 255, .3); }
+  .bc--dark a:hover, .bc--dark [aria-current] { color: #FFF; }
+  @media (pointer: coarse) { .bc a { min-height: 44px; } }
+</style>

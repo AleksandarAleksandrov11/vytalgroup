@@ -1,0 +1,32 @@
+---
+// Aviso de cookies propio y mínimo (como el de la landing): Aceptar, Rechazar y Configurar con el
+// mismo peso visual. El panel tiene interruptores propios. La elección dura 12 meses y se cambia
+// desde el pie ("Configurar cookies"). El píxel de Meta no se carga hasta aceptar marketing.
+import '../styles/cookies.css';
+---
+<div class="ck" id="cookie-banner" role="region" aria-label="Aviso de cookies" hidden>
+  <p>Usamos cookies propias para que la web funcione y, si aceptas, de Meta para medir anuncios. <a href="/cookies">Política de cookies</a>.</p>
+  <div class="ck__btns">
+    <button class="btn btn--line btn--sm" type="button" data-cookie="accept">Aceptar</button>
+    <button class="btn btn--line btn--sm" type="button" data-cookie="reject">Rechazar</button>
+    <button class="btn btn--line btn--sm" type="button" data-cookie="config">Configurar</button>
+  </div>
+</div>
+
+<dialog class="cp" id="cookie-panel" aria-labelledby="cp-title">
+  <div class="cp__in">
+    <div class="cp__head">
+      <h2 class="cp__title" id="cp-title">Configurar cookies</h2>
+      <button class="cp__close" type="button" data-cpanel-close aria-label="Cerrar"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="cp__row">
+      <div><p class="cp__name" id="ck-nec">Necesarias</p><p class="cp__desc">Guardan tu elección de cookies y el origen de tu visita. Siempre activas.</p></div>
+      <input class="switch" type="checkbox" role="switch" checked disabled aria-labelledby="ck-nec">
+    </div>
+    <div class="cp__row">
+      <div><p class="cp__name" id="ck-mkt">Marketing</p><p class="cp__desc">Píxel de Meta para medir los anuncios.</p></div>
+      <input class="switch" type="checkbox" role="switch" data-consent="marketing" aria-labelledby="ck-mkt">
+    </div>
+    <button class="btn btn--primary btn--block" type="button" data-cookie="save">Guardar</button>
+  </div>
+</dialog>

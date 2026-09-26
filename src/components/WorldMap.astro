@@ -1,0 +1,48 @@
+---
+// Mapa minimalista en SVG: el mundo en puntos y los destinos de envío (Europa, Estados Unidos y
+// Latinoamérica) que se encienden en secuencia, con arcos que se dibujan desde España.
+import { MAPA, MAPA_PATH, DESTINOS } from '../data/mapa';
+
+const origen = DESTINOS.find((d) => d.nombre === 'España')!.xy;
+const arco = ([x, y]: [number, number]) => {
+  const [ox, oy] = origen;
+  const mx = (ox + x) / 2;
+  const my = Math.min(oy, y) - Math.abs(ox - x) * 0.22;
+  return `M${ox} ${oy}Q${mx} ${my} ${x} ${y}`;
+};
+---
+<figure class="map" data-map>
+  <svg viewBox={`0 0 ${MAPA.w} ${MAPA.h}`} role="img" aria-labelledby="map-title">
+    <title id="map-title">Mapa con los destinos de envío: Unión Europea, Estados Unidos y Latinoamérica</title>
+    <path class="map__land" d={MAPA_PATH} />
+    <g class="map__arcs">
+      {DESTINOS.filter((d) => d.zona !== 'europa').map((d, i) => <path d={arco(d.xy)} pathLength="1" style={`--i:${i}`} />)}
+    </g>
+    <g class="map__dests">
+      {DESTINOS.map((d, i) => (
+        <g class="map__dest" style={`--i:${i}`} transform={`translate(${d.xy[0]} ${d.xy[1]})`}>
+          <circle class="map__pulse" r="12" />
+          <circle class="map__dot" r="4.2" />
+        </g>
+      ))}
+    </g>
+  </svg>
+</figure>
+<style is:global>
+  .map { position: relative; margin: 0; --map-land: rgba(11, 25, 41, .16); --map-arc: var(--teal); --map-dot: var(--teal-ink); }
+  .on-dark .map, .sec--dark .map { --map-land: rgba(255, 255, 255, .22); --map-arc: var(--teal-on-dark); --map-dot: var(--teal-light); }
+  .map svg { width: 100%; height: auto; overflow: visible; }
+  .map__land { fill: none; stroke: var(--map-land); stroke-width: 4.2; stroke-linecap: round; }
+  .map__arcs path { fill: none; stroke: var(--map-arc); stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .6; }
+  .map__dest > * { transform-box: fill-box; transform-origin: center; }
+  .map__dot { fill: var(--map-dot); opacity: .25; }
+  .map__pulse { fill: none; stroke: var(--map-dot); stroke-width: 1.2; opacity: 0; }
+  .map.is-on .map__dot { opacity: 1; transition: opacity .5s var(--ease); transition-delay: calc(200ms + var(--i) * 110ms); }
+  .map.is-on .map__arcs path { stroke-dashoffset: 0; transition: stroke-dashoffset 1.2s var(--ease); transition-delay: calc(500ms + var(--i) * 120ms); }
+  @media (prefers-reduced-motion: no-preference) {
+    .map__dot { transform: scale(.4); }
+    .map.is-on .map__dot { transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); transition-delay: calc(200ms + var(--i) * 110ms); }
+    .map.is-on .map__pulse { animation: map-pulse 2.8s var(--ease) infinite; animation-delay: calc(1.4s + var(--i) * 230ms); }
+  }
+  @keyframes map-pulse { 0% { opacity: .7; transform: scale(.35); } 70%, 100% { opacity: 0; transform: scale(1.5); } }
+</style>

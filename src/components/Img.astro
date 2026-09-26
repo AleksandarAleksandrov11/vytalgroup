@@ -1,0 +1,38 @@
+---
+// Imagen de contenido: <picture> con AVIF y WebP, srcset, sizes y dimensiones fijas (CLS 0).
+// Carga diferida salvo que sea el LCP (priority → fetchpriority="high" y carga inmediata).
+import { Picture } from 'astro:assets';
+import { imagen, anchos } from '../lib/imagenes';
+
+interface Props {
+  name: string;
+  alt: string;
+  sizes: string;
+  widths?: number[];
+  priority?: boolean;
+  class?: string;
+  pictureClass?: string;
+  vt?: string;
+  parallax?: boolean;
+}
+const { name, alt, sizes, widths = [240, 320, 480, 640], priority = false, class: cls, pictureClass, vt, parallax = false } = Astro.props;
+const meta = imagen(name);
+const w = anchos(meta, widths);
+---
+<Picture
+  src={meta}
+  alt={alt}
+  formats={['avif', 'webp']}
+  fallbackFormat="webp"
+  widths={w}
+  sizes={sizes}
+  width={meta.width}
+  height={meta.height}
+  loading={priority ? 'eager' : 'lazy'}
+  decoding={priority ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : undefined}
+  class={cls}
+  style={vt ? `view-transition-name: ${vt}` : undefined}
+  data-parallax={parallax ? '' : undefined}
+  pictureAttributes={{ class: pictureClass }}
+/>

@@ -1,0 +1,57 @@
+---
+// "Sin timos. Sin letra pequeña.": Javier con su frase, su firma y, debajo, el comparador de 5 filas.
+// Sección marina a todo el ancho, como "Por qué VytalGroup" en la landing.
+import Img from './Img.astro';
+import Comparator from './Comparator.astro';
+
+interface Props { comparador?: boolean; id?: string; enlace?: boolean }
+const { comparador = true, id = 'sin-timos', enlace = true } = Astro.props;
+---
+<section class="sec why grid-noise" id={id} aria-labelledby={`${id}-title`}>
+  <div class="wrap">
+    <div class="why__grid">
+      <div class="why__head">
+        <h2 class="h2 on-dark" id={`${id}-title`} data-lines>Sin timos. <em>Sin letra pequeña.</em></h2>
+        <p class="why__story" data-rv>Me quemé en jornadas de 12 horas.<br>Monté VytalGroup para que no te engañen.</p>
+        <p class="sign sign--left" data-rv><svg class="sign__svg" viewBox="0 0 3592 1230" role="img" aria-label="Firma de Javier Ruiz"><use href="#sig"/></svg><span>Javier Ruiz, fisioterapeuta y fundador</span></p>
+        {enlace && <p data-rv><a class="link on-dark-link" href="/sobre-nosotros">Conoce la historia de Javier<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>}
+      </div>
+      <figure class="why__photo" data-rv>
+        <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="(min-width: 1024px) 384px, (min-width: 768px) 300px, 320px" widths={[320, 384]} parallax />
+      </figure>
+    </div>
+    {comparador && (
+      <div class="why__cmp">
+        <h3 class="why__cmp-title" data-rv>Otras marcas frente a VytalGroup</h3>
+        <Comparator />
+      </div>
+    )}
+    <div class="sec__cta" data-rv>
+      <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+    </div>
+  </div>
+</section>
+<style is:global>
+  .why { isolation: isolate; background: var(--navy); color: #FFF; }
+  .why :focus-visible { outline-color: #FFF; }
+  .why__grid { display: grid; grid-template-areas: "head" "photo"; justify-items: center; gap: 32px; }
+  .why__head { grid-area: head; display: grid; justify-items: center; gap: 20px; text-align: center; }
+  .why__head .h2 { text-align: center; }
+  .why__head .h2 em { display: block; }
+  .why__photo { grid-area: photo; position: relative; width: min(100%, 320px); aspect-ratio: 384 / 440; border-radius: var(--r-lg); overflow: hidden; background: var(--navy-2); }
+  .why__photo img { width: 100%; height: 100%; object-fit: cover; transform: translate3d(0, var(--py, 0px), 0) scale(1.08); }
+  .why__photo::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); background: linear-gradient(180deg, transparent 62%, rgba(11, 25, 41, .35)); }
+  .why__story { max-width: 32ch; font-size: clamp(1.125rem, 1rem + .6vw, 1.5rem); line-height: 1.4; letter-spacing: -.012em; color: var(--on-dark); }
+  .sign--left { justify-items: center; }
+  .on-dark-link { color: #FFF; text-decoration-color: rgba(255, 255, 255, .4); }
+  .why__cmp { margin-top: clamp(56px, 7vw, 96px); }
+  .why__cmp-title { margin-bottom: 20px; text-align: center; font-size: .8125rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-on-dark); }
+  @media (min-width: 768px) {
+    .why__grid { grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); grid-template-areas: "photo head"; justify-items: stretch; align-items: center; gap: 28px 48px; }
+    .why__photo { width: 100%; }
+    .why__head { justify-items: start; text-align: left; }
+    .why__head .h2 { text-align: left; }
+    .sign--left { justify-items: start; }
+  }
+  @media (min-width: 1024px) { .why__grid { grid-template-columns: 384px minmax(0, 1fr); column-gap: clamp(56px, 7vw, 112px); } }
+</style>

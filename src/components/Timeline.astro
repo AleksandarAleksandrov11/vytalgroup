@@ -1,0 +1,41 @@
+---
+// "Así trabajamos": 4 pasos en una línea temporal que se dibuja al hacer scroll
+// (vertical en móvil, horizontal en escritorio). Pasos del catálogo (página 53) y del brief.
+const PASOS = [
+  { t: 'Asesoramiento', d: 'Nos cuentas cómo trabajas y te recomendamos el equipo y la configuración que encajan contigo.' },
+  { t: 'Configuración', d: 'Cerramos contigo sondas, cabezales y accesorios, y te enviamos una propuesta clara.' },
+  { t: 'Entrega e instalación', d: 'Coordinamos importación y entrega en UE, USA y LATAM, con la aduana gestionada, e instalación según el proyecto.' },
+  { t: 'Formación y soporte', d: 'Formación y soporte según el proyecto, con un mantenimiento claro desde el día uno.' },
+];
+---
+<div class="tl" data-timeline>
+  <span class="tl__line" aria-hidden="true"><span></span></span>
+  <ol class="tl__list">
+  {PASOS.map((p, i) => (
+    <li class="tl__step" data-tl-step>
+      <span class="tl__dot" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+      <h3 class="tl__t">{p.t}</h3>
+      <p class="tl__d">{p.d}</p>
+    </li>
+  ))}
+  </ol>
+</div>
+<style is:global>
+  .tl { position: relative; max-width: 1080px; margin: 0 auto; padding: 0 0 0 64px; }
+  .tl__list { display: grid; gap: 36px; margin: 0; padding: 0; list-style: none; }
+  .tl__line { position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .tl__line span { position: absolute; inset: 0; background: var(--teal); transform-origin: top; transform: scaleY(var(--tl, 0)); }
+  .tl__step { position: relative; }
+  .tl__dot { position: absolute; left: -64px; top: -2px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #FFF; color: var(--ink-3); font-size: .875rem; font-weight: 560; font-variant-numeric: tabular-nums; box-shadow: inset 0 0 0 1px var(--line-2); transition: background-color .4s ease, color .4s ease, box-shadow .4s ease, transform .5s var(--ease); }
+  .tl__step.is-on .tl__dot { background: var(--teal); color: var(--ink); box-shadow: 0 6px 16px -8px rgba(72, 160, 168, .8); transform: scale(1.06); }
+  .tl__t { font-size: clamp(1.1875rem, 1.05rem + .5vw, 1.4375rem); font-weight: 560; line-height: 1.2; letter-spacing: -.02em; padding-top: 8px; }
+  .tl__d { max-width: 36ch; margin-top: 6px; font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
+  @media (min-width: 900px) {
+    .tl { padding: 72px 0 0; }
+    .tl__list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+    .tl__line { left: 22px; right: 22px; top: 21px; bottom: auto; width: auto; height: 2px; }
+    .tl__line span { transform-origin: left; transform: scaleX(var(--tl, 0)); }
+    .tl__dot { left: 0; top: -72px; }
+    .tl__t { padding-top: 0; }
+  }
+</style>

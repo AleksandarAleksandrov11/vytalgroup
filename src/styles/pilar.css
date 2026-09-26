@@ -1,0 +1,47 @@
+/* ==========================================================================
+   Páginas pilar (ecógrafos y diatermias) y categorías
+   ========================================================================== */
+.pil-visual { position: relative; width: min(100%, 560px); margin: 0 auto; aspect-ratio: 4 / 3; border-radius: var(--r-xl); overflow: hidden; background: #FFF; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.pil-visual img { width: 100%; height: 100%; object-fit: cover; }
+.phero:not(.phero--dark) .pil-visual { box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
+
+/* Cómo elegir en 3 preguntas */
+.qs { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.qs__item { display: grid; gap: 8px; padding: 26px 24px; border-radius: var(--r-lg); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.qs__n { font-family: var(--serif); font-style: italic; font-size: 2rem; line-height: 1; color: var(--teal-ink); }
+.qs__q { font-size: clamp(1.25rem, 1.1rem + .6vw, 1.5rem); font-weight: 560; line-height: 1.2; letter-spacing: -.02em; }
+.qs__a { font-size: .9375rem; line-height: 1.55; color: var(--ink-2); }
+@media (min-width: 768px) { .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+
+/* Rejilla de tarjetas del selector: centrada si hay menos de 3 */
+@media (min-width: 900px) { .panel .rail--grid { grid-template-columns: repeat(var(--n, 3), minmax(0, 370px)); justify-content: center; } }
+@media (max-width: 899px) { .panel .rail { grid-auto-columns: min(84%, 340px); } .panel .rail:has(> :only-child) { justify-content: center; } }
+
+/* Ecografía + electrólisis */
+.combo__grid { display: grid; gap: 32px; align-items: center; }
+.combo__media { aspect-ratio: 4 / 3; border-radius: var(--r-xl); overflow: hidden; background: #FFF; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
+.combo__media img { width: 100%; height: 100%; object-fit: cover; translate: 0 var(--py, 0px); }
+.combo__copy { display: grid; gap: 18px; text-align: center; justify-items: center; }
+.combo__copy .lead { max-width: 46ch; }
+@media (min-width: 900px) {
+  .combo__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(48px, 7vw, 112px); }
+  .combo__copy { text-align: left; justify-items: start; }
+  .combo__copy .h2 { text-align: left; }
+}
+
+/* Capacitiva, resistiva y bipolar */
+.modes { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.modes__item { display: flex; align-items: center; gap: 16px; padding: 20px 22px; border-radius: var(--r-lg); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.modes__ico { flex: none; width: 56px; height: 56px; color: var(--teal-ink); }
+.modes__t { display: block; font-size: 1.1875rem; font-weight: 560; letter-spacing: -.02em; }
+.modes__d { display: block; margin-top: 2px; font-size: .9375rem; line-height: 1.45; color: var(--ink-2); }
+@media (min-width: 900px) {
+  .modes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .modes__item { flex-direction: column; align-items: flex-start; padding: 28px 26px; }
+}
+
+/* Categoría: qué es y para qué se usa */
+.what { display: grid; gap: 24px; max-width: 1000px; margin: 0 auto; }
+.what__txt { display: grid; gap: 14px; font-size: var(--fs-lead); line-height: 1.5; color: var(--ink-2); }
+@media (min-width: 900px) { .what { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 64px; align-items: start; } .what .h2 { text-align: left; } }
+

@@ -1,0 +1,143 @@
+/* ==========================================================================
+   Formulario de 4 pasos (copiado de la landing: mismos estilos y animaciones)
+   ========================================================================== */
+.qf { position: relative; }
+.qf__bar { height: 3px; border-radius: 3px; background: var(--soft); overflow: hidden; }
+.qf__bar span { display: block; height: 100%; border-radius: inherit; background: var(--teal); transform-origin: left; transform: scaleX(var(--p, .1667)); transition: transform .7s var(--ease); }
+.qf__nav { display: flex; align-items: center; min-height: 44px; margin: 6px 0 6px; }
+.qf__back { display: grid; place-items: center; width: 44px; height: 44px; margin-left: -12px; border: 0; border-radius: 50%; background: none; cursor: pointer; transition: background-color .25s ease; }
+.qf__back:hover { background: var(--soft); }
+.qf__count { margin-left: auto; font-size: .8125rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.qf.is-finished .qf__nav { visibility: hidden; }
+
+.qf__step { min-width: 0; margin: 0; padding: 0; border: 0; display: none; }
+.qf__step.is-active { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  .qf__step.is-active { animation: step-in .55s var(--ease); }
+  .qf.is-back .qf__step.is-active { animation-name: step-back; }
+  .qf__end:not([hidden]) { animation: fade-up .7s var(--ease); }
+}
+@keyframes step-in { from { opacity: 0; transform: translateX(28px); } }
+@keyframes step-back { from { opacity: 0; transform: translateX(-28px); } }
+
+.qf__q { display: block; float: left; width: 100%; margin-bottom: 20px; padding: 0; font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem); font-weight: 540; line-height: 1.15; letter-spacing: -.03em; color: var(--ink); }
+.qf__q ~ * { clear: both; }
+.opts { display: grid; gap: 10px; }
+.opt { position: relative; display: block; cursor: pointer; }
+.opt input { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.opt span { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; height: 100%; padding: 12px 16px 12px 18px; border-radius: 16px; box-shadow: inset 0 0 0 1px var(--line-2); font-size: 1.0625rem; font-weight: 500; line-height: 1.25; transition: box-shadow .25s ease, background-color .25s ease, transform .4s var(--ease); }
+.opt span::after { content: ""; flex: none; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line-2); transition: box-shadow .3s var(--ease), background-color .3s ease; }
+.opt:hover span { box-shadow: inset 0 0 0 1px var(--ink-3); }
+.opt input:checked + span { background: #F6F8FA; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.opt input:checked + span::after { background: var(--teal); box-shadow: inset 0 0 0 1.5px var(--ink), inset 0 0 0 5px #FFF; }
+.opt input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+.opt:active span { transform: scale(.985); }
+
+.qf__picked { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px; padding: 14px 16px 14px 18px; border-radius: 16px; background: #F6F8FA; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.qf__picked { margin-bottom: 18px; }
+.qf__picked p { font-size: 1rem; }
+.qf__picked .link { min-height: 44px; }
+.qf__field + .qf__field { margin-top: 14px; }
+.qf__label { display: block; margin-bottom: 8px; font-size: .9375rem; font-weight: 500; color: var(--ink-2); }
+
+.qf__other { margin-top: 14px; }
+.qf__other-label { margin-bottom: 8px; font-size: .9375rem; font-weight: 500; color: var(--ink-2); }
+.qf__other .sel__btn { width: 100%; justify-content: space-between; }
+.qf__other .sel__panel { width: 100%; }
+.qf__next { display: none; margin-top: 20px; }
+.qf__next.is-shown { display: flex; }
+.qf__err { margin-top: 8px; font-size: .875rem; color: var(--error); }
+.qf__err:empty { display: none; }
+/* Paso 4: WhatsApp o, con "Prefiero por correo", el correo */
+.qf__switch { min-height: 44px; margin-top: 4px; font-size: .9375rem; color: var(--ink-2); }
+.qf__hint { margin-top: 2px; font-size: .9375rem; color: var(--ink-2); }
+.qf__hint .link { vertical-align: middle; font-weight: 560; color: var(--ink); word-break: break-all; }
+@media (prefers-reduced-motion: no-preference) { .qf__contact.is-in { animation: step-in .55s var(--ease); } }
+
+.field { display: block; width: 100%; height: 58px; padding: 0 18px; border: 0; border-radius: 16px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line-2); font-size: 1.0625rem; line-height: 1.2; appearance: none; -webkit-appearance: none; transition: box-shadow .25s ease; }
+.field::placeholder { color: #8994A0; }
+.field:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--ink), 0 0 0 4px rgba(72, 160, 168, .28); }
+.field[aria-invalid="true"] { box-shadow: inset 0 0 0 1.5px var(--error); }
+
+/* Teléfono con prefijo */
+.tel { position: relative; display: flex; gap: 8px; }
+.tel .sel { position: static; }
+.tel .field { flex: 1; min-width: 0; }
+.sel { position: relative; }
+.sel__btn { display: flex; align-items: center; gap: 8px; height: 58px; padding: 0 12px 0 14px; border: 0; border-radius: 16px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line-2); font-size: 1.0625rem; cursor: pointer; transition: box-shadow .25s ease; }
+.sel__btn:hover { box-shadow: inset 0 0 0 1px var(--ink-3); }
+.sel__btn[aria-expanded="true"] { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.sel__btn .icon { width: 16px; height: 16px; color: var(--ink-3); transition: transform .4s var(--ease); }
+.sel__btn[aria-expanded="true"] .icon { transform: rotate(180deg); }
+.flag { width: 22px; height: 15px; flex: none; border-radius: 3px; box-shadow: 0 0 0 1px rgba(11, 25, 41, .1); overflow: hidden; }
+.sel__panel { position: absolute; z-index: 20; left: 0; top: calc(100% + 8px); width: min(360px, 100%); padding: 8px; border-radius: 18px; background: #FFF; box-shadow: 0 0 0 1px var(--line), 0 24px 60px -20px rgba(11, 25, 41, .35); opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top left; visibility: hidden; transition: opacity .25s ease, transform .4s var(--ease), visibility 0s linear .4s; }
+.sel.is-up .sel__panel { top: auto; bottom: calc(100% + 8px); transform-origin: bottom left; }
+.sel.is-open .sel__panel { opacity: 1; transform: none; visibility: visible; transition: opacity .25s ease, transform .45s var(--ease), visibility 0s; }
+.sel__head { display: none; }
+.sel__search { position: relative; margin-bottom: 6px; }
+.sel__search .icon { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; margin-top: -9px; color: var(--ink-3); pointer-events: none; }
+.sel__search input { width: 100%; height: 48px; padding: 0 14px 0 42px; border: 0; border-radius: 12px; background: var(--soft); font-size: 1rem; }
+.sel__search input:focus { outline: 2px solid var(--ink); outline-offset: 0; }
+.sel__list { max-height: 264px; overflow-y: auto; overscroll-behavior: contain; }
+.sel__opt { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+.sel__placeholder { color: #8994A0; }
+.sel__opt small { margin-left: auto; font-size: .9375rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.sel__opt.is-active { background: var(--soft); }
+@media (hover: hover) { .sel__opt:hover { background: var(--soft); } }
+.sel__opt[aria-selected="true"] { font-weight: 500; }
+.sel__empty { padding: 12px; font-size: .9375rem; color: var(--ink-3); }
+.sel__backdrop { display: none; }
+@media (max-width: 639px) {
+  .sel__panel { position: fixed; left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: 78vh; max-height: 78svh; display: flex; flex-direction: column; padding: 8px 12px calc(12px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; transform: translateY(100%); transition: transform .5s var(--ease), visibility 0s linear .5s; opacity: 1; z-index: 91; }
+  .sel.is-up .sel__panel { bottom: 0; }
+  .sel.is-open .sel__panel { transform: none; transition: transform .5s var(--ease), visibility 0s; }
+  .sel__head { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 8px 4px; font-weight: 560; font-size: 1.125rem; }
+  .sel__close { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+  .sel__list { max-height: none; flex: 1; }
+  .sel__backdrop { display: block; position: fixed; inset: 0; z-index: 90; background: rgba(11, 25, 41, .4); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
+  .sel.is-open .sel__backdrop { opacity: 1; visibility: visible; transition: opacity .35s ease, visibility 0s; }
+}
+
+/* Consentimiento */
+.check { position: relative; display: flex; align-items: flex-start; gap: 12px; margin-top: 18px; font-size: .9375rem; line-height: 1.45; color: var(--ink-2); cursor: pointer; }
+.check input { position: absolute; z-index: 1; left: 0; top: 0; width: 26px; height: 26px; margin: 0; opacity: 0; cursor: pointer; }
+.check__box { display: grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: 8px; box-shadow: inset 0 0 0 1.5px var(--line-2); transition: background-color .25s ease, box-shadow .25s ease; }
+.check__box .icon { width: 16px; height: 16px; color: #FFF; opacity: 0; transform: scale(.5); transition: opacity .25s ease, transform .45s var(--ease); }
+.check input:checked + .check__box { background: var(--ink); box-shadow: none; }
+.check input:checked + .check__box .icon { opacity: 1; transform: none; }
+.check input:focus-visible + .check__box { outline: 2px solid var(--ink); outline-offset: 2px; }
+.check input[aria-invalid="true"] + .check__box { box-shadow: inset 0 0 0 1.5px var(--error); }
+.check__txt { padding-top: 2px; }
+.check a { color: var(--ink); text-underline-offset: 3px; }
+
+.qf__send { margin-top: 20px; }
+.qf__send.is-loading span { opacity: 0; }
+.qf__send.is-loading::before { content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; border: 2px solid rgba(11, 25, 41, .25); border-top-color: var(--ink); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.qf__end { display: grid; justify-items: center; gap: 16px; padding: 12px 0 4px; text-align: center; }
+.qf__end:focus { outline: none; }
+.qf__end-title { max-width: 18ch; font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.125rem); font-weight: 540; line-height: 1.15; letter-spacing: -.03em; color: var(--ink); }
+.qf__end-text { max-width: 36ch; color: var(--ink-2); }
+.qf__end .btn { margin-top: 4px; }
+.sign--dark { justify-items: center; }
+.sign--dark .sign__svg { width: 132px; color: var(--ink); }
+.sign--dark span { color: var(--ink-3); }
+.hp { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); opacity: 0; pointer-events: none; }
+
+
+/* ==========================================================================
+   Bloque final: "Cuéntanos qué necesitas." + formulario (mismo diseño que la landing)
+   ========================================================================== */
+.lead-sec { position: relative; background: radial-gradient(70% 45% at 50% 0%, rgba(72, 160, 168, .09), transparent 70%), #FFF; }
+.wrap--form { max-width: calc(600px + var(--g) * 2); }
+.lead-sec__head { text-align: center; }
+.lead-sec__title { white-space: nowrap; font-size: min(var(--fs-h2), calc((100vw - var(--g) * 2) / 10.8)); }
+.lead-sec__sub { max-width: 40ch; margin: 16px auto 0; }
+.fcard { position: relative; margin-top: 36px; padding: 18px 18px 24px; border-radius: var(--r-xl); background: #FFF; text-align: left; box-shadow: var(--shadow-form); }
+@media (min-width: 640px) { .fcard { padding: 28px 40px 40px; } }
+.lead-sec__alt { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 20px; margin-top: 24px; font-size: .9375rem; color: var(--ink-2); }
+.lead-sec__alt .link { font-size: .9375rem; }
+.sign { display: grid; justify-items: center; gap: 6px; }
+.sign__svg { width: 148px; height: auto; color: #FFF; }
+.sign span { font-size: .8125rem; color: rgba(255, 255, 255, .66); }

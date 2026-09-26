@@ -1,0 +1,11 @@
+---
+// Ficha de cada diatermia, generada desde src/data/productos
+import FichaProducto from '../../components/FichaProducto.astro';
+import { PRODUCTOS } from '../../data/productos';
+
+export function getStaticPaths() {
+  return PRODUCTOS.filter((p) => p.categoria === 'diatermia' && p.ficha).map((p) => ({ params: { modelo: p.slug }, props: { p } }));
+}
+const { p } = Astro.props;
+---
+<FichaProducto p={p} />

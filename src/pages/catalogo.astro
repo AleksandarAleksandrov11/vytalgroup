@@ -1,0 +1,77 @@
+---
+// Catálogo completo navegable en la propia página + descarga libre del PDF.
+// Todos los productos están en el HTML estático (rastreable y visible sin JavaScript); el JS solo
+// mejora el filtrado: categorías, buscador instantáneo, orden, estado en la URL y reordenación animada.
+import '../styles/cards.css';
+import '../styles/catalogo.css';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CatalogMockup from '../components/CatalogMockup.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { CATEGORIAS, CAT } from '../data/categorias';
+import { PRODUCTOS } from '../data/productos';
+import { EMPRESA } from '../data/empresa';
+import { norm } from '../lib/texto';
+import { collectionPage, itemList } from '../lib/seo';
+
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Catálogo', href: '/catalogo' }];
+const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.categoria].nombre, CAT[p.categoria].corto, p.tipo, p.resumen, ...(p.modelos || []).map((m) => m.nombre)].join(' '));
+---
+<Base
+  title="Catálogo de equipos de fisioterapia y equipamiento médico"
+  description="Catálogo de equipos de fisioterapia y equipamiento médico 2026: ecógrafos, diatermias, ondas de choque, láser y más. En la web y en PDF, sin dejar tus datos."
+  path="/catalogo"
+  og="/og/catalogo.jpg"
+  seccion="catalogo"
+  migas={migas}
+  jsonld={[collectionPage('/catalogo', 'Catálogo de equipos de fisioterapia y equipamiento médico'), itemList('Catálogo VytalGroup 2026', PRODUCTOS)]}
+>
+  <PageHero migas={migas} titulo="El catálogo completo. *Sin dejar tus datos.*" lead={`Todos los equipos del catálogo internacional 2026, aquí mismo. Y sus ${EMPRESA.catalogoPaginas} páginas en PDF, con descarga directa y sin formularios.`}>
+    <Fragment slot="acciones">
+      <a class="btn btn--dark btn--lg" href={EMPRESA.catalogoPdf} download data-catalog data-origen="catalogo" data-magnetic><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Descargar catálogo (PDF)</a>
+      <a class="link" href="#productos">Ver los equipos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </Fragment>
+    <div slot="visual" class="catv"><CatalogMockup /></div>
+  </PageHero>
+
+  <section class="sec sec--white cat-sec" id="productos" aria-labelledby="productos-title" data-catalogo>
+    <h2 class="sr-only" id="productos-title">Equipos del catálogo</h2>
+    <div class="cf" data-js-only>
+      <div class="wrap cf__in">
+        <div class="cf__chips" role="group" aria-label="Filtrar por categoría" data-chips>
+          <button class="chip" type="button" data-cat="" aria-pressed="true">Todos</button>
+          {CATEGORIAS.map((c) => <button class="chip" type="button" data-cat={c.id} aria-pressed="false">{c.corto}</button>)}
+        </div>
+        <div class="cf__tools">
+          <label class="cf__search">
+            <span class="sr-only">Buscar en el catálogo</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+            <input type="search" placeholder="Buscar equipo, marca o uso" autocomplete="off" enterkeyhint="search" data-search>
+          </label>
+          <div class="cf__sort" data-sort></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <p class="cf__count" aria-live="polite" data-count-result>{PRODUCTOS.length} equipos</p>
+      <ul class="grid cat-list" data-list>
+        {PRODUCTOS.map((p) => (
+          <li data-item data-cat={p.categoria} data-tambien={(p.tambienEn || []).join(' ')} data-nombre={p.nombre} data-marca={p.marca} data-orden={p.orden} data-texto={texto(p)}>
+            <ProductCard p={p} datos={false} marca categoria vt sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 88vw" />
+          </li>
+        ))}
+      </ul>
+      <div class="cf__empty" data-empty hidden>
+        <p class="cf__empty-t">No hay resultados.</p>
+        <p class="cf__empty-d">Pregúntanos y te decimos si lo tenemos.</p>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
+      </div>
+      <div class="sec__cta" data-rv>
+        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal subtitulo="¿No ves lo que buscas o dudas entre dos equipos? Te asesoran fisioterapeutas, sin letra pequeña." />
+</Base>

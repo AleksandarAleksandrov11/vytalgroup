@@ -77,14 +77,20 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .btn--lg { min-height: 56px; padding: 0 32px; font-size: 1.0625rem; }
 .btn--block { width: 100%; }
 .btn .icon { width: 18px; height: 18px; }
+/* Relleno circular: crece desde el punto por el que entra el cursor (--fx, --fy, de main.ts) y se
+   recoge hacia el punto por el que sale. En los botones de contorno y en todo lo marcado con data-fill. */
+[data-fill], .btn--line { position: relative; isolation: isolate; }
+[data-fill]::before, .btn--line::before { content: ""; position: absolute; z-index: -1; inset: 0; border-radius: inherit; background: var(--fill, var(--soft)); clip-path: circle(0 at var(--fx, 50%) var(--fy, 50%)); transition: clip-path .55s var(--ease); pointer-events: none; }
+.btn--line { --fill: var(--ink); }
 @media (hover: hover) {
+  [data-fill]:hover::before, .btn--line:hover::before, [data-fill][aria-expanded="true"]::before { clip-path: circle(140% at var(--fx, 50%) var(--fy, 50%)); }
   .btn--primary:hover::after { transform: translateX(110%); }
-  .btn--line:hover { background: var(--ink); color: #FFF; box-shadow: inset 0 0 0 1px var(--ink); }
+  .btn--line:hover { color: #FFF; box-shadow: inset 0 0 0 1px var(--ink); }
   .btn--dark:hover { background: var(--navy-3); }
   .btn--light:hover { background: var(--soft); }
 }
-.on-dark .btn--line { color: #FFF; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .32); }
-@media (hover: hover) { .on-dark .btn--line:hover { background: #FFF; color: var(--ink); box-shadow: inset 0 0 0 1px #FFF; } }
+.on-dark .btn--line { --fill: #FFF; color: #FFF; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .32); }
+@media (hover: hover) { .on-dark .btn--line:hover { color: var(--ink); box-shadow: inset 0 0 0 1px #FFF; } }
 [data-magnetic] { translate: var(--mx, 0) var(--my, 0); transition: transform .5s var(--ease), translate .6s var(--ease), background-color .25s ease, box-shadow .25s ease; }
 
 .link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--ink); font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; text-decoration-color: rgba(11, 25, 41, .3); transition: text-decoration-color .25s; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -112,11 +118,30 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 @media (min-width: 900px) { .sec__cta { margin-top: 56px; } }
 .grid-noise::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .07; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
+/* ---------- Escenario de producto ----------
+   Las fotos de equipo no tienen fondo: lienzo 4:3 común con la línea de apoyo al 88 % de su alto.
+   El fondo suave y la sombra de contacto los pone el CSS; --sw es el ancho del equipo (encuadre.json). */
+.stage { position: relative; isolation: isolate; display: block; aspect-ratio: 4 / 3; background: radial-gradient(120% 95% at 50% 28%, #FFF 0%, #F5F8FA 52%, #EAF0F3 100%); }
+.stage::before { content: ""; position: absolute; z-index: -1; left: 50%; bottom: 9.5%; width: calc(var(--sw, .6) * 88%); height: 7%; translate: -50% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(11, 25, 41, .28), rgba(11, 25, 41, .1) 55%, transparent 100%); transition: transform .7s var(--ease), opacity .7s var(--ease); pointer-events: none; }
+.stage picture { display: block; width: 100%; height: 100%; }
+.stage img { width: 100%; height: 100%; object-fit: contain; transition: transform .7s var(--ease); }
+/* Tarjetas en 3D: se inclinan hacia el cursor (main.ts pone --rx y --ry) y suben un poco */
+[data-tilt] { transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px)); transition: transform .7s var(--ease), box-shadow .35s ease; }
+[data-tilt].is-tilt, .rv.is-in[data-tilt].is-tilt { transition: transform .12s linear, box-shadow .35s ease; transition-delay: 0s; }
+@media (hover: hover) and (pointer: fine) { [data-tilt]:hover { --ty: -6px; } :is(.feat__item, .qs__item, .who__item, .modes__item, .uses__item):hover { box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); } }
+@media (prefers-reduced-motion: reduce) { [data-tilt] { transform: none !important; } }
+/* Al pasar por encima, el equipo flota y su sombra se recoge */
+@media (hover: hover) and (pointer: fine) {
+  .lift:hover .stage img { transform: translateY(-3.5%) scale(1.035); }
+  .lift:hover .stage::before { transform: scale(.82); opacity: .75; }
+}
+
 /* ---------- Entradas al hacer scroll (las activa el JS solo bajo la primera pantalla) ---------- */
-.rv { opacity: 0; transform: translateY(24px); }
-.rv.is-in { opacity: 1; transform: none; transition: opacity var(--t-in) var(--ease), transform var(--t-in-long) var(--ease); transition-delay: var(--rd, 0s); }
-.rvi { opacity: 0; transform: scale(.96); }
-.rvi.is-in { opacity: 1; transform: none; transition: opacity var(--t-in) var(--ease), transform var(--t-in-long) var(--ease); transition-delay: var(--rd, 0s); }
+/* translate y scale propios (no transform): así se combinan con la inclinación 3D de las tarjetas */
+.rv { opacity: 0; translate: 0 24px; }
+.rv.is-in { opacity: 1; translate: none; transition: opacity var(--t-in) var(--ease), translate var(--t-in-long) var(--ease), transform .7s var(--ease), box-shadow .35s ease; transition-delay: var(--rd, 0s), var(--rd, 0s), 0s, 0s; }
+.rvi { opacity: 0; scale: .96; }
+.rvi.is-in { opacity: 1; scale: none; transition: opacity var(--t-in) var(--ease), scale var(--t-in-long) var(--ease); transition-delay: var(--rd, 0s); }
 /* Titulares: aparecen por líneas con máscara (el JS parte las palabras) */
 [data-lines].is-split .w { display: inline-block; vertical-align: top; padding: 0 .08em .14em; margin: 0 -.08em -.14em; clip-path: inset(-.4em -.12em 0 -.12em); }
 [data-lines].is-split .w > span { display: inline-block; transform: translateY(112%); transition: transform var(--t-in-long) var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }

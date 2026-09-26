@@ -16,7 +16,7 @@ const PIXEL_STUB = `(function(){var c=window.__fb=window.__fb||[];var f=window.f
 async function open(b, path, { width = 1280, height = 900, mobile = false, endpoint = `${MOCK}/exec`, pixel = '1234567890', consent = null, rapido = false } = {}) {
   const ctx = await b.newContext({ viewport: { width, height }, isMobile: mobile, hasTouch: mobile, acceptDownloads: true });
   await ctx.addInitScript(({ consent, rapido }) => {
-    try { if (consent !== null) localStorage.setItem('vg_consent', JSON.stringify({ v: 2, date: new Date().toISOString(), necessary: true, marketing: consent })); } catch (e) { /* */ }
+    try { if (consent !== null) localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: consent })); } catch (e) { /* */ }
     // Simula un bot que envía en menos de 3 s
     if (rapido) { const real = performance.now.bind(performance); performance.now = () => Math.min(real(), 1000); }
   }, { consent, rapido });
@@ -145,13 +145,14 @@ async function block(name, fn) {
     await ctx.close();
   });
 
-  await block('Tarjeta sin ficha preselecciona el formulario', async () => {
-    const { ctx, p } = await open(b, '/equipos/camillas', { consent: false });
-    await p.click('.pc__cta[data-want]');
+  await block('Ficha de camilla preselecciona el formulario', async () => {
+    // Todas las tarjetas llevan ya a su ficha (también las camillas): el CTA de la ficha salta al formulario
+    const { ctx, p } = await open(b, '/equipos/camillas/camilla-electrica-premium', { consent: false });
+    await p.click('.fp__actions [data-want]');
     await p.waitForTimeout(900);
-    ok((await step(p)) === '2', 'sin ficha: el CTA salta al formulario con el equipo respondido');
+    ok((await step(p)) === '2', 'ficha de camilla: el CTA salta al formulario con el equipo respondido');
     const picked = (await p.textContent('[data-picked-box]')).replace(/\s+/g, ' ').trim();
-    ok(/Te interesa: Camilla/.test(picked), 'sin ficha: muestra el producto', picked);
+    ok(/Te interesa: Camilla Eléctrica Premium/.test(picked), 'ficha de camilla: muestra el producto', picked);
     await ctx.close();
   });
 
@@ -246,6 +247,40 @@ async function block(name, fn) {
     ok(r.fbReq.length === 0, 'cookies: al rechazar no se carga nada, tampoco al navegar');
     ok(!(await r.p.isVisible('#cookie-banner')), 'cookies: la elección se recuerda');
     await r.ctx.close();
+  });
+
+  await block('Analítica de Vercel con consentimiento', async () => {
+    // En localhost nunca se carga: se simula el dominio publicado (vg.test → 127.0.0.1) y se sustituye
+    // el script de Vercel por un doble que solo registra que se ha pedido.
+    const port = new URL(BASE).port;
+    const b2 = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined, args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults,BlockInsecurePrivateNetworkRequests', '--host-resolver-rules=MAP vg.test 127.0.0.1'] });
+    const ctx = await b2.newContext();
+    const va = [];
+    await ctx.route('**/_vercel/insights/**', (r) => { va.push(r.request().url()); r.fulfill({ contentType: 'text/javascript', body: 'window.__va = (window.__va || 0) + 1;' }); });
+    const p = await ctx.newPage();
+    await p.goto(`http://vg.test:${port}/`, { waitUntil: 'networkidle' });
+    await p.waitForSelector('#cookie-banner', { state: 'visible', timeout: 5000 });
+    ok(va.length === 0, 'analítica: Vercel Web Analytics no se carga antes de decidir');
+    await p.click('#cookie-banner [data-cookie="config"]');
+    await p.waitForTimeout(500);
+    ok((await p.$$('#cookie-panel .switch')).length === 3, 'cookies: panel con necesarias, analítica y marketing');
+    await p.check('#cookie-panel [data-consent="analytics"]');
+    await p.click('#cookie-panel [data-cookie="save"]');
+    await p.waitForTimeout(600);
+    ok(va.length === 1 && await p.evaluate(() => window.__va === 1 && typeof window.va === 'function'), 'analítica: al aceptarla se carga Vercel Web Analytics');
+    await p.goto(`http://vg.test:${port}/ecografos`, { waitUntil: 'networkidle' });
+    ok(va.length === 2, 'analítica: se recuerda entre páginas');
+    await ctx.close();
+    const ctx2 = await b2.newContext();
+    const va2 = [];
+    await ctx2.route('**/_vercel/insights/**', (r) => { va2.push(r.request().url()); r.fulfill({ contentType: 'text/javascript', body: '' }); });
+    const p2 = await ctx2.newPage();
+    await p2.goto(`http://vg.test:${port}/`, { waitUntil: 'networkidle' });
+    await p2.click('#cookie-banner [data-cookie="reject"]');
+    await p2.goto(`http://vg.test:${port}/catalogo`, { waitUntil: 'networkidle' });
+    ok(va2.length === 0, 'analítica: al rechazar no se carga');
+    await ctx2.close();
+    await b2.close();
   });
 
   await block('Eventos: pilar, contacto, catálogo y búsqueda', async () => {

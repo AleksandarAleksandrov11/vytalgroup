@@ -2,6 +2,7 @@
 // Tarjeta de categoría: imagen y nombre (con número de equipos); al pasar, una línea de descripción.
 import '../styles/cards.css';
 import Img from './Img.astro';
+import { escena } from '../lib/imagenes';
 import type { Categoria } from '../data/categorias';
 import { deCategoria } from '../data/productos';
 
@@ -10,8 +11,8 @@ const { c, cuenta = true, big = false, sizes = '(min-width: 1200px) 370px, (min-
 const n = deCategoria(c.id).length;
 const H = nivel;
 ---
-<a class:list={['cc', { 'cc--big': big }]} href={c.ruta} data-halo>
-  <span class="cc__media" data-rvi><Img name={c.imagen} alt="" sizes={sizes} widths={[240, 360, 480, 640]} parallax /></span>
+<a class:list={['cc', 'lift', { 'cc--big': big }]} href={c.ruta} data-halo data-tilt>
+  <span class="cc__media stage" style={escena(c.imagen)} data-rvi><Img name={c.imagen} alt="" sizes={sizes} widths={[240, 360, 480, 640]} parallax /></span>
   <span class="cc__arrow" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
   <H class="cc__name"><span>{c.nombre}</span>{cuenta && <span class="cc__count">{n} {n === 1 ? 'equipo' : 'equipos'}</span>}</H>
   <span class="cc__desc">{c.descripcion}</span>

@@ -2,39 +2,56 @@
    Tarjetas (producto y categoría), rejillas, carrusel con scroll-snap,
    puntos y control segmentado. Misma base que las tarjetas de la landing.
    ========================================================================== */
-.pc { position: relative; display: flex; flex-direction: column; min-width: 0; height: 100%; padding: 10px; border-radius: var(--r-lg); background: var(--card); box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
-.pc__media { position: relative; border-radius: var(--r-sm); overflow: hidden; background: #FFF; aspect-ratio: 4 / 3; }
-.pc__media img { width: 100%; height: 100%; object-fit: cover; translate: 0 var(--py, 0px); transition: scale .7s var(--ease); }
-.pc__ph { display: grid; place-items: center; align-content: center; gap: 10px; height: 100%; color: var(--ink-3); background: linear-gradient(180deg, #FFF, var(--soft)); font-size: .875rem; font-weight: 500; }
-.pc__ph svg { width: 96px; color: var(--teal); opacity: .8; }
-.pc__body { display: flex; flex-direction: column; flex: 1; padding: 14px 10px 8px; }
-.pc__meta { margin-bottom: 4px; font-size: .75rem; font-weight: 560; letter-spacing: .1em; text-transform: uppercase; color: var(--teal-ink); }
-.pc__name { font-size: 1.1875rem; font-weight: 560; line-height: 1.25; letter-spacing: -.02em; }
-.pc__line { margin-top: 4px; font-size: .9375rem; line-height: 1.45; color: var(--ink-2); }
-.pc__data { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 4px; padding-top: 14px; border-top: 1px solid var(--line); }
+/* ---------- Tarjeta de producto ----------
+   6 filas: imagen, marca y categoría, nombre, línea, datos y botón. Dentro de una rejilla o un carrusel
+   las filas son las de la rejilla (subgrid): nombres, textos, datos y botones quedan alineados con las
+   tarjetas vecinas aunque cada equipo tenga un texto distinto. Textos acotados a 2 y 3 líneas. */
+.pc { position: relative; display: grid; grid-template-rows: auto auto auto 1fr auto auto; height: 100%; padding: 10px 10px 14px; border-radius: var(--r-lg); background: var(--card); box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
+.pc__media { border-radius: var(--r-sm); overflow: hidden; }
+.pc__media img { translate: 0 var(--py, 0px); }
+.pc__meta { display: flex; justify-content: space-between; gap: 10px; margin: 14px 8px 0; font-size: .6875rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--teal-ink); }
+.pc__meta span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc__meta span + span { flex: none; max-width: 55%; color: var(--ink-3); font-weight: 500; }
+.pc__name { margin: 5px 8px 0; font-size: 1.1875rem; font-weight: 560; line-height: 1.25; letter-spacing: -.02em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pc__line { margin: 6px 8px 0; font-size: .9375rem; line-height: 1.45; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; align-self: start; }
+.pc__data { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 8px 0; padding-top: 14px; border-top: 1px solid var(--line); }
 .pc__data div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; min-width: 0; }
-.pc__data dd { margin: 0; font-size: clamp(1.1875rem, .9rem + .7vw, 1.4375rem); font-weight: 520; line-height: 1.1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.pc__data dt { font-size: .8125rem; line-height: 1.3; color: var(--ink-3); }
-.pc__cta { margin-top: auto; }
-.pc__data + .pc__cta, .pc__line + .pc__cta { margin-top: 18px; }
-.pc__body > .pc__cta { align-self: stretch; }
-/* Toda la tarjeta es clicable a través de su botón */
-.pc__cta::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--r-lg); }
+.pc__data dd { margin: 0; font-size: clamp(1.125rem, .9rem + .6vw, 1.375rem); font-weight: 520; line-height: 1.12; letter-spacing: -.03em; font-variant-numeric: tabular-nums; text-wrap: balance; }
+.pc__data dt { font-size: .8125rem; line-height: 1.3; color: var(--ink-3); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pc__cta { margin: 18px 8px 0; }
+.pc__cta .icon { transition: transform .45s var(--ease); }
+/* Toda la tarjeta lleva a la ficha (clic delegado en main.ts; con teclado, el botón) */
+.pc { cursor: pointer; }
 /* Halo de luz que sigue al cursor (escritorio) */
-[data-halo]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(280px circle at var(--hx, 50%) var(--hy, 50%), rgba(72, 160, 168, .13), transparent 62%); opacity: 0; transition: opacity .4s ease; }
+[data-halo]::after, .pc::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(300px circle at var(--hx, 50%) var(--hy, 50%), rgba(72, 160, 168, .14), transparent 62%); opacity: 0; transition: opacity .4s ease; }
 @media (hover: hover) and (pointer: fine) {
-  [data-halo]:hover::after { opacity: 1; }
-  .pc:hover { transform: translateY(-6px); box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
-  .pc:hover .pc__media img { scale: 1.04; }
-  .pc:hover .pc__cta { background: var(--ink); color: #FFF; box-shadow: inset 0 0 0 1px var(--ink); }
+  [data-halo]:hover::after, .pc:hover::after { opacity: 1; }
+  .pc:hover { box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
+  .pc:hover .pc__cta { color: #FFF; box-shadow: inset 0 0 0 1px var(--ink); }
+  .pc:hover .pc__cta::before { clip-path: circle(140% at var(--fx, 50%) var(--fy, 50%)); }
+  .pc:hover .pc__cta .icon { transform: translateX(4px); }
+}
+
+/* Rejillas y carruseles de tarjetas de producto: las filas de cada tarjeta son las de la rejilla */
+:is(.grid, .rail):has(> li > .pc) { row-gap: 0; }
+:is(.grid, .rail) > li:has(> .pc) { display: grid; grid-row: span 6; grid-template-rows: subgrid; row-gap: 0; padding-bottom: var(--card-gap, 16px); }
+:is(.grid, .rail) > li > .pc { grid-row: span 6; grid-template-rows: subgrid; row-gap: 0; }
+@supports not (grid-template-rows: subgrid) {
+  .pc { display: flex; flex-direction: column; }
+  .pc__cta { margin-top: auto; }
+  .pc__data + .pc__cta { margin-top: 18px; }
 }
 
 /* Rejillas */
 .grid { display: grid; gap: 16px; }
 @media (min-width: 640px) { .grid--2, .grid--3, .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1100px) { .grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; } }
-@media (min-width: 900px) { .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+@media (min-width: 1100px) { .grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; --card-gap: 20px; } }
+@media (min-width: 900px) { .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; --card-gap: 20px; } }
 .grid > li { min-width: 0; }
+/* Filas incompletas centradas: con 2 columnas, la última tarjeta sola va al centro */
+@media (min-width: 640px) and (max-width: 899px) {
+  .grid--3 > li:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 8px); }
+}
 
 /* Carrusel con scroll-snap: en móvil una tarjeta centrada; en escritorio, rejilla */
 .rail { display: grid; grid-auto-flow: column; grid-auto-columns: min(82%, 340px); gap: 12px; margin: 0 calc(var(--g) * -1); padding: 4px var(--g) 14px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--g); scrollbar-width: none; }
@@ -65,8 +82,8 @@
 
 /* Tarjeta de categoría: imagen y nombre; al pasar, una línea de descripción */
 .cc { position: relative; display: flex; flex-direction: column; height: 100%; padding: 8px 8px 14px; border-radius: var(--r-md); background: #FFF; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
-.cc__media { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; background: #FFF; }
-.cc__media img { width: 100%; height: 100%; object-fit: cover; translate: 0 var(--py, 0px); transition: scale .7s var(--ease); }
+.cc__media { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; }
+.cc__media img { translate: 0 var(--py, 0px); transition: scale .7s var(--ease), transform .7s var(--ease); }
 .cc__name { display: grid; gap: 2px; margin: 12px 6px 0; font-size: .9375rem; font-weight: 560; line-height: 1.25; letter-spacing: -.015em; text-wrap: balance; }
 .cc__count { flex: none; font-size: .8125rem; font-weight: 400; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .cc__desc { margin: 4px 6px 0; font-size: .8125rem; line-height: 1.4; color: var(--ink-2); }
@@ -82,13 +99,8 @@
 @media (hover: hover) and (pointer: fine) {
   .cc__desc { position: absolute; z-index: 1; left: 10px; right: 10px; top: 10px; aspect-ratio: 4 / 3; display: flex; align-items: flex-end; margin: 0; padding: 14px 16px; border-radius: var(--r-sm); background: linear-gradient(180deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .95) 68%); color: var(--ink); opacity: 0; transform: translateY(10px); transition: opacity .4s var(--ease), transform .5s var(--ease); pointer-events: none; }
   .cc:hover .cc__desc, .cc:focus-visible .cc__desc { opacity: 1; transform: none; }
-  .cc:hover { transform: translateY(-5px); box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
+  .cc:hover { box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
   .cc:hover .cc__media img { scale: 1.04; }
   .cc:hover .cc__arrow { transform: rotate(-45deg); background: var(--ink); color: #FFF; }
 }
 .cc--big .cc__name { font-size: clamp(1.25rem, 1rem + .8vw, 1.625rem); letter-spacing: -.025em; }
-
-/* Rasgos en tarjetas de equipos sin ficha (camillas) */
-.traits { display: grid; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; font-size: .875rem; color: var(--ink-2); }
-.traits li { display: flex; gap: 8px; align-items: flex-start; }
-.traits .icon { width: 16px; height: 16px; margin-top: 2px; color: var(--teal-ink); }

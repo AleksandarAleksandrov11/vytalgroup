@@ -6,6 +6,7 @@ import '../../styles/cards.css';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import Img from '../../components/Img.astro';
+import { escena } from '../../lib/imagenes';
 import ProductCard from '../../components/ProductCard.astro';
 import CompareTable from '../../components/CompareTable.astro';
 import Reasons from '../../components/Reasons.astro';
@@ -19,9 +20,10 @@ import { collectionPage, faqPage, itemList } from '../../lib/seo';
 
 const c = CAT.ecografia;
 const todos = deCategoria('ecografia');
+// Pestañas por formato (los ids casan con los enlaces del menú móvil: /ecografos#gama-portatil)
 const tipos = [
-  { id: 'inalambricos', label: 'Inalámbricos', items: todos.filter((p) => p.formato === 'inalambrico') },
-  { id: 'portatiles', label: 'Portátiles', items: todos.filter((p) => p.formato === 'portatil') },
+  { id: 'inalambrico', label: 'De bolsillo', items: todos.filter((p) => p.formato === 'inalambrico') },
+  { id: 'portatil', label: 'Portátiles', items: todos.filter((p) => p.formato === 'portatil') },
   { id: 'carro', label: 'De carro', items: todos.filter((p) => p.formato === 'carro') },
 ];
 const physio = producto('physio-invasiva-2-0');
@@ -29,7 +31,7 @@ const migas = [{ name: 'Inicio', href: '/' }, { name: 'Ecógrafos', href: '/ecog
 const PREGUNTAS = [
   { n: '01', q: '¿Dónde trabajas?', a: 'En consulta, a domicilio o en campo. Si te mueves mucho, una sonda inalámbrica; si trabajas en un sitio fijo, un portátil o un carro.' },
   { n: '02', q: '¿Qué procedimientos haces?', a: 'Ecoguiados, exploración musculoesquelética, vascular... Cada modelo tiene sus aplicaciones, y las verás en su ficha.' },
-  { n: '03', q: '¿Cuántas sondas necesitas?', a: 'Desde 1 puerto activo en la AX2 hasta 5 en la LX3, la LX9 y la LX85. Si usas varias a diario, cuenta puertos.' },
+  { n: '03', q: '¿Cuántas sondas necesitas?', a: 'Desde 1 puerto activo en la AX2 hasta 4 en el U2 y 5 en la LX3, la LX9 y la LX85. Si usas varias a diario, cuenta puertos.' },
 ];
 ---
 <Base
@@ -38,7 +40,6 @@ const PREGUNTAS = [
   path="/ecografos"
   og="/og/ecografos.jpg"
   seccion="ecografos"
-  heroOscuro
   migas={migas}
   jsonld={[collectionPage('/ecografos', 'Ecógrafos para fisioterapia'), itemList('Ecógrafos', todos), faqPage(FAQ_ECOGRAFIA)]}
   viewContent={{ ids: todos.map((p) => p.slug), type: 'product_group', category: 'Ecografía', name: 'Ecógrafos' }}
@@ -48,7 +49,7 @@ const PREGUNTAS = [
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#comparativa">Ver la comparativa<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="pil-visual">
+    <div slot="visual" class="pil-visual stage" style={escena('ecografo-portatil-acclarix-ax8-edan')}>
       <Img name="ecografo-portatil-acclarix-ax8-edan" alt="Ecógrafo portátil Acclarix AX8 de EDAN con doble pantalla táctil" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
     </div>
   </PageHero>
@@ -60,7 +61,7 @@ const PREGUNTAS = [
       </div>
       <ol class="qs">
         {PREGUNTAS.map((p, i) => (
-          <li class="qs__item" data-rv style={`--rd:${i * 80}ms`}>
+          <li class="qs__item" data-rv data-tilt style={`--rd:${i * 80}ms`}>
             <span class="qs__n" aria-hidden="true">{p.n}</span>
             <h3 class="qs__q">{p.q}</h3>
             <p class="qs__a">{p.a}</p>
@@ -73,23 +74,32 @@ const PREGUNTAS = [
     </div>
   </section>
 
-  <section class="sec" id="gama" aria-labelledby="gama-title">
+  <section class="sec gama-sec" id="gama" aria-labelledby="gama-title">
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="gama-title" data-lines>Toda la <em>gama.</em></h2>
-        <div class="seg seg--3" role="tablist" aria-label="Tipo de ecógrafo" data-seg data-rv>
+        <p class="lead" data-rv>{todos.length} ecógrafos en tres formatos: de bolsillo e inalámbricos, portátiles y de carro.</p>
+        <div class="seg seg--3 seg--count" role="tablist" aria-label="Formato de ecógrafo" data-seg data-rv>
           <span class="seg__ind" aria-hidden="true"></span>
           {tipos.map((t, i) => (
-            <button class="seg__btn" type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'}>{t.label}</button>
+            <button class="seg__btn" type="button" role="tab" id={`gama-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${t.label}, ${t.items.length} ${t.items.length === 1 ? 'equipo' : 'equipos'}`} tabindex={i === 0 ? undefined : '-1'} data-n={t.items.length}>{t.label}</button>
           ))}
         </div>
       </div>
       <div class="panels" data-rv>
         {tipos.map((t, i) => (
-          <div class:list={['panel', { 'is-active': i === 0 }]} role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} inert={i !== 0}>
-            <ul class="rail rail--grid" data-rail style={`--n:${Math.min(3, t.items.length)}`}>
-              {t.items.map((p) => <li><ProductCard p={p} vt /></li>)}
-            </ul>
+          <div class:list={['panel', { 'is-active': i === 0 }]} role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`gama-${t.id}`} inert={i !== 0}>
+            <div class:list={['gama', { 'gama--few': t.items.length <= 3 }]} data-carousel>
+              <ul class="rail gama__rail" data-rail>
+                {t.items.map((p) => <li><ProductCard p={p} vt sizes="(min-width: 1200px) 360px, (min-width: 900px) 30vw, 78vw" /></li>)}
+              </ul>
+              {t.items.length > 3 && (
+                <>
+                  <button class="gama__arrow gama__arrow--prev" type="button" aria-label="Ver los anteriores" data-prev disabled><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                  <button class="gama__arrow gama__arrow--next" type="button" aria-label="Ver los siguientes" data-next><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                </>
+              )}
+            </div>
             {t.items.length > 1 && <div class="dots" aria-hidden="true">{t.items.map((_, j) => <span class:list={{ 'is-on': j === 0 }}></span>)}</div>}
           </div>
         ))}
@@ -115,7 +125,7 @@ const PREGUNTAS = [
 
   <section class="sec combo" aria-labelledby="combo-title">
     <div class="wrap combo__grid">
-      <div class="combo__media" data-rvi><Img name={physio.imagenes[0]} alt="Equipo de electrólisis percutánea ecoguiada Physio Invasiva 2.0 de EasyTech" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480]} parallax /></div>
+      <div class="combo__media stage lift" style={escena(physio.imagenes[0])} data-rvi><Img name={physio.imagenes[0]} alt="Equipo de electrólisis percutánea ecoguiada Physio Invasiva 2.0 de EasyTech" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480]} parallax /></div>
       <div class="combo__copy">
         <h2 class="h2" id="combo-title" data-lines>Ecografía y electrólisis, <em>mejor juntas.</em></h2>
         <p class="lead" data-rv>La electrólisis percutánea ecoguiada (USGET) se hace con guía ecográfica. Physio Invasiva 2.0 de EasyTech reúne galvánica, PES, microcorrientes y TENS en 1,05 kg, y trabaja junto a un portátil o a la sonda inalámbrica.</p>

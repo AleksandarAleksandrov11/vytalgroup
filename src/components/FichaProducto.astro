@@ -10,13 +10,15 @@ import Img from './Img.astro';
 import ProductCard from './ProductCard.astro';
 import Reasons from './Reasons.astro';
 import CtaFinal from './CtaFinal.astro';
+import Faq from './Faq.astro';
 import { CAT } from '../data/categorias';
 import type { Producto } from '../data/tipos';
 import { altProducto, etiquetaModelo, relacionados, seoDescription, seoTitle, urlFicha } from '../data/productos';
 import { EMPRESA, wa } from '../data/empresa';
-import { imagen } from '../lib/imagenes';
-import { h1Html } from '../lib/texto';
-import { product } from '../lib/seo';
+import { imagen, escena } from '../lib/imagenes';
+import { h1Html, unidades } from '../lib/texto';
+import { product, faqPage } from '../lib/seo';
+import { faqsFicha, sujeto, deSujeto } from '../data/faqs';
 import { SITE_URL } from '../config';
 
 interface Props { p: Producto }
@@ -31,9 +33,11 @@ const zoom = await getImage({ src: imagen(p.imagenes[0]), format: 'webp', qualit
 const ogImg = await getImage({ src: imagen(p.imagenes[0]), format: 'webp', width: 640 });
 const specsLargas = p.especificaciones.length > 8;
 const rel = relacionados(p);
-const waTexto = `Hola, vengo de la web y me interesa el ${p.nombre} de ${p.marca}. ¿Me asesoráis?`;
+const waTexto = `Hola, vengo de la web y me interesa ${sujeto(p)} de ${p.marca}. ¿Me asesoráis?`;
 const preset = { equipo: c.formEquipo, otro: c.formOtro, modelo: etiquetaModelo(p) };
 // H1: el nombre del modelo con su última palabra como acento en cursiva (patrón de marca)
+const faqs = faqsFicha(p);
+const esFoto = (n: string) => n.startsWith('fotos/');
 const corte = p.nombre.lastIndexOf(' ');
 const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(corte + 1)}*` : `*${p.nombre}*`;
 ---
@@ -46,7 +50,7 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
   ogType="product"
   seccion={c.id === 'ecografia' ? 'ecografos' : c.id === 'diatermia' ? 'diatermias' : 'equipos'}
   migas={migas}
-  jsonld={[product(p, [`${SITE_URL}${ogImg.src}`])]}
+  jsonld={[product(p, [`${SITE_URL}${ogImg.src}`]), faqPage(faqs)]}
   viewContent={{ ids: [p.slug], type: 'product', category: c.nombre, name: `${p.nombre} (${p.marca})` }}
 >
   <section class="fp" data-hero aria-labelledby="page-title">
@@ -56,7 +60,7 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
         <div class="gal" data-gallery>
           <div class="gal__main">
             {p.imagenes.map((n, i) => (
-              <div class:list={['gal__slide', { 'is-active': i === 0 }]} data-slide inert={i !== 0}>
+              <div class:list={['gal__slide', { 'is-active': i === 0, 'gal__slide--foto': esFoto(n), stage: !esFoto(n) }]} style={escena(n)} data-slide inert={i !== 0}>
                 <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 960]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
               </div>
             ))}
@@ -79,8 +83,8 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
           <p class="fp__brand">{p.marca}<span aria-hidden="true"> · </span><a href={c.ruta}>{c.nombre}</a></p>
           <h1 class="h1 fp__title" id="page-title" set:html={h1Html(tituloH1)} />
           <p class="fp__ideal">Ideal para {p.idealPara}.</p>
-          <dl class="fp__data">
-            {p.datosClave.map((d) => <div><dt>{d.etiqueta}</dt><dd data-count>{d.valor}</dd></div>)}
+          <dl class:list={['fp__data', `fp__data--${p.datosClave.length}`]}>
+            {p.datosClave.map((d) => <div><dt>{d.etiqueta}</dt><dd data-count>{unidades(d.valor)}</dd></div>)}
           </dl>
           {p.modelos && (
             <ul class="fp__models">
@@ -124,7 +128,7 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
       </div>
       <ul class="feat">
         {p.caracteristicas.map((f, i) => (
-          <li class="feat__item" data-rv style={`--rd:${i * 70}ms`}>
+          <li class="feat__item" data-rv data-tilt style={`--rd:${i * 70}ms`}>
             <span class="feat__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="feat__t">{f.titulo}</h3>
             {f.texto && <p class="feat__d">{f.texto}</p>}
@@ -143,36 +147,34 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
         <h2 class="h2" id="spec-title" data-lines>Especificaciones <em>completas.</em></h2>
         <div class="specs" data-specs>
           <table class="specs__table">
-            <caption class="sr-only">Especificaciones técnicas del {p.nombre} de {p.marca}</caption>
+            <caption class="sr-only">Especificaciones técnicas {deSujeto(p)} de {p.marca}</caption>
             <tbody>
               {p.especificaciones.map((s, i) => (
-                <tr class:list={{ 'is-extra': specsLargas && i >= 8 }}><th scope="row">{s.clave}</th><td>{s.valor}</td></tr>
+                <tr class:list={{ 'is-extra': specsLargas && i >= 8 }}><th scope="row">{s.clave}</th><td>{unidades(s.valor)}</td></tr>
               ))}
             </tbody>
           </table>
           {specsLargas && <button class="btn btn--line btn--sm specs__more" type="button" data-specs-btn aria-expanded="false" hidden>Ver todas<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>}
         </div>
-        <p class="fp-src">Datos del {EMPRESA.catalogoNombre}{p.paginaCatalogo && `, página ${p.paginaCatalogo}`}. La propuesta final confirma especificaciones, accesorios y certificaciones para tu país. <a href={EMPRESA.catalogoPdf} download data-catalog data-origen="ficha">Descargar catálogo (PDF)</a></p>
+        <p class="fp-src">Datos {p.fuente ? `de ${p.fuente}` : `del ${EMPRESA.catalogoNombre}`}{p.paginaCatalogo && `, página ${p.paginaCatalogo}`}. La propuesta final confirma especificaciones, accesorios y certificaciones para tu país. <a href={EMPRESA.catalogoPdf} download data-catalog data-origen="ficha">Descargar catálogo (PDF)</a></p>
       </div>
-      <aside class="fp-specs__side" aria-label="Qué incluye, normativa y aplicaciones">
-        {p.incluye.length > 0 && (
-          <div class="side-box" data-rv>
-            <h3 class="side-box__t">Qué incluye</h3>
-            <ul class="side-box__list">{p.incluye.map((x) => <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>{x}</li>)}</ul>
-          </div>
-        )}
-        {p.normativa && (
-          <div class="side-box" data-rv>
-            <h3 class="side-box__t">Normativa</h3>
-            <p>{p.normativa}</p>
-          </div>
-        )}
+      <aside class="fp-specs__side" aria-label="Aplicaciones, qué incluye y normativa">
         {p.usos.length > 0 && (
           <div class="side-box" data-rv>
             <h3 class="side-box__t">Aplicaciones según el fabricante</h3>
             <ul class="side-box__list side-box__list--dots">{p.usos.map((x) => <li>{x}</li>)}</ul>
           </div>
         )}
+        {p.incluye.length > 0 && (
+          <div class="side-box" data-rv>
+            <h3 class="side-box__t">Qué incluye</h3>
+            <ul class="side-box__list">{p.incluye.map((x) => <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>{x}</li>)}</ul>
+          </div>
+        )}
+        <div class="side-box" data-rv>
+          <h3 class="side-box__t">Normativa</h3>
+          <p>{p.normativa || 'Te confirmamos la certificación y la documentación aplicable a tu país con la propuesta.'}</p>
+        </div>
       </aside>
     </div>
     <div class="wrap">
@@ -189,8 +191,10 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
     </div>
   </section>
 
+  <Faq faqs={faqs} titulo={`Dudas sobre *${p.nombre}.*`} id="preguntas" cta={false} fondo="blanco" />
+
   {rel.length > 0 && (
-    <section class="sec sec--white" aria-labelledby="rel-title">
+    <section class="sec" aria-labelledby="rel-title">
       <div class="wrap">
         <div class="sec__head">
           <h2 class="h2" id="rel-title" data-lines>También te puede <em>interesar.</em></h2>
@@ -205,5 +209,5 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
     </section>
   )}
 
-  <CtaFinal preset={preset} subtitulo={`Te asesoran fisioterapeutas sobre el ${p.nombre} y su configuración. Sin compromiso y sin letra pequeña.`} />
+  <CtaFinal preset={preset} subtitulo={`Te asesoran fisioterapeutas sobre ${sujeto(p)} y su configuración. Sin compromiso y sin letra pequeña.`} />
 </Base>

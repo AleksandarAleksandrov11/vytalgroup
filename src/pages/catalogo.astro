@@ -62,7 +62,7 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
       <ul class="grid cat-list" data-list>
         {PRODUCTOS.map((p) => (
           <li data-item data-cat={p.categoria} data-tambien={(p.tambienEn || []).join(' ')} data-nombre={p.nombre} data-marca={p.marca} data-orden={p.orden} data-texto={texto(p)}>
-            <ProductCard p={p} datos={false} traits={false} marca categoria vt sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 120px" />
+            <ProductCard p={p} vt sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 120px" />
           </li>
         ))}
       </ul>

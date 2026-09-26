@@ -32,3 +32,6 @@ export const fechaLarga = (iso: string) =>
 
 /** Normaliza para búsquedas: sin tildes y en minúsculas */
 export const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
+/** Espacio de no separación entre un número y su unidad ("2 h", "9,25 kg", "12 MHz") para que no se partan */
+export const unidades = (s: string) => s.replace(/(\d) (?=(?:h|min|s|ms|kg|g|W|kW|mW|J|kHz|MHz|Hz|mA|V|GB|TB|mm|cm|m|nm|bar)\b)/g, '$1\u00A0');

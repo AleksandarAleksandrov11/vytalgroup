@@ -6,6 +6,7 @@ import '../../styles/cards.css';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import Img from '../../components/Img.astro';
+import { escena } from '../../lib/imagenes';
 import ProductCard from '../../components/ProductCard.astro';
 import CompareTable from '../../components/CompareTable.astro';
 import Reasons from '../../components/Reasons.astro';
@@ -32,7 +33,6 @@ const MODOS = [
   path="/diatermias"
   og="/og/diatermias.jpg"
   seccion="diatermias"
-  heroOscuro
   migas={migas}
   jsonld={[collectionPage('/diatermias', 'Diatermia para fisioterapia y tecarterapia'), itemList('Diatermias', todas), faqPage(FAQ_DIATERMIA)]}
   viewContent={{ ids: todas.map((p) => p.slug), type: 'product_group', category: 'Diatermia', name: 'Diatermias' }}
@@ -42,7 +42,7 @@ const MODOS = [
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#comparativa">Ver la comparativa<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="pil-visual">
+    <div slot="visual" class="pil-visual stage" style={escena('diatermia-reatherm-i-tech')}>
       <Img name="diatermia-reatherm-i-tech" alt="Diatermia capacitiva y resistiva Reatherm de I-Tech con sus manípulos" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
     </div>
   </PageHero>
@@ -55,7 +55,7 @@ const MODOS = [
       </div>
       <ul class="modes">
         {MODOS.map((m, i) => (
-          <li class="modes__item" data-rv style={`--rd:${i * 80}ms`}>
+          <li class="modes__item" data-rv data-tilt style={`--rd:${i * 80}ms`}>
             <svg class="modes__ico" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" set:html={m.svg} />
             <span><span class="modes__t">{m.t}</span><span class="modes__d">{m.d}</span></span>
           </li>
@@ -112,6 +112,6 @@ const MODOS = [
   <CtaFinal preset={{ equipo: 'Diatermia' }} subtitulo="Cuéntanos qué tratas y cómo trabajas, y te recomendamos la diatermia que encaja. Sin letra pequeña." />
 </Base>
 <style is:global>
-  @media (min-width: 640px) { .dia-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } }
+  @media (min-width: 640px) { .dia-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; --card-gap: 20px; } }
   @media (min-width: 1100px) { .dia-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 </style>

@@ -101,3 +101,26 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - Pruebas: SEO estático, HTML válido, Apps Script, formulario y píxel, interfaz y animaciones, accesibilidad (axe y contraste propio) y maquetación en 12 anchos. Lighthouse móvil 99 a 100 en todas las plantillas.
 - Lighthouse móvil final (Rendimiento · Accesibilidad · Buenas prácticas · SEO): inicio 100 · 100 · 100 · 100; pilar ecógrafos 100 · 100 · 100 · 100; pilar diatermias 100 · 100 · 100 · 100; ficha 99 · 100 · 100 · 100; categoría 100 · 100 · 100 · 100; catálogo 98 · 100 · 100 · 100; sobre nosotros 100 · 100 · 100 · 100; contacto 100 · 100 · 100 · 100; guía 100 · 100 · 100 · 100. CLS 0 y LCP entre 1,35 y 1,72 s en todas.
 
+
+## Ronda 2 (cambios pedidos tras la primera entrega)
+- [x] Fotos: escalado con IA (Real-ESRGAN) sin alterar el contenido y fondo quitado (BiRefNet) en todos los productos; fotos de contexto, catálogo y Javier mejoradas
+- [x] EDAN: Nano (L12 EXP y C5 EXP), U60, U50 PE, U2 PE y DUS60 con datos oficiales, fotos y ficha completa
+- [x] Cabecera con fondo sólido y animaciones circulares; Guías en el menú
+- [x] Móvil: cabecera fija, hamburguesa de 3 líneas y menú nuevo con color, tipografía animada y desplegables propios
+- [x] Hero del inicio rediseñado por completo, con animación de entrada
+- [x] Inicio: sección de Javier y tabla comparativa rediseñadas (sin copiar la landing)
+- [x] Ecógrafos: "Toda la gama" rediseñada sin huecos, y en móvil cada equipo centrado con un poco del siguiente
+- [x] Quitar la nota "Consultar" de la tabla comparativa
+- [x] Todas las fichas con la misma estructura ordenada y una sección de preguntas frecuentes (3 o más)
+- [x] Tarjetas de producto idénticas en estilo, tamaño y alineación de botones (categorías, catálogo, guías y fichas)
+- [x] Sobre nosotros: las 3 tarjetas de "Nuestra forma de trabajar" iguales; marcas con logos reales en cinta infinita
+- [x] 10 px menos de espacio arriba y abajo en cada sección
+- [x] Más animaciones: tarjetas en 3D, hovers y entradas
+- [x] Aviso de cookies real con analítica (Vercel Web Analytics tras el consentimiento) y marketing
+- [x] Revisión en todos los anchos y dispositivos, pruebas, Lighthouse ≥ 95, README, commit y push
+
+## Registro de la ronda 2
+- Fotos: 54 imágenes de producto rehechas con Real-ESRGAN x4plus y BiRefNet, en lienzo transparente común de 1280 × 960 (escenario y sombra por CSS, con el ancho real de cada equipo). Fuentes de más calidad: banners oficiales de EDAN (AX2, AX3, U60, U50, DUS60, Nano) y fotos de la landing (AX8, LX9, Reatherm, HR Tek). Sin inventar: nunca se publica el ×4 tal cual y se mezcla un 25 % del original ampliado sin IA. Fotos de contexto y Javier con el modelo general, más conservador; recorte de Javier con birefnet-portrait. Portada e interiores del catálogo re-renderizados del PDF a 200 ppp.
+- Revisión en los 12 anchos: anillo giratorio de Javier que desbordaba en móviles estrechos (ahora gira el círculo, no la caja); lista de garantías del hero quitada porque repetía la cinta de justo debajo; tarjetas alineadas por filas con subgrid (características de la ficha, razones, "Cómo elegir", "Quiénes estamos"); última fila incompleta centrada (guías, relacionados, láser, ultrasonidos, estética y características en tableta); pie con nombres cortos de categoría entre 1024 y 1279 para que no se partan; número y unidad sin separarse en tarjetas, fichas y comparativas.
+- Pruebas de la ronda 2: SEO 1906/1906 en 78 páginas, HTML válido, Apps Script 18/18, formulario y píxel 60/60 (con la analítica de Vercel solo tras aceptarla), interfaz 72/72, accesibilidad 156/156 (axe a 390 y 1440) y maquetación en los 12 anchos sin fallos.
+- Lighthouse móvil de la ronda 2 (Rendimiento · Accesibilidad · Buenas prácticas · SEO): inicio 100 · 100 · 100 · 100; pilar ecógrafos 99 · 100 · 100 · 100; pilar diatermias 100 · 100 · 100 · 100; ficha 100 · 100 · 100 · 100; categoría 100 · 100 · 100 · 100; catálogo 100 · 100 · 100 · 100; sobre nosotros 100 · 100 · 100 · 100; contacto 100 · 100 · 100 · 100; guía 100 · 100 · 100 · 100. CLS 0 y LCP entre 1,30 y 1,59 s en todas.

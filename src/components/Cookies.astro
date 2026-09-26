@@ -1,11 +1,12 @@
 ---
-// Aviso de cookies propio y mínimo (como el de la landing): Aceptar, Rechazar y Configurar con el
-// mismo peso visual. El panel tiene interruptores propios. La elección dura 12 meses y se cambia
-// desde el pie ("Configurar cookies"). El píxel de Meta no se carga hasta aceptar marketing.
+// Aviso de cookies propio: Aceptar, Rechazar y Configurar con el mismo peso visual. El panel tiene
+// interruptores propios por categoría (necesarias, analítica y marketing). La elección dura 12 meses
+// y se cambia desde el pie ("Configurar cookies"). Vercel Web Analytics no se carga hasta aceptar la
+// analítica y el píxel de Meta no se carga hasta aceptar el marketing.
 import '../styles/cookies.css';
 ---
 <div class="ck" id="cookie-banner" role="region" aria-label="Aviso de cookies" hidden>
-  <p>Usamos cookies propias para que la web funcione y, si aceptas, de Meta para medir anuncios. <a href="/cookies">Política de cookies</a>.</p>
+  <p class="ck__txt"><span class="ck__ico" aria-hidden="true"></span><span>Usamos cookies propias para que la web funcione y, si aceptas, analítica de Vercel para saber qué páginas se visitan y el píxel de Meta para medir anuncios. <a href="/cookies">Política de cookies</a>.</span></p>
   <div class="ck__btns">
     <button class="btn btn--line btn--sm" type="button" data-cookie="accept">Aceptar</button>
     <button class="btn btn--line btn--sm" type="button" data-cookie="reject">Rechazar</button>
@@ -24,9 +25,16 @@ import '../styles/cookies.css';
       <input class="switch" type="checkbox" role="switch" checked disabled aria-labelledby="ck-nec">
     </div>
     <div class="cp__row">
+      <div><p class="cp__name" id="ck-ana">Analítica</p><p class="cp__desc">Vercel Web Analytics: cuántas visitas tiene cada página, de forma anónima y sin cookies.</p></div>
+      <input class="switch" type="checkbox" role="switch" data-consent="analytics" aria-labelledby="ck-ana">
+    </div>
+    <div class="cp__row">
       <div><p class="cp__name" id="ck-mkt">Marketing</p><p class="cp__desc">Píxel de Meta para medir los anuncios.</p></div>
       <input class="switch" type="checkbox" role="switch" data-consent="marketing" aria-labelledby="ck-mkt">
     </div>
-    <button class="btn btn--primary btn--block" type="button" data-cookie="save">Guardar</button>
+    <div class="cp__btns">
+      <button class="btn btn--line" type="button" data-cookie="reject">Rechazar todo</button>
+      <button class="btn btn--primary" type="button" data-cookie="save">Guardar selección</button>
+    </div>
   </div>
 </dialog>

@@ -53,7 +53,7 @@
   --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-14: 56px; --s-16: 64px; --s-20: 80px; --s-24: 96px;
   --g: 16px;
   --hd: 64px;
-  --sec: clamp(80px, 3rem + 6vw, 152px);
+  --sec: clamp(70px, 3rem + 6vw - 10px, 142px);
   --max: 1200px;
   --max-narrow: 760px;
   --max-read: 68ch;

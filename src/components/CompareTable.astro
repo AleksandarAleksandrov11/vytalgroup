@@ -1,10 +1,10 @@
 ---
 // Tabla comparativa limpia, con scroll propio en móvil y la primera columna fija.
 import { producto, urlFicha } from '../data/productos';
+import { unidades } from '../lib/texto';
 
 interface Props { columnas: string[]; filas: { slug: string; valores: string[] }[]; caption: string }
 const { columnas, filas, caption } = Astro.props;
-const hayConsultar = filas.some((f) => f.valores.includes('Consultar'));
 ---
 <div class="ct" data-rv>
   <div class="ct__scroll" tabindex="0" role="region" aria-label={caption}>
@@ -19,14 +19,13 @@ const hayConsultar = filas.some((f) => f.valores.includes('Consultar'));
           return (
             <tr>
               <th scope="row"><a href={urlFicha(p)}>{p.nombre}</a><span>{p.marca}</span></th>
-              {f.valores.map((v) => <td class:list={{ 'is-na': v === 'Consultar' }}>{v}</td>)}
+              {f.valores.map((v) => <td class:list={{ 'is-na': v === 'Consultar' }}>{unidades(v)}</td>)}
             </tr>
           );
         })}
       </tbody>
     </table>
   </div>
-  {hayConsultar && <p class="ct__note">"Consultar": dato que el catálogo no publica. Te lo confirmamos para tu configuración.</p>}
 </div>
 <style is:global>
   .ct { max-width: 1200px; margin: 0 auto; }
@@ -43,5 +42,4 @@ const hayConsultar = filas.some((f) => f.valores.includes('Consultar'));
   .ct__table td { color: var(--ink-2); }
   .ct__table td.is-na { color: var(--ink-3); font-style: italic; }
   .ct__table tbody tr:hover > * { background: #F8FAFB; }
-  .ct__note { margin-top: 14px; font-size: .8125rem; color: var(--ink-3); text-align: center; }
 </style>

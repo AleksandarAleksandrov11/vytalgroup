@@ -1,8 +1,7 @@
 /* ==========================================================================
    Páginas pilar (ecógrafos y diatermias) y categorías
    ========================================================================== */
-.pil-visual { position: relative; width: min(100%, 560px); margin: 0 auto; aspect-ratio: 4 / 3; border-radius: var(--r-xl); overflow: hidden; background: #FFF; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .1); }
-.pil-visual img { width: 100%; height: 100%; object-fit: cover; }
+.pil-visual { position: relative; width: min(100%, 560px); margin: 0 auto; aspect-ratio: 4 / 3; border-radius: var(--r-xl); overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .1); }
 .phero:not(.phero--dark) .pil-visual { box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
 
 /* Cómo elegir en 3 preguntas */
@@ -12,15 +11,42 @@
 .qs__q { font-size: clamp(1.25rem, 1.1rem + .6vw, 1.5rem); font-weight: 560; line-height: 1.2; letter-spacing: -.02em; }
 .qs__a { font-size: .9375rem; line-height: 1.55; color: var(--ink-2); }
 @media (min-width: 768px) { .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+/* Una fila de tres: número, pregunta y respuesta alineados aunque una pregunta ocupe dos líneas */
+@supports (grid-template-rows: subgrid) { @media (min-width: 768px) { .qs { row-gap: 8px; } .qs__item { grid-row: span 3; grid-template-rows: subgrid; align-content: start; } } }
 
-/* Rejilla de tarjetas del selector: centrada si hay menos de 3 */
-@media (min-width: 900px) { .panel .rail--grid { grid-template-columns: repeat(var(--n, 3), minmax(0, 370px)); justify-content: center; } }
-@media (max-width: 899px) { .panel .rail { grid-auto-columns: min(84%, 340px); } .panel .rail:has(> :only-child) { justify-content: center; } }
+/* Toda la gama: una fila por formato. Móvil: tarjeta centrada con la siguiente asomando.
+   Escritorio: hasta 3 centradas; con más, carrusel con flechas y la cuarta asomando. */
+.gama { position: relative; }
+.gama .gama__rail { --w: min(78vw, 340px); grid-auto-columns: var(--w); gap: 14px; padding: 6px calc(50vw - var(--w) / 2) 18px; scroll-padding-inline: 0; }
+.gama .gama__rail > li { scroll-snap-align: center; }
+.gama--few .gama__rail:has(> :only-child) { justify-content: center; }
+.gama__arrow { display: none; }
+@media (min-width: 900px) {
+  .gama .gama__rail { --w: calc((100% - 40px) / 3); grid-auto-columns: var(--w); gap: 20px; margin: 0; padding: 8px 0 22px; scroll-snap-type: x mandatory; }
+  .gama .gama__rail > li { scroll-snap-align: start; }
+  .gama--few .gama__rail { grid-auto-columns: minmax(0, 370px); justify-content: center; overflow: visible; }
+  .gama:not(.gama--few) .gama__rail { --w: calc((100% - 40px) / 3.2); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 64px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 64px), transparent); transition: -webkit-mask-image .3s ease; }
+  .gama:not(.gama--few) .gama__rail[data-at-end] { -webkit-mask-image: none; mask-image: none; }
+  .gama__arrow { position: absolute; z-index: 3; top: calc(var(--w-img, 34%) - 28px); display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; background: #FFF; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2), 0 14px 30px -14px rgba(11, 25, 41, .45); cursor: pointer; transition: transform .45s var(--ease), opacity .3s ease, background-color .25s ease, color .25s ease; }
+  .gama__arrow .icon { width: 20px; height: 20px; }
+  .gama__arrow--prev { left: -28px; }
+  .gama__arrow--prev .icon { transform: scaleX(-1); }
+  .gama__arrow--next { right: -28px; }
+  .gama__arrow:hover:not(:disabled) { background: var(--ink); color: #FFF; transform: scale(1.08); }
+  .gama__arrow:disabled { opacity: 0; pointer-events: none; transform: scale(.7); }
+  .gama-sec .dots { display: none; }
+}
+@media (min-width: 900px) and (max-width: 1299px) { .gama__arrow--prev { left: -12px; } .gama__arrow--next { right: -12px; } }
+/* Pestañas con número de equipos en un círculo */
+.seg--count .seg__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.seg--count .seg__btn[data-n]::after { content: attr(data-n); display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: rgba(11, 25, 41, .08); color: var(--ink-2); font-size: .75rem; font-weight: 600; font-variant-numeric: tabular-nums; transition: background-color .3s ease, color .3s ease; }
+.seg--count .seg__btn[aria-selected="true"]::after { background: rgba(255, 255, 255, .55); color: var(--ink); }
+@media (max-width: 459px) { .seg--count .seg__btn[data-n]::after { display: none; } }
 
 /* Ecografía + electrólisis */
 .combo__grid { display: grid; gap: 32px; align-items: center; }
-.combo__media { aspect-ratio: 4 / 3; border-radius: var(--r-xl); overflow: hidden; background: #FFF; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
-.combo__media img { width: 100%; height: 100%; object-fit: cover; translate: 0 var(--py, 0px); }
+.combo__media { aspect-ratio: 4 / 3; border-radius: var(--r-xl); overflow: hidden; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
+.combo__media img { translate: 0 var(--py, 0px); }
 .combo__copy { display: grid; gap: 18px; text-align: center; justify-items: center; }
 .combo__copy .lead { max-width: 46ch; }
 @media (min-width: 900px) {

@@ -3,7 +3,7 @@
 // fisioterapia.ts o camillas-estetica.ts) con su imagen en src/assets/productos.
 import type { Producto } from '../tipos';
 import { CAT, type CategoriaId } from '../categorias';
-import { ECOGRAFIA, ECOGRAFIA_SOLO_EDAN } from './ecografia';
+import { ECOGRAFIA, ECOGRAFIA_EDAN } from './ecografia';
 import { DIATERMIA } from './diatermia';
 import { FISIOTERAPIA } from './fisioterapia';
 import { CAMILLAS, ESTETICA } from './camillas-estetica';
@@ -16,7 +16,7 @@ export const PRODUCTOS: Producto[] = [
   ...FISIOTERAPIA,
   ...CAMILLAS,
   ...ESTETICA,
-  ...ECOGRAFIA_SOLO_EDAN,
+  ...ECOGRAFIA_EDAN,
 ].sort((a, b) => a.orden - b.orden);
 
 const POR_SLUG = new Map(PRODUCTOS.map((p) => [p.slug, p]));
@@ -31,9 +31,9 @@ export function urlFicha(p: Producto): string | null {
   return p.ficha ? `${CAT[p.categoria].ruta}/${p.slug}` : null;
 }
 
-/** Productos de una categoría (incluye los que "también" aparecen en ella), sin los de disponibilidad por confirmar */
-export const deCategoria = (id: CategoriaId, { conConfirmar = false } = {}) =>
-  PRODUCTOS.filter((p) => (p.categoria === id || p.tambienEn?.includes(id)) && (conConfirmar || !p.confirmar));
+/** Productos de una categoría (incluye los que "también" aparecen en ella) */
+export const deCategoria = (id: CategoriaId) =>
+  PRODUCTOS.filter((p) => p.categoria === id || p.tambienEn?.includes(id));
 
 /** Relacionados: los indicados y, si faltan, de la misma categoría */
 export function relacionados(p: Producto, n = 3): Producto[] {

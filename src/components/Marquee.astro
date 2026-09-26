@@ -4,7 +4,7 @@
 import { CINTA } from '../data/empresa';
 ---
 <section class="stats" aria-label="Lo que te garantizamos">
-  <div class="ticker" data-marquee>
+  <div class="ticker" data-marquee data-enter style="--ed:.8s">
     <div class="ticker__track">
       {[0, 1, 2, 3].map((k) => (
         <ul class="ticker__list" aria-hidden={k > 0 ? 'true' : undefined}>

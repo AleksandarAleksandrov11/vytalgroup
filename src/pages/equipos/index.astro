@@ -14,7 +14,7 @@ import { absUrl, collectionPage } from '../../lib/seo';
 const pilares = CATEGORIAS.filter((c) => c.pilar);
 const resto = CATEGORIAS.filter((c) => !c.pilar);
 const migas = [{ name: 'Inicio', href: '/' }, { name: 'Equipos', href: '/equipos' }];
-const total = PRODUCTOS.filter((p) => !p.confirmar).length;
+const total = PRODUCTOS.length;
 const lista = {
   '@type': 'ItemList',
   name: 'Categorías de equipos',

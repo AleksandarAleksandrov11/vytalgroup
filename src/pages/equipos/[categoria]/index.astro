@@ -7,6 +7,7 @@ import '../../../styles/pilar.css';
 import Base from '../../../layouts/Base.astro';
 import PageHero from '../../../components/PageHero.astro';
 import Img from '../../../components/Img.astro';
+import { escena } from '../../../lib/imagenes';
 import ProductCard from '../../../components/ProductCard.astro';
 import Faq from '../../../components/Faq.astro';
 import CtaFinal from '../../../components/CtaFinal.astro';
@@ -42,7 +43,7 @@ const altHero = repr ? altProducto(repr) : c.nombre;
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#equipos-categoria">Ver {n === 1 ? 'el equipo' : `los ${n} equipos`}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="pil-visual">
+    <div slot="visual" class="pil-visual stage" style={escena(c.imagen)}>
       <Img name={c.imagen} alt={altHero} sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
     </div>
   </PageHero>
@@ -80,10 +81,19 @@ const altHero = repr ? altProducto(repr) : c.nombre;
 <style is:global>
   .cat-grid { gap: 16px; }
   @media (min-width: 640px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 1024px) { .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+  @media (min-width: 1024px) { .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; --card-gap: 20px; } }
   /* 4 equipos: 2 × 2 en tableta y 4 en fila en escritorio ancho (sin tarjetas huérfanas) */
   @media (min-width: 1024px) { .cat-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; margin-inline: auto; } }
   @media (min-width: 1200px) { .cat-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: none; } }
+  /* 3, 5 y 7 equipos: la última fila incompleta va centrada */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .cat-grid:not(.cat-grid--1, .cat-grid--2, .cat-grid--4) > li:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 8px); }
+  }
+  @media (min-width: 1024px) {
+    .cat-grid:not(.cat-grid--1, .cat-grid--2, .cat-grid--4) > li:last-child:nth-child(3n+1) { grid-column: 2; }
+    .cat-grid:not(.cat-grid--1, .cat-grid--2, .cat-grid--4) > li:nth-last-child(2):nth-child(3n+1),
+    .cat-grid:not(.cat-grid--1, .cat-grid--2, .cat-grid--4) > li:last-child:nth-child(3n+2) { position: relative; left: calc(50% + 10px); }
+  }
   .cat-grid--1 { grid-template-columns: minmax(0, 400px) !important; justify-content: center; }
   @media (min-width: 640px) { .cat-grid--2 { grid-template-columns: repeat(2, minmax(0, 380px)) !important; justify-content: center; } }
 </style>

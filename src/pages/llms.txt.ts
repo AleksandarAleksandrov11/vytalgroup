@@ -31,7 +31,7 @@ export const GET: APIRoute = async () => {
   l.push('## Páginas principales', '');
   l.push(
     `- [Inicio](${u('/')}): qué hacemos, los equipos más pedidos y cómo trabajamos.`,
-    `- [Ecógrafos para fisioterapia](${u('/ecografos')}): sonda inalámbrica Eco Wireless y gama EDAN Acclarix, con comparador.`,
+    `- [Ecógrafos para fisioterapia](${u('/ecografos')}): sonda inalámbrica Eco Wireless y gama EDAN (Nano, Acclarix, U60, U50, DUS60 y U2), con comparador.`,
     `- [Diatermia y tecarterapia](${u('/diatermias')}): diatermia capacitiva y resistiva de VytaMeD, I-Tech y EME, con comparador.`,
     `- [Equipos por categoría](${u('/equipos')}): las ${CATEGORIAS.length} categorías del catálogo.`,
     `- [Catálogo completo](${u('/catalogo')}): todos los equipos con filtros y el PDF de ${EMPRESA.catalogoPaginas} páginas, sin formularios.`,

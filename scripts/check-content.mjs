@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { PRODUCTOS, seoTitle, seoDescription, urlFicha } from '../src/data/productos/index.ts';
 import { CATEGORIAS } from '../src/data/categorias.ts';
+import { faqsFicha } from '../src/data/faqs.ts';
 
 const errors = [];
 const warn = [];
@@ -22,7 +23,7 @@ const descs = new Map();
 for (const p of PRODUCTOS) {
   for (const r of p.relacionados) if (!slugs.has(r)) errors.push(`${p.slug}: relacionado inexistente ${r}`);
   for (const i of p.imagenes) if (!img(i)) errors.push(`${p.slug}: falta la imagen ${i}`);
-  if (!p.confirmar && !p.imagenes.length) errors.push(`${p.slug}: sin imagen`);
+  if (!p.imagenes.length) errors.push(`${p.slug}: sin imagen`);
   if (!p.ficha) continue;
   const t = seoTitle(p);
   const d = seoDescription(p);
@@ -35,7 +36,9 @@ for (const p of PRODUCTOS) {
   if (p.paraQuien.length !== 3) errors.push(`${p.slug}: paraQuien debe tener 3`);
   if (p.especificaciones.length < 3) errors.push(`${p.slug}: pocas especificaciones para ficha`);
   if (!urlFicha(p)) errors.push(`${p.slug}: sin URL`);
-  if (!p.paginaCatalogo) warn.push(`${p.slug}: sin página de catálogo`);
+  if (faqsFicha(p).length < 3) errors.push(`${p.slug}: menos de 3 preguntas frecuentes`);
+  if (p.caracteristicas.some((c) => !c.texto)) errors.push(`${p.slug}: característica sin texto`);
+  if (!p.paginaCatalogo && !p.fuente) warn.push(`${p.slug}: sin página de catálogo ni fuente`);
 }
 for (const c of CATEGORIAS) {
   if (c.seoTitle.length < 50 || c.seoTitle.length > 60) errors.push(`Categoría ${c.id}: title de ${c.seoTitle.length}: "${c.seoTitle}"`);

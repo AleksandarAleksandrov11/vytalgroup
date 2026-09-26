@@ -7,8 +7,9 @@ import PageHero from '../components/PageHero.astro';
 import Img from '../components/Img.astro';
 import WorldMap from '../components/WorldMap.astro';
 import Comparator from '../components/Comparator.astro';
+import BrandsMarquee from '../components/BrandsMarquee.astro';
 import CtaFinal from '../components/CtaFinal.astro';
-import { EMPRESA, MARCAS } from '../data/empresa';
+import { EMPRESA } from '../data/empresa';
 import { EUROPA, IBERIA } from '../data/mapa';
 import { aboutPage, organization } from '../lib/seo';
 
@@ -122,8 +123,8 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
       </div>
       <ul class="princ">
         {PRINCIPIOS.map((p, i) => (
-          <li class="princ__item" data-rv style={`--rd:${i * 80}ms`}>
-            <span class="princ__ico" aria-hidden="true"><svg class="icon"><use href={`#${p.icono}`}/></svg></span>
+          <li class="princ__item" data-rv data-tilt style={`--rd:${i * 80}ms`}>
+            <span class="princ__ico" aria-hidden="true"><svg class="icon"><use href={`#${p.icono}`}/></svg><span class="princ__n">{String(i + 1).padStart(2, '0')}</span></span>
             <h3 class="princ__t">{p.t}</h3>
             <p class="princ__d">{p.d}</p>
           </li>
@@ -141,15 +142,15 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
         <h2 class="h2" id="detras-title" data-lines>Quiénes estamos <em>detrás.</em></h2>
       </div>
       <ul class="who">
-        <li class="who__item" data-rv>
+        <li class="who__item" data-rv data-tilt>
           <p class="who__name">VytalGroup</p>
           <p class="who__d">La empresa que fundó Javier Ruiz: asesoramiento en la selección y configuración del equipo, coordinación de la importación y la entrega internacional, e instalación, formación y soporte según el proyecto.</p>
         </li>
-        <li class="who__item" data-rv style="--rd:80ms">
+        <li class="who__item" data-rv data-tilt style="--rd:80ms">
           <p class="who__name">ADC Global Tech</p>
           <p class="who__d">Trabajamos junto a ADC Global Tech y compartimos el catálogo internacional de equipamiento médico 2026.</p>
         </li>
-        <li class="who__item" data-rv style="--rd:160ms">
+        <li class="who__item" data-rv data-tilt style="--rd:160ms">
           <p class="who__name">VytaMeD</p>
           <p class="who__d">Nuestra marca propia: equipos desarrollados bajo el Reglamento Europeo de Productos Sanitarios MDR (UE) 2017/745, con soporte técnico local en España.</p>
         </li>
@@ -160,19 +161,7 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
     </div>
   </section>
 
-  <section class="sec brands-sec" aria-labelledby="marcas-title">
-    <div class="wrap">
-      <div class="sec__head">
-        <h2 class="h2" id="marcas-title" data-lines>Marcas con las que <em>trabajamos.</em></h2>
-      </div>
-      <ul class="brands" data-rv>
-        {MARCAS.map((m) => <li>{m}</li>)}
-      </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--line" href="/equipos">Ver equipos por categoría</a>
-      </div>
-    </div>
-  </section>
+  <BrandsMarquee />
 
   <section class="sec sec--white" aria-labelledby="alcance-title">
     <div class="wrap">

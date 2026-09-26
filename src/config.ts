@@ -6,6 +6,8 @@
  *  · SHEETS_ENDPOINT: URL de la aplicación web de Google Apps Script que guarda los leads
  *    (termina en /exec). Instrucciones en el README, apartado "Google Sheets".
  *  · META_PIXEL_ID: identificador numérico del píxel de Meta (Administrador de eventos).
+ *  · VERCEL_ANALYTICS: Vercel Web Analytics (activarlo también en el panel de Vercel, pestaña
+ *    Analytics). Solo se carga si el visitante acepta la analítica en el aviso de cookies.
  *
  * Con SHEETS_ENDPOINT vacío, el formulario falla con elegancia (mensaje amable, reintento y
  * WhatsApp) y avisa en la consola. Con META_PIXEL_ID vacío, el píxel no se carga nunca.
@@ -14,3 +16,4 @@
 export const SITE_URL = 'https://vytalgroup.org';
 export const SHEETS_ENDPOINT = '';
 export const META_PIXEL_ID = '';
+export const VERCEL_ANALYTICS = true;

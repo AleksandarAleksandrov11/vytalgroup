@@ -1,61 +1,61 @@
 ---
-// Comparador "Otras marcas frente a VytalGroup" (idéntico a la landing): filas que aparecen una a
-// una y checks que se dibujan con stroke-dashoffset.
+// Comparador "Lo habitual / Con VytalGroup": cinco filas en las que lo habitual se tacha solo al
+// aparecer y, a su lado, lo nuestro entra con su check dibujándose (stroke-dashoffset).
 import { COMPARADOR } from '../data/empresa';
 interface Props { caption?: string }
-const { caption = 'Otras marcas frente a VytalGroup' } = Astro.props;
+const { caption = 'Lo habitual en otras marcas frente a VytalGroup' } = Astro.props;
 ---
-<div class="cmp" data-cmp>
-  <table class="cmp__table">
-    <caption class="sr-only">{caption}</caption>
-    <thead><tr><th scope="col">Otras marcas</th><th scope="col">VytalGroup</th></tr></thead>
-    <tbody>
-      {COMPARADOR.map(([no, si], i) => (
-        <tr style={`--r:${i}`}>
-          <td><span class="cmp__x" aria-hidden="true"></span><span class="cmp__no">{no}</span></td>
-          <td><svg class="cmp__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>{si}</span></td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+<div class="vsx" data-cmp role="group" aria-label={caption}>
+  <p class="vsx__head" aria-hidden="true"><span>Lo habitual</span><span>Con VytalGroup</span></p>
+  <ul class="vsx__list">
+    {COMPARADOR.map(([no, si], i) => (
+      <li class="vsx__row" style={`--r:${i}`}>
+        <p class="vsx__no"><span class="sr-only">Lo habitual: </span><span class="vsx__strike">{no}</span></p>
+        <span class="vsx__arrow" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+        <p class="vsx__si"><svg class="vsx__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="sr-only">Con VytalGroup: </span>{si}</span></p>
+      </li>
+    ))}
+  </ul>
 </div>
 <style is:global>
-  .cmp { max-width: 960px; margin: 0 auto; padding: 8px; border-radius: var(--r-lg); background: #FFF; color: var(--ink); box-shadow: 0 1px 2px rgba(11, 25, 41, .05), 0 28px 56px -32px rgba(11, 25, 41, .35); }
-  .cmp__table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-  .cmp__table th, .cmp__table td { width: 50%; padding: 14px 10px; text-align: center; vertical-align: middle; }
-  .cmp__table th { padding-top: 18px; padding-bottom: 10px; font-size: .8125rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
-  .cmp__table td { font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
-  .cmp__table td:first-child { color: var(--ink-3); }
-  .cmp__table th + th, .cmp__table td + td { background: rgba(72, 160, 168, .1); color: var(--ink); font-weight: 500; }
-  .cmp__table th + th { color: #226870; border-radius: 16px 16px 0 0; }
-  .cmp__table tbody tr:last-child td { padding-bottom: 16px; }
-  .cmp__table tbody tr:last-child td + td { border-radius: 0 0 16px 16px; }
-  .cmp__no { text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: rgba(11, 25, 41, .3); }
-  .cmp__x, .cmp__check { display: block; flex: none; width: 26px; height: 26px; margin: 0 auto 8px; border-radius: 50%; }
-  .cmp__x { position: relative; background: rgba(11, 25, 41, .07); }
-  .cmp__x::before, .cmp__x::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 1.6px; margin: -.8px 0 0 -5px; border-radius: 1px; background: var(--ink-3); transform: rotate(45deg); }
-  .cmp__x::after { transform: rotate(-45deg); }
-  .cmp__check { padding: 5px; background: var(--teal); fill: none; stroke: #FFF; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 0; }
-  .cmp.is-armed tr { opacity: 0; transform: translateY(14px); }
-  .cmp.is-armed .cmp__check { stroke-dashoffset: 24; }
-  .cmp.is-armed.is-in tr { opacity: 1; transform: none; transition: opacity .6s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--r, 0) * 150ms); }
-  .cmp.is-armed.is-in .cmp__check { stroke-dashoffset: 0; transition: stroke-dashoffset .7s var(--ease); transition-delay: calc(var(--r, 0) * 150ms + 280ms); }
-  @media (min-width: 640px) {
-    .cmp { padding: 12px; border-radius: 30px; }
-    .cmp__table th, .cmp__table td { padding: 18px 26px; text-align: left; }
-    .cmp__table th { padding-top: 24px; padding-bottom: 12px; text-align: center; font-size: .875rem; }
-    .cmp__table td { position: relative; padding-left: 74px; font-size: 1.125rem; }
-    .cmp__x, .cmp__check { position: absolute; left: 26px; top: 50%; width: 30px; height: 30px; margin: -15px 0 0; }
-    .cmp__check { padding: 6px; }
-    .cmp__table tbody tr:last-child td { padding-bottom: 26px; }
+  .vsx { max-width: 1000px; margin: 0 auto; }
+  .vsx__head { display: none; }
+  .vsx__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .vsx__row { position: relative; display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 8px 12px; padding: 16px 18px 18px; border-radius: 22px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
+  .vsx__no { grid-column: 2; }
+  .vsx__arrow { grid-column: 1; grid-row: 1; }
+  .vsx__si { grid-column: 1 / -1; }
+  .vsx__no { font-size: .9375rem; line-height: 1.4; color: var(--ink-3); }
+  /* Tachado dibujado: una línea que cruza el texto de izquierda a derecha */
+  .vsx__strike { background: linear-gradient(currentColor, currentColor) no-repeat 0 55% / var(--st, 100%) 1.5px; padding: 0 2px; }
+  .vsx__arrow { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-ink); transform: rotate(90deg); }
+  .vsx__arrow .icon { width: 16px; height: 16px; }
+  .vsx__si { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 12px; font-size: 1.0625rem; font-weight: 560; line-height: 1.35; letter-spacing: -.015em; color: var(--ink); }
+  .vsx__check { flex: none; width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--teal); fill: none; stroke: #FFF; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 0; justify-self: center; }
+  @media (min-width: 720px) {
+    .vsx__head { display: grid; grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1.15fr); margin: 0 0 12px; padding: 0 26px; font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+    .vsx__head span:last-child { grid-column: 3; color: var(--teal-ink); }
+    .vsx__row { grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1.15fr); align-items: stretch; gap: 0; padding: 0; overflow: hidden; }
+    .vsx__no { grid-column: 1; grid-row: 1; align-self: center; padding: 22px 26px; font-size: 1.0625rem; }
+    .vsx__arrow { grid-column: 2; grid-row: 1; align-self: center; justify-self: center; transform: none; width: 40px; height: 40px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line-2); }
+    .vsx__si { grid-column: 3; grid-row: 1; grid-template-columns: 30px minmax(0, 1fr); padding: 20px 26px; background: linear-gradient(90deg, rgba(72, 160, 168, .1), rgba(72, 160, 168, .16)); font-size: 1.1875rem; }
   }
-  @media (min-width: 640px) and (max-width: 1023px) {
-    .cmp__table th, .cmp__table td { padding-right: 18px; }
-    .cmp__table td { padding-left: 64px; font-size: 1.0625rem; }
-    .cmp__x, .cmp__check { left: 20px; }
+  @media (hover: hover) and (pointer: fine) {
+    .vsx__row:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
+    .vsx__row:hover .vsx__arrow { background: var(--ink); color: #FFF; box-shadow: none; }
   }
-  @media (min-width: 1024px) { .cmp__table td { font-size: 1.1875rem; } }
-  /* Sección propia con fondo turquesa claro y trama de puntos (como en la landing) */
+  /* Entrada: fila a fila; el tachado cruza el texto y el check se dibuja después */
+  .vsx.is-armed .vsx__row { opacity: 0; transform: translateY(18px); }
+  .vsx.is-armed .vsx__strike { --st: 0%; }
+  .vsx.is-armed .vsx__si > span, .vsx.is-armed .vsx__arrow { opacity: 0; }
+  .vsx.is-armed .vsx__check { stroke-dashoffset: 24; }
+  .vsx.is-armed.is-in .vsx__row { opacity: 1; transform: none; transition: opacity .6s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--r, 0) * 140ms); }
+  .vsx.is-armed.is-in .vsx__strike { --st: 100%; transition: --st .7s var(--ease); transition-delay: calc(var(--r, 0) * 140ms + 320ms); }
+  .vsx.is-armed.is-in .vsx__arrow { opacity: 1; transition: opacity .4s ease; transition-delay: calc(var(--r, 0) * 140ms + 700ms); }
+  .vsx.is-armed.is-in .vsx__si > span { opacity: 1; transition: opacity .5s ease; transition-delay: calc(var(--r, 0) * 140ms + 800ms); }
+  .vsx.is-armed.is-in .vsx__check { stroke-dashoffset: 0; transition: stroke-dashoffset .7s var(--ease); transition-delay: calc(var(--r, 0) * 140ms + 850ms); }
+  @property --st { syntax: "<percentage>"; inherits: true; initial-value: 100%; }
+  /* Sección propia con fondo turquesa claro y trama de puntos */
   .vs { position: relative; isolation: isolate; background: linear-gradient(170deg, var(--vs-a) 0%, var(--vs-b) 100%); }
   .vs::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(rgba(43, 125, 134, .2) 1px, transparent 1.5px); background-size: 20px 20px; -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 10%, transparent 75%); }
 </style>

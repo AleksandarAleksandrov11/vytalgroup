@@ -92,11 +92,12 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 
 ## 7. Entrega
 - [x] README (estructura, local, productos y guías, Google Sheets, píxel, despliegue, dominio, pendientes y decisiones)
-- [ ] Commit y push a `claude/eloquent-turing-1arlub`
-- [ ] Resumen final con Lighthouse por plantilla y lista de páginas
+- [x] Commit y push a `claude/eloquent-turing-1arlub`
+- [x] Resumen final con Lighthouse por plantilla y lista de páginas
 
 ## Registro de la revisión final
 - Capturas de página completa de las 14 plantillas en los 12 anchos (320 a 1920), revisadas una a una.
 - Corregido en la revisión: enlaces claros sobre fondo oscuro (hero y "Sin timos"), maqueta del catálogo que se salía en 1024, texto de CTA en la ficha, control segmentado de 3 opciones a 320, tarjetas huérfanas en categorías de 4 equipos y en el índice de equipos, ancho de lectura de legales y guías, email partido en contacto a 320, nombres del pie en móvil, foto con restos de texto del catálogo, cabecera de la tabla comparativa por debajo de AA, área táctil de la comparativa, clases duplicadas (.ct) entre contacto y la tabla comparativa.
 - Pruebas: SEO estático, HTML válido, Apps Script, formulario y píxel, interfaz y animaciones, accesibilidad (axe y contraste propio) y maquetación en 12 anchos. Lighthouse móvil 99 a 100 en todas las plantillas.
+- Lighthouse móvil final (Rendimiento · Accesibilidad · Buenas prácticas · SEO): inicio 100 · 100 · 100 · 100; pilar ecógrafos 100 · 100 · 100 · 100; pilar diatermias 100 · 100 · 100 · 100; ficha 99 · 100 · 100 · 100; categoría 100 · 100 · 100 · 100; catálogo 98 · 100 · 100 · 100; sobre nosotros 100 · 100 · 100 · 100; contacto 100 · 100 · 100 · 100; guía 100 · 100 · 100 · 100. CLS 0 y LCP entre 1,35 y 1,72 s en todas.
 

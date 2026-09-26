@@ -16,8 +16,8 @@ import { h1Html } from '../lib/texto';
 
 const migas = [{ name: 'Inicio', href: '/' }, { name: 'Contacto', href: '/contacto' }];
 const CANALES = [
-  { k: 'WhatsApp', v: EMPRESA.telefono, d: 'Escríbenos y te contesta un fisioterapeuta.', href: wa('Hola, vengo de la web de VytalGroup y quiero asesoramiento.'), icono: 'i-whatsapp', externo: true },
-  { k: 'Teléfono', v: EMPRESA.telefono, d: 'Si prefieres contarlo de viva voz.', href: EMPRESA.telefonoHref, icono: 'i-phone', externo: false },
+  { k: 'WhatsApp', v: EMPRESA.telefonoTexto, d: 'Escríbenos y te contesta un fisioterapeuta.', href: wa('Hola, vengo de la web de VytalGroup y quiero asesoramiento.'), icono: 'i-whatsapp', externo: true },
+  { k: 'Teléfono', v: EMPRESA.telefonoTexto, d: 'Si prefieres contarlo de viva voz.', href: EMPRESA.telefonoHref, icono: 'i-phone', externo: false },
   { k: 'Email', v: EMPRESA.email, d: 'Para enviarnos detalles o documentación.', href: `mailto:${EMPRESA.email}`, icono: 'i-mail', externo: false },
 ];
 const PASOS = [
@@ -35,19 +35,19 @@ const PASOS = [
   migas={migas}
   jsonld={[contactPage('/contacto'), organization(), faqPage(FAQ_CONTACTO)]}
 >
-  <section class="ct" id="asesoramiento" data-hero aria-labelledby="page-title">
+  <section class="cto" id="asesoramiento" data-hero aria-labelledby="page-title">
     <div class="wrap">
       <Breadcrumbs migas={migas} />
-      <div class="ct__head">
-        <h1 class="h1 ct__title" id="page-title" set:html={h1Html('Cuéntanos qué *necesitas.*')} />
-        <p class="lead ct__lead" data-enter style="--ed:.38s">Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara, sin letra pequeña.</p>
+      <div class="cto__head">
+        <h1 class="h1 cto__title" id="page-title" set:html={h1Html('Cuéntanos qué *necesitas.*')} />
+        <p class="lead cto__lead" data-enter style="--ed:.38s">Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara, sin letra pequeña.</p>
       </div>
-      <div class="ct__grid">
-        <div class="fcard ct__form" data-enter style="--ed:.46s">
+      <div class="cto__grid">
+        <div class="fcard cto__form" data-enter style="--ed:.46s">
           <LeadForm tituloId="page-title" />
         </div>
-        <aside class="ct__side" aria-labelledby="canales-title" data-enter style="--ed:.56s">
-          <h2 class="ct__side-t" id="canales-title">¿Prefieres hablar ya?</h2>
+        <aside class="cto__side" aria-labelledby="canales-title" data-enter style="--ed:.56s">
+          <h2 class="cto__side-t" id="canales-title">¿Prefieres hablar ya?</h2>
           <ul class="chan">
             {CANALES.map((c) => (
               <li>
@@ -63,8 +63,8 @@ const PASOS = [
               </li>
             ))}
           </ul>
-          <figure class="ct__who">
-            <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="56px" widths={[112, 168]} class="ct__who-img" />
+          <figure class="cto__who">
+            <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="56px" widths={[112, 168]} class="cto__who-img" />
             <figcaption><strong>Javier Ruiz</strong><span>Fisioterapeuta y fundador de VytalGroup</span></figcaption>
           </figure>
         </aside>

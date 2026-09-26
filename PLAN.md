@@ -9,73 +9,73 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - [x] Localizar el proyecto de la landing y leer su código (CSS, JS, HTML, Apps Script, legales, pruebas)
 - [x] Leer el catálogo PDF entero (`pdftotext -layout`) y revisar sus 53 páginas en miniatura
 - [x] Extraer las imágenes del PDF (`pdfimages -all -p`)
-- [ ] Capturas de la landing en 375 y 1440 px (referencia visual)
-- [ ] `docs/design-system.md` con los tokens extraídos de la landing
-- [ ] Inventario de productos y páginas del PDF
+- [x] Capturas de la landing en 375 y 1440 px (referencia visual)
+- [x] `docs/design-system.md` con los tokens extraídos de la landing
+- [x] Inventario de productos y páginas del PDF
 
 ## 1. Base del proyecto
-- [ ] Astro 7 con salida estática, `astro.config.ts`, `src/config.ts` (SITE_URL, SHEETS_ENDPOINT "", META_PIXEL_ID "")
-- [ ] Fuentes Geist e Instrument Serif autoalojadas (woff2, subset latino, con hash)
-- [ ] Tokens CSS en un único archivo (`src/styles/tokens.css`)
-- [ ] Estilos base, tipografía, botones y utilidades
-- [ ] `vercel.json`, `robots.txt`, `llms.txt`, manifest, favicon e iconos
+- [x] Astro 7 con salida estática, `astro.config.ts`, `src/config.ts` (SITE_URL, SHEETS_ENDPOINT "", META_PIXEL_ID "")
+- [x] Fuentes Geist e Instrument Serif autoalojadas (woff2, subset latino, con hash)
+- [x] Tokens CSS en un único archivo (`src/styles/tokens.css`)
+- [x] Estilos base, tipografía, botones y utilidades
+- [x] `vercel.json`, `robots.txt`, `llms.txt`, manifest, favicon e iconos
 
 ## 2. Datos (un único origen)
-- [ ] `src/data/categorias.ts`
-- [ ] `src/data/productos.ts` (todos los productos del catálogo, sin veterinaria)
-- [ ] `src/data/faqs.ts`
-- [ ] `src/content/guias/` (colección de contenido)
-- [ ] Imágenes de producto: recorte, lienzo común, luz igualada; AVIF y WebP en varios tamaños
+- [x] `src/data/categorias.ts`
+- [x] `src/data/productos.ts` (todos los productos del catálogo, sin veterinaria)
+- [x] `src/data/faqs.ts`
+- [x] `src/content/guias/` (colección de contenido)
+- [x] Imágenes de producto: recorte, lienzo común, luz igualada; AVIF y WebP en varios tamaños
 
 ## 3. Componentes compartidos
-- [ ] Layout Base (head, SEO, OG, JSON-LD, sprite, skip link)
-- [ ] Header (escritorio con desplegable de Equipos, móvil a pantalla completa, scroll, página activa)
-- [ ] Barra CTA fija en móvil
-- [ ] Footer ampliado
-- [ ] Migas de pan (visibles y con BreadcrumbList)
-- [ ] Tarjeta de producto
-- [ ] Tarjeta de categoría
-- [ ] Control segmentado
-- [ ] Acordeón (FAQ)
-- [ ] Carrusel con scroll-snap
-- [ ] Galería de producto
-- [ ] Tabla de especificaciones
-- [ ] Comparador "Otras marcas frente a VytalGroup"
-- [ ] Bloque CTA final + formulario de 4 pasos
-- [ ] Banner y panel de cookies
-- [ ] Cinta de confianza (marquee)
-- [ ] Mapa internacional (SVG animado)
-- [ ] Mockup 3D del catálogo
-- [ ] Línea temporal "Así trabajamos"
-- [ ] Barrido de ecografía (SVG)
-- [ ] Imagen OG por página pilar y por producto (generada en el build, 1200 × 630)
+- [x] Layout Base (head, SEO, OG, JSON-LD, sprite, skip link)
+- [x] Header (escritorio con desplegable de Equipos, móvil a pantalla completa, scroll, página activa)
+- [x] Barra CTA fija en móvil
+- [x] Footer ampliado
+- [x] Migas de pan (visibles y con BreadcrumbList)
+- [x] Tarjeta de producto
+- [x] Tarjeta de categoría
+- [x] Control segmentado
+- [x] Acordeón (FAQ)
+- [x] Carrusel con scroll-snap
+- [x] Galería de producto
+- [x] Tabla de especificaciones
+- [x] Comparador "Otras marcas frente a VytalGroup"
+- [x] Bloque CTA final + formulario de 4 pasos
+- [x] Banner y panel de cookies
+- [x] Cinta de confianza (marquee)
+- [x] Mapa internacional (SVG animado)
+- [x] Mockup 3D del catálogo
+- [x] Línea temporal "Así trabajamos"
+- [x] Barrido de ecografía (SVG)
+- [x] Imagen OG por página pilar y por producto (generada en el build, 1200 × 630)
 
 ## 4. Scripts (JS vanilla por islas)
-- [ ] Atribución (UTM, fbclid, fbc) en sessionStorage
-- [ ] Consentimiento (12 meses) y tracking centralizado (PageView, ViewContent, Lead, DescargaCatalogo, Contact, Search)
-- [ ] Formulario (4 pasos, preselección, validación, honeypot, 3 s, doble envío, éxito y error)
-- [ ] Desplegable propio (prefijo y "Otro equipo")
-- [ ] Animaciones (entradas, titulares por líneas, parallax, halo, magnetismo, conteo, sticky, mapa, mockup, línea temporal)
-- [ ] Filtro del catálogo (chips, buscador, orden, URL, FLIP)
-- [ ] `integrations/google-sheets.gs` con las columnas nuevas (Origen y Página)
+- [x] Atribución (UTM, fbclid, fbc) en sessionStorage
+- [x] Consentimiento (12 meses) y tracking centralizado (PageView, ViewContent, Lead, DescargaCatalogo, Contact, Search)
+- [x] Formulario (4 pasos, preselección, validación, honeypot, 3 s, doble envío, éxito y error)
+- [x] Desplegable propio (prefijo y "Otro equipo")
+- [x] Animaciones (entradas, titulares por líneas, parallax, halo, magnetismo, conteo, sticky, mapa, mockup, línea temporal)
+- [x] Filtro del catálogo (chips, buscador, orden, URL, FLIP)
+- [x] `integrations/google-sheets.gs` con las columnas nuevas (Origen y Página)
 
 ## 5. Páginas
-- [ ] `/` Inicio (13 secciones)
-- [ ] `/ecografos` pilar
-- [ ] `/ecografos/[modelo]` fichas (10)
-- [ ] `/diatermias` pilar
-- [ ] `/diatermias/[modelo]` fichas (4)
-- [ ] `/equipos` índice de categorías
-- [ ] `/equipos/[categoria]` páginas de categoría
-- [ ] `/equipos/[categoria]/[modelo]` fichas
-- [ ] `/catalogo` catálogo navegable + descarga
-- [ ] `/sobre-nosotros`
-- [ ] `/contacto`
-- [ ] `/guias` índice
-- [ ] `/guias/[slug]` (3 guías de 900 a 1.400 palabras)
-- [ ] `/aviso-legal`, `/privacidad`, `/cookies`
-- [ ] `/404`
-- [ ] `sitemap.xml`
+- [x] `/` Inicio (13 secciones)
+- [x] `/ecografos` pilar
+- [x] `/ecografos/[modelo]` fichas (10)
+- [x] `/diatermias` pilar
+- [x] `/diatermias/[modelo]` fichas (4)
+- [x] `/equipos` índice de categorías
+- [x] `/equipos/[categoria]` páginas de categoría
+- [x] `/equipos/[categoria]/[modelo]` fichas
+- [x] `/catalogo` catálogo navegable + descarga
+- [x] `/sobre-nosotros`
+- [x] `/contacto`
+- [x] `/guias` índice
+- [x] `/guias/[slug]` (3 guías de 900 a 1.400 palabras)
+- [x] `/aviso-legal`, `/privacidad`, `/cookies`
+- [x] `/404`
+- [x] `sitemap.xml`
 
 ## 6. Revisión final (sección 16 del brief)
 - [ ] Coherencia con la landing (capturas lado a lado)

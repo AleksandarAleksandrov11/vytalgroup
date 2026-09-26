@@ -10,5 +10,5 @@ const P = (t: string) => `[Pendiente: ${t}]`;
   <div><dt>Domicilio</dt><dd><mark class="pending">{P('dirección completa')}</mark></dd></div>
   <div><dt>Datos registrales</dt><dd><mark class="pending">{P('Registro Mercantil, tomo, folio y hoja, o indicar que no procede')}</mark></dd></div>
   <div><dt>Email</dt><dd><a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a></dd></div>
-  <div><dt>Teléfono</dt><dd><a href={EMPRESA.telefonoHref}>{EMPRESA.telefono}</a></dd></div>
+  <div><dt>Teléfono</dt><dd><a href={EMPRESA.telefonoHref}>{EMPRESA.telefonoTexto}</a></dd></div>
 </dl>

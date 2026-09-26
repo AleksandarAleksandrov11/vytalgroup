@@ -6,6 +6,8 @@ export const EMPRESA = {
   marcaPropia: 'VytaMeD',
   telefono: '+34 616 372 644',
   telefonoHref: 'tel:+34616372644',
+  /** Para mostrar en pantalla: con espacios de no separación, para que el número no se parta */
+  telefonoTexto: '+34\u00A0616\u00A0372\u00A0644',
   whatsapp: '34616372644',
   email: 'vytalkinetech@gmail.com',
   instagramMarca: { usuario: 'vytalgroup', url: 'https://www.instagram.com/vytalgroup/' },

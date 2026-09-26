@@ -121,5 +121,5 @@
   .cat__copy { text-align: left; justify-items: start; }
   .cat__copy .h2 { text-align: left; }
   .cat__actions { justify-content: flex-start; }
-  .cat .mk { width: 300px; }
+  .cat .mk { width: clamp(200px, 20vw, 300px); }
 }

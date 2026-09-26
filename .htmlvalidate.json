@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "html-validate:recommended"
+  ],
+  "rules": {
+    "no-inline-style": "off",
+    "attribute-boolean-style": "off",
+    "attribute-empty-style": "off",
+    "void-style": "off",
+    "no-trailing-whitespace": "off",
+    "doctype-style": "off",
+    "long-title": "off",
+    "no-redundant-role": "off",
+    "prefer-native-element": "off",
+    "valid-id": [
+      "error",
+      {
+        "relaxed": true
+      }
+    ],
+    "tel-non-breaking": [
+      "error",
+      {
+        "ignoreClasses": [
+          "chan__card"
+        ]
+      }
+    ]
+  }
+}

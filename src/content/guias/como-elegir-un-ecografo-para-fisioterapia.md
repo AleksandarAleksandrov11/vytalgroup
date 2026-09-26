@@ -42,11 +42,11 @@ Un portátil te da una pantalla grande, controles físicos y más potencia, sin 
 - **[Acclarix AX8](/ecografos/acclarix-ax8):** portátil premium con monitor HD de 15″ y doble pantalla táctil, pensado para procedimientos guiados. Pesa 9,25 kg con batería.
 - **[Acclarix AX9](/ecografos/acclarix-ax9):** orientado a cardiología, vascular y urgencias, con cálculos automáticos y ECG integrado.
 
-<aside class="g-cta">
+<div class="g-cta">
 <p class="g-cta__t">¿Dudas entre dos ecógrafos?</p>
 <p class="g-cta__d">Cuéntame cómo trabajas y te digo cuál encaja contigo, sin venderte lo que no necesitas.</p>
 <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-</aside>
+</div>
 
 ### De carro: para una consulta fija y completa
 

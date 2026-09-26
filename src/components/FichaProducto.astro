@@ -83,12 +83,12 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
             {p.datosClave.map((d) => <div><dt>{d.etiqueta}</dt><dd data-count>{d.valor}</dd></div>)}
           </dl>
           {p.modelos && (
-            <ul class="fp__models" aria-label="Versiones">
+            <ul class="fp__models">
               {p.modelos.map((m) => <li><strong>{m.nombre}</strong> {m.detalle}</li>)}
             </ul>
           )}
           <div class="fp__actions">
-            <a class="btn btn--primary btn--lg" href="#asesoramiento" data-want={etiquetaModelo(p)} data-equipo={c.formEquipo} data-otro={c.formOtro} data-magnetic>Quiero asesoramiento sobre este equipo</a>
+            <a class="btn btn--primary btn--lg" href="#asesoramiento" data-want={etiquetaModelo(p)} data-equipo={c.formEquipo} data-otro={c.formOtro} data-magnetic>Quiero asesoramiento</a>
             <a class="link fp__wa" href={wa(waTexto)} target="_blank" rel="noopener" data-origen="ficha"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>Pregúntanos por WhatsApp</a>
           </div>
           <p class="fp__price">Precio según configuración. Pídenos una propuesta sin compromiso.{p.nota && ` ${p.nota}`}</p>

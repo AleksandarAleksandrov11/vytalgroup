@@ -1,19 +1,19 @@
 /* ==========================================================================
    Contacto
    ========================================================================== */
-.ct { position: relative; padding: calc(var(--hd) + 20px) 0 var(--sec); background: radial-gradient(70% 40% at 50% 0%, rgba(72, 160, 168, .1), transparent 70%), var(--bg); }
-.ct .bc ol { justify-content: center; }
-.ct__head { max-width: 880px; margin: clamp(28px, 5vw, 56px) auto 0; text-align: center; }
-.ct__title { font-size: clamp(2.375rem, 1.7rem + 3.1vw, 4.5rem); }
-.ct__lead { max-width: 44ch; margin: 18px auto 0; }
-.ct__grid { display: grid; gap: 28px; max-width: 1060px; margin: clamp(28px, 4vw, 48px) auto 0; }
-.ct__form { margin-top: 0; }
-.ct__side { display: grid; gap: 12px; align-content: start; }
-.ct__side-t { font-size: 1.125rem; font-weight: 560; letter-spacing: -.01em; }
-@media (max-width: 899px) { .ct__side-t { text-align: center; } }
+.cto { position: relative; padding: calc(var(--hd) + 20px) 0 var(--sec); background: radial-gradient(70% 40% at 50% 0%, rgba(72, 160, 168, .1), transparent 70%), var(--bg); }
+.cto .bc ol { justify-content: center; }
+.cto__head { max-width: 880px; margin: clamp(28px, 5vw, 56px) auto 0; text-align: center; }
+.cto__title { font-size: clamp(2.375rem, 1.7rem + 3.1vw, 4.5rem); }
+.cto__lead { max-width: 44ch; margin: 18px auto 0; }
+.cto__grid { display: grid; gap: 28px; max-width: 1060px; margin: clamp(28px, 4vw, 48px) auto 0; }
+.cto__form { margin-top: 0; }
+.cto__side { display: grid; gap: 12px; align-content: start; }
+.cto__side-t { font-size: 1.125rem; font-weight: 560; letter-spacing: -.01em; }
+@media (max-width: 899px) { .cto__side-t { text-align: center; } }
 @media (min-width: 900px) {
-  .ct__grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
-  .ct__side { position: sticky; top: calc(var(--hd) + 24px); padding-top: 8px; }
+  .cto__grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .cto__side { position: sticky; top: calc(var(--hd) + 24px); padding-top: 8px; }
 }
 
 /* Vías directas */
@@ -32,9 +32,9 @@
 }
 
 /* Quién te atiende */
-.ct__who { display: flex; align-items: center; gap: 14px; margin: 10px 0 0; padding: 16px 4px 0; border-top: 1px solid var(--line); }
-.ct__who picture { flex: none; }
-.ct__who-img { display: block; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: 50% 20%; }
-.ct__who figcaption { display: grid; gap: 2px; font-size: .875rem; line-height: 1.35; color: var(--ink-3); }
-.ct__who strong { font-size: .9375rem; font-weight: 560; color: var(--ink); }
-@media (max-width: 899px) { .ct__who { justify-content: center; } }
+.cto__who { display: flex; align-items: center; gap: 14px; margin: 10px 0 0; padding: 16px 4px 0; border-top: 1px solid var(--line); }
+.cto__who picture { flex: none; }
+.cto__who-img { display: block; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: 50% 20%; }
+.cto__who figcaption { display: grid; gap: 2px; font-size: .875rem; line-height: 1.35; color: var(--ink-3); }
+.cto__who strong { font-size: .9375rem; font-weight: 560; color: var(--ink); }
+@media (max-width: 899px) { .cto__who { justify-content: center; } }

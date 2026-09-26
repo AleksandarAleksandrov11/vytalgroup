@@ -22,8 +22,8 @@ const dW = `${d1W.src} 960w, ${d2W.src} 1600w`;
 ---
 {modo === 'preload' ? (
   <>
-    <link rel="preload" as="image" type="image/avif" imagesrcset={`${mA.src} 600w`} imagesizes="100vw" media="(max-width: 899px)" fetchpriority="high" />
-    <link rel="preload" as="image" type="image/avif" imagesrcset={dA} imagesizes="100vw" media="(min-width: 900px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" href={mA.src} imagesrcset={`${mA.src} 600w`} imagesizes="100vw" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" href={d1A.src} imagesrcset={dA} imagesizes="100vw" media="(min-width: 900px)" fetchpriority="high" />
   </>
 ) : (
   <picture class="hero__bg" aria-hidden="true">

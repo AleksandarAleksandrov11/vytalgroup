@@ -49,11 +49,11 @@ Pide que todo esto quede por escrito, en la propuesta o en el contrato, y guarda
 
 Con nosotros son 2 años en piezas y mano de obra, sin letra pequeña. Y si algo no te queda claro, te lo explicamos antes de comprar, no después.
 
-<aside class="g-cta">
+<div class="g-cta">
 <p class="g-cta__t">¿Quieres que lo revisemos juntos?</p>
 <p class="g-cta__d">Te enseñamos la garantía, el mantenimiento y la documentación del equipo que te interesa antes de que decidas.</p>
 <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-</aside>
+</div>
 
 ## 4. El mantenimiento, claro desde el primer día
 

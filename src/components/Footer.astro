@@ -16,7 +16,7 @@ const letras = 'VytalGroup'.split('');
         <a class="ft__logo" href="/" aria-label="VytalGroup, ir al inicio"><svg class="logo logo--dark" viewBox="0 0 1117 171" aria-hidden="true"><use href="#logo"/></svg></a>
         <p class="ft__claim">Equipos médicos de alta calidad. <em>Sin letra pequeña.</em></p>
         <ul class="ft__list ft__contact">
-          <li><a href={EMPRESA.telefonoHref} data-contact="telefono" data-origen="pie"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>{EMPRESA.telefono}</a></li>
+          <li><a href={EMPRESA.telefonoHref} data-contact="telefono" data-origen="pie"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>{EMPRESA.telefonoTexto}</a></li>
           <li><a href={wa()} target="_blank" rel="noopener" data-contact="whatsapp" data-origen="pie" data-ft-wa><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a></li>
           <li><a href={`mailto:${EMPRESA.email}`} data-contact="email" data-origen="pie"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>{EMPRESA.email}</a></li>
         </ul>

@@ -537,6 +537,11 @@ document.addEventListener('click', (e) => {
   const dist = Math.abs(target.getBoundingClientRect().top);
   target.scrollIntoView({ behavior: reduced || dist > window.innerHeight * 1.5 ? 'instant' as ScrollBehavior : 'smooth', block: 'start' });
   history.replaceState(null, '', a.getAttribute('href'));
+  // El foco acompaña al salto (teclado y lectores de pantalla); el formulario gestiona el suyo
+  if (target !== formSec) {
+    if (!target.matches('a[href], button, input, select, textarea, [tabindex]')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+  }
 });
 function afterScroll(fn: () => void) {
   let done = false;

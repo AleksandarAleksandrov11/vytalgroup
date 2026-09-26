@@ -29,6 +29,7 @@ a { color: inherit; -webkit-tap-highlight-color: transparent; }
 ul[class], ol[class] { list-style: none; padding: 0; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+[tabindex="-1"]:focus { outline: none; }
 ::selection { background: rgba(72, 160, 168, .28); }
 /* Barras de scroll discretas y de marca */
 * { scrollbar-width: thin; scrollbar-color: rgba(11, 25, 41, .28) transparent; }
@@ -93,6 +94,7 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .on-dark { color: #FFF; }
 .on-dark :focus-visible { outline-color: #FFF; }
 .on-dark .link { color: #FFF; text-decoration-color: rgba(255, 255, 255, .4); }
+.sec--dark .link, .why .link, .hero .link, .link.on-dark-link { color: #FFF; text-decoration-color: rgba(255, 255, 255, .4); }
 .on-dark .lead { color: var(--on-dark); }
 
 /* ---------- Secciones ---------- */

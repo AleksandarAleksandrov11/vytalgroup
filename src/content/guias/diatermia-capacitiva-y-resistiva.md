@@ -38,11 +38,11 @@ Algunos equipos añaden un cabezal bipolar, que integra los dos polos en el mism
 
 El HR Tek, además, organiza el trabajo en tres modos: atermia, homeotermia e hipertermia. Es una forma práctica de pensar la sesión según cuánto calor buscas.
 
-<aside class="g-cta">
+<div class="g-cta">
 <p class="g-cta__t">¿Te ayudo a elegir?</p>
 <p class="g-cta__d">Cuéntame qué tratas y cómo trabajas, y te digo qué diatermia encaja contigo.</p>
 <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-</aside>
+</div>
 
 ## Qué mirar al elegir equipo
 

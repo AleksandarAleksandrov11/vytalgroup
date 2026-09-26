@@ -1,8 +1,9 @@
 // Imágenes Open Graph (1200 × 630, JPG) generadas en el build con satori y resvg.
 // Mismo ADN que la web: fondo marino, titular en Geist con el acento en Instrument Serif cursiva
 // y, a la derecha, el producto sobre una tarjeta blanca o una foto.
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
@@ -63,7 +64,24 @@ function titular(texto: string, size: number) {
 
 export interface OgDatos { kicker: string; titulo: string; sub?: string; imagen?: string; foto?: boolean }
 
+// Caché en disco: si no cambian los datos, la imagen ni este archivo, se reutiliza la JPG ya generada
+const CACHE = join(ROOT, 'node_modules/.cache/vg-og');
+function clave(d: OgDatos) {
+  const h = createHash('sha1').update(JSON.stringify(d)).update(readFileSync(join(ROOT, 'src/lib/og.ts')));
+  if (d.imagen) h.update(String(statSync(archivo(d.imagen)).mtimeMs));
+  return h.digest('hex');
+}
+
 export async function ogJpg(d: OgDatos) {
+  const k = clave(d);
+  const f = join(CACHE, `${k}.jpg`);
+  if (existsSync(f)) return readFileSync(f);
+  const jpg = await generar(d);
+  try { mkdirSync(CACHE, { recursive: true }); writeFileSync(f, jpg); } catch { /* sin caché, no pasa nada */ }
+  return jpg;
+}
+
+async function generar(d: OgDatos) {
   const con = !!d.imagen;
   const plano = d.titulo.replace(/\*/g, '');
   const size = plano.length <= 22 ? 72 : plano.length <= 40 ? 62 : 52;

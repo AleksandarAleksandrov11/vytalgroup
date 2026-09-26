@@ -1,0 +1,25 @@
+---
+// Plantilla de las páginas legales: sin formulario ni CTA final, noindex y lectura cómoda.
+// Los datos del titular quedan VACÍOS con huecos marcados hasta que el cliente los facilite.
+import '../styles/legal.css';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { h1Html } from '../lib/texto';
+
+interface Props { titulo: string; seo: string; description: string; path: string; lead: string }
+const { titulo, seo, description, path, lead } = Astro.props;
+const migas = [{ name: 'Inicio', href: '/' }, { name: titulo.replace(/\*/g, '').replace(/\.$/, ''), href: path }];
+---
+<Base title={seo} description={description} path={path} noindex conFormulario={false} seccion="legal" migas={migas}>
+  <section class="legal" data-hero aria-labelledby="page-title">
+    <div class="wrap wrap--legal">
+      <Breadcrumbs migas={migas} />
+      <h1 class="h1 legal__title" id="page-title" set:html={h1Html(titulo)} />
+      <p class="legal__lead" data-enter style="--ed:.38s">{lead}</p>
+      <article class="legal__body">
+        <slot />
+        <p class="legal__date">Última actualización: 26 de septiembre de 2026.</p>
+      </article>
+    </div>
+  </section>
+</Base>

@@ -11,9 +11,9 @@
 /* La historia */
 .story__list { display: grid; gap: clamp(56px, 8vw, 112px); max-width: 1080px; margin: 0 auto; padding: 0; list-style: none; }
 .story__item { display: grid; gap: 24px; align-items: center; }
-.story__visual { position: relative; display: grid; place-items: center; aspect-ratio: 520 / 410; border-radius: var(--r-xl); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+.story__visual { position: relative; display: grid; place-items: center; aspect-ratio: 520 / 420; border-radius: var(--r-xl); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
 .story__visual svg { width: 100%; height: 100%; overflow: visible; }
-.story__dots { stroke: rgba(11, 25, 41, .16); stroke-width: 3.4; stroke-linecap: round; }
+.story__dots { fill: none; stroke: rgba(11, 25, 41, .24); stroke-width: 4; stroke-linecap: round; }
 .story__route { fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
 .story__pin { fill: #FFF; stroke: var(--teal-ink); stroke-width: 3; }
 .story__pin--to { fill: var(--teal); }
@@ -25,7 +25,7 @@
 .story__small { font-family: var(--serif); font-style: italic; font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); color: var(--teal-light); }
 .story__visual--photo { background: var(--navy-2); }
 .story__visual--photo picture, .story__visual--photo img { width: 100%; height: 100%; }
-.story__visual--photo img { object-fit: cover; object-position: 50% 30%; }
+.story__visual--photo img { object-fit: cover; }
 .story__txt { display: grid; gap: 12px; }
 .story__n { font-family: var(--serif); font-style: italic; font-size: 1.75rem; line-height: 1; color: var(--teal-ink); }
 .story__t { font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem); font-weight: 560; line-height: 1.1; letter-spacing: -.03em; }
@@ -53,9 +53,14 @@
 .who__d { font-size: .9375rem; line-height: 1.55; color: var(--ink-2); }
 @media (min-width: 768px) { .who { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
 
-/* Marcas: solo texto, con estilo tipográfico cuidado */
+/* Marcas: solo texto, en una rejilla de celdas con filete fino */
 .brands-sec { background: var(--mist); }
-.brands { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 6px 0; max-width: 1000px; margin: 0 auto; padding: 0; list-style: none; }
-.brands li { display: inline-flex; align-items: baseline; font-size: clamp(1.75rem, 1.2rem + 2.4vw, 3.25rem); font-weight: 560; letter-spacing: -.04em; color: var(--ink); transition: color .25s ease; }
-.brands li:nth-child(even) { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--teal-ink); }
-.brands li + li::before { content: "·"; margin: 0 .4em; font-family: var(--sans); font-style: normal; color: var(--line-2); }
+.brands { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; max-width: 960px; margin: 0 auto; padding: 0; list-style: none; border: 1px solid var(--line-2); border-radius: var(--r-lg); overflow: hidden; background: var(--line-2); }
+.brands li { display: grid; place-items: center; min-height: 116px; padding: 20px 12px; background: var(--mist); font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem); font-weight: 560; letter-spacing: -.04em; line-height: 1; color: var(--ink); text-align: center; }
+.brands li:nth-child(4n + 2), .brands li:nth-child(4n + 3) { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--teal-ink); }
+@media (min-width: 768px) {
+  .brands { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .brands li { min-height: 148px; }
+  .brands li:nth-child(n) { font-family: var(--sans); font-style: normal; font-weight: 560; letter-spacing: -.04em; color: var(--ink); }
+  .brands li:nth-child(even) { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--teal-ink); }
+}

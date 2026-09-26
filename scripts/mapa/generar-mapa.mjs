@@ -3,7 +3,7 @@
 // Uso: node scripts/mapa/generar-mapa.mjs   (solo hace falta volver a ejecutarlo si cambia el diseño)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { feature } from 'topojson-client';
-import { geoEquirectangular, geoContains } from 'd3-geo';
+import { geoEquirectangular, geoMercator, geoContains } from 'd3-geo';
 
 const topo = JSON.parse(readFileSync('node_modules/world-atlas/land-110m.json', 'utf8'));
 const land = feature(topo, topo.objects.land);
@@ -37,31 +37,38 @@ const puntos = [
   { zona: 'latam', nombre: 'Chile', xy: P(-70.6, -33.4) },
   { zona: 'latam', nombre: 'Argentina', xy: P(-58.4, -34.6) },
 ];
-// Detalle de Europa occidental para "La historia" (Huelva, Málaga y Luxemburgo)
-const E = { lon0: -11, lon1: 15, lat0: 34.5, lat1: 55 };
-const EW = 520;
-const eproj = geoEquirectangular().fitWidth(EW, { type: 'MultiPoint', coordinates: [[E.lon0, E.lat0], [E.lon1, E.lat1]] });
-const EH = Math.round(eproj([E.lon0, E.lat0])[1]);
-const ES = 10;
-const edots = [];
-for (let y = ES / 2; y < EH; y += ES) {
-  for (let x = ES / 2; x < EW; x += ES) {
-    const ll = eproj.invert([x, y]);
-    if (geoContains(land, ll)) edots.push([Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
+// Mapas regionales para "La historia" (Huelva, Málaga y Luxemburgo), en Mercator y con más detalle (1:50m)
+const topo50 = JSON.parse(readFileSync('node_modules/world-atlas/land-50m.json', 'utf8'));
+const land50 = feature(topo50, topo50.objects.land);
+const RW = 520;
+const RH = 420;
+const RS = 10;
+function region([[lon0, lat0], [lon1, lat1]], lugares) {
+  const proj = geoMercator().fitExtent([[0, 0], [RW, RH]], { type: 'MultiPoint', coordinates: [[lon0, lat0], [lon1, lat1]] });
+  const pts = [];
+  for (let y = RS / 2; y < RH; y += RS) {
+    for (let x = RS / 2; x < RW; x += RS) {
+      if (geoContains(land50, proj.invert([x, y]))) pts.push(`M${x} ${y}h0`);
+    }
   }
+  const r = { w: RW, h: RH, d: pts.join('') };
+  for (const [k, [lon, lat]] of Object.entries(lugares)) r[k] = proj([lon, lat]).map((v) => Math.round(v * 10) / 10);
+  return r;
 }
-const EP = (lon, lat) => eproj([lon, lat]).map((v) => Math.round(v * 10) / 10);
-const europa = {
-  w: EW, h: EH,
-  d: edots.map(([x, y]) => `M${x} ${y}h0`).join(''),
-  huelva: EP(-6.95, 37.26), malaga: EP(-4.42, 36.72), luxemburgo: EP(6.13, 49.61),
-};
+const HUELVA = [-6.95, 37.26];
+const MALAGA = [-4.42, 36.72];
+const LUXEMBURGO = [6.13, 49.61];
+const iberia = region([[-9.9, 35.6], [3.6, 44.1]], { huelva: HUELVA, malaga: MALAGA });
+const europa = region([[-10.5, 35.2], [16, 53.2]], { malaga: MALAGA, luxemburgo: LUXEMBURGO });
+const edots = europa.d.match(/M/g);
+const idots = iberia.d.match(/M/g);
 
-const out = `// Generado por scripts/mapa/generar-mapa.mjs (Natural Earth 1:110m vía world-atlas). No editar a mano.
+const out = `// Generado por scripts/mapa/generar-mapa.mjs (Natural Earth 1:110m y 1:50m vía world-atlas). No editar a mano.
 export const MAPA = { w: ${W}, h: ${H}, puntos: ${dots.length} } as const;
 export const MAPA_PATH = ${JSON.stringify(d)};
 export const DESTINOS = ${JSON.stringify(puntos)} as { zona: 'europa' | 'usa' | 'latam'; nombre: string; xy: [number, number] }[];
-export const EUROPA = ${JSON.stringify(europa)} as { w: number; h: number; d: string; huelva: [number, number]; malaga: [number, number]; luxemburgo: [number, number] };
+export const IBERIA = ${JSON.stringify(iberia)} as { w: number; h: number; d: string; huelva: [number, number]; malaga: [number, number] };
+export const EUROPA = ${JSON.stringify(europa)} as { w: number; h: number; d: string; malaga: [number, number]; luxemburgo: [number, number] };
 `;
 writeFileSync('src/data/mapa.ts', out);
-console.log(`${dots.length} puntos, ${(d.length / 1024).toFixed(1)} KB · Europa: ${edots.length} puntos, ${(europa.d.length / 1024).toFixed(1)} KB, ${EW}x${EH}`);
+console.log(`${dots.length} puntos, ${(d.length / 1024).toFixed(1)} KB · Península: ${idots.length} puntos, ${(iberia.d.length / 1024).toFixed(1)} KB · Europa: ${edots.length} puntos, ${(europa.d.length / 1024).toFixed(1)} KB`);

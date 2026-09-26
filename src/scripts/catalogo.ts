@@ -119,8 +119,27 @@ export function initCatalogo() {
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } });
 
   apply();
-  // El chip activo, a la vista en móvil (solo desplazamiento horizontal de la fila de chips)
-  const activo = root.querySelector<HTMLElement>('.chip[aria-pressed="true"]');
+
+  // Fila de chips: máscara de desvanecido y flechas solo hacia donde queda contenido por ver
+  const rail = root.querySelector<HTMLElement>('[data-rail]');
   const fila = root.querySelector<HTMLElement>('[data-chips]');
-  if (activo && fila && state.cat) fila.scrollLeft = activo.offsetLeft - fila.clientWidth / 2 + activo.offsetWidth / 2;
+  if (rail && fila) {
+    let raf = 0;
+    const edges = () => {
+      raf = 0;
+      const max = fila.scrollWidth - fila.clientWidth;
+      rail.toggleAttribute('data-at-start', fila.scrollLeft <= 2);
+      rail.toggleAttribute('data-at-end', fila.scrollLeft >= max - 2);
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(edges); };
+    fila.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue, { passive: true });
+    const step = (dir: number) => fila.scrollBy({ left: dir * fila.clientWidth * 0.7, behavior: reduced ? 'auto' : 'smooth' });
+    rail.querySelector('[data-rail-prev]')?.addEventListener('click', () => step(-1));
+    rail.querySelector('[data-rail-next]')?.addEventListener('click', () => step(1));
+    // El chip activo, a la vista (solo desplazamiento horizontal de la fila de chips)
+    const activo = fila.querySelector<HTMLElement>('.chip[aria-pressed="true"]');
+    if (activo && state.cat) fila.scrollLeft = activo.offsetLeft - fila.clientWidth / 2 + activo.offsetWidth / 2;
+    edges();
+  }
 }

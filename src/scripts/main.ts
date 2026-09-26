@@ -583,6 +583,33 @@ if (bar) {
 // ------------------------------------------------------------------ catálogo: filtros (carga diferida)
 if ($('[data-catalogo]')) import('./catalogo').then((m) => m.initCatalogo());
 
+// ------------------------------------------------------------------ guías: índice abierto en escritorio y sección activa
+const toc = $('[data-toc]');
+if (toc) {
+  const det = toc.querySelector('details');
+  const desk = matchMedia('(min-width: 1100px)');
+  const sync = () => { if (det) det.open = desk.matches; };
+  sync();
+  desk.addEventListener('change', sync);
+  const links = [...toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+  const pares = links.map((a) => ({ a, h: document.getElementById(decodeURIComponent(a.hash.slice(1))) })).filter((x): x is { a: HTMLAnchorElement; h: HTMLElement } => !!x.h);
+  const secs = pares.map((x) => x.h);
+  if (hasIO && secs.length) {
+    const visibles = new Set<Element>();
+    const marcar = () => {
+      const activo = secs.find((s) => visibles.has(s)) || secs.filter((s) => s.getBoundingClientRect().top < 0).pop();
+      pares.forEach(({ a, h }) => { if (h === activo) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    };
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => (e.isIntersecting ? visibles.add(e.target) : visibles.delete(e.target)));
+      marcar();
+    }, { rootMargin: '-15% 0px -70% 0px' });
+    secs.forEach((s) => io.observe(s));
+  }
+  // En móvil, al elegir un apartado el índice se cierra
+  links.forEach((a) => a.addEventListener('click', () => { if (det && !desk.matches) det.open = false; }));
+}
+
 // ------------------------------------------------------------------ nombre animado del pie
 const word = $('[data-word]');
 if (word && hasIO && !reduced && word.getBoundingClientRect().top >= window.innerHeight) {

@@ -1,17 +1,19 @@
 ---
-// "Así trabajamos": 4 pasos en una línea temporal que se dibuja al hacer scroll
-// (vertical en móvil, horizontal en escritorio). Pasos del catálogo (página 53) y del brief.
-const PASOS = [
+// Línea temporal que se dibuja al hacer scroll (vertical en móvil, horizontal en escritorio).
+// Por defecto, "Así trabajamos": 4 pasos del catálogo (página 53) y del brief.
+interface Props { pasos?: { t: string; d: string }[] }
+const PASOS_TRABAJO = [
   { t: 'Asesoramiento', d: 'Nos cuentas cómo trabajas y te recomendamos el equipo y la configuración que encajan contigo.' },
   { t: 'Configuración', d: 'Cerramos contigo sondas, cabezales y accesorios, y te enviamos una propuesta clara.' },
   { t: 'Entrega e instalación', d: 'Coordinamos importación y entrega en UE, USA y LATAM, con la aduana gestionada, e instalación según el proyecto.' },
   { t: 'Formación y soporte', d: 'Formación y soporte según el proyecto, con un mantenimiento claro desde el día uno.' },
 ];
+const { pasos = PASOS_TRABAJO } = Astro.props;
 ---
-<div class="tl" data-timeline>
+<div class="tl" data-timeline style={`--n:${pasos.length}`}>
   <span class="tl__line" aria-hidden="true"><span></span></span>
   <ol class="tl__list">
-  {PASOS.map((p, i) => (
+  {pasos.map((p, i) => (
     <li class="tl__step" data-tl-step>
       <span class="tl__dot" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
       <h3 class="tl__t">{p.t}</h3>
@@ -32,7 +34,7 @@ const PASOS = [
   .tl__d { max-width: 36ch; margin-top: 6px; font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
   @media (min-width: 900px) {
     .tl { padding: 72px 0 0; }
-    .tl__list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+    .tl__list { grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 32px; }
     .tl__line { left: 22px; right: 22px; top: 21px; bottom: auto; width: auto; height: 2px; }
     .tl__line span { transform-origin: left; transform: scaleX(var(--tl, 0)); }
     .tl__dot { left: 0; top: -72px; }

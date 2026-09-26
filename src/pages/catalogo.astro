@@ -39,15 +39,19 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
     <h2 class="sr-only" id="productos-title">Equipos del catálogo</h2>
     <div class="cf" data-js-only>
       <div class="wrap cf__in">
-        <div class="cf__chips" role="group" aria-label="Filtrar por categoría" data-chips>
-          <button class="chip" type="button" data-cat="" aria-pressed="true">Todos</button>
-          {CATEGORIAS.map((c) => <button class="chip" type="button" data-cat={c.id} aria-pressed="false">{c.corto}</button>)}
+        <div class="cf__rail" data-rail data-at-start>
+          <div class="cf__chips" role="group" aria-label="Filtrar por categoría" data-chips>
+            <button class="chip" type="button" data-cat="" aria-pressed="true">Todos</button>
+            {CATEGORIAS.map((c) => <button class="chip" type="button" data-cat={c.id} aria-pressed="false">{c.corto}</button>)}
+          </div>
+          <button class="cf__arrow cf__arrow--prev" type="button" tabindex="-1" aria-hidden="true" data-rail-prev><svg class="icon"><use href="#i-arrow"/></svg></button>
+          <button class="cf__arrow cf__arrow--next" type="button" tabindex="-1" aria-hidden="true" data-rail-next><svg class="icon"><use href="#i-arrow"/></svg></button>
         </div>
         <div class="cf__tools">
           <label class="cf__search">
             <span class="sr-only">Buscar en el catálogo</span>
             <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
-            <input type="search" placeholder="Buscar equipo, marca o uso" autocomplete="off" enterkeyhint="search" data-search>
+            <input type="search" placeholder="Buscar equipo" autocomplete="off" enterkeyhint="search" data-search>
           </label>
           <div class="cf__sort" data-sort></div>
         </div>
@@ -58,7 +62,7 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
       <ul class="grid cat-list" data-list>
         {PRODUCTOS.map((p) => (
           <li data-item data-cat={p.categoria} data-tambien={(p.tambienEn || []).join(' ')} data-nombre={p.nombre} data-marca={p.marca} data-orden={p.orden} data-texto={texto(p)}>
-            <ProductCard p={p} datos={false} marca categoria vt sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 88vw" />
+            <ProductCard p={p} datos={false} traits={false} marca categoria vt sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 120px" />
           </li>
         ))}
       </ul>

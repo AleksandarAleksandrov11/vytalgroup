@@ -18,8 +18,9 @@ interface Props {
   linea?: 'resumen' | 'ideal';
   sizes?: string;
   priority?: boolean;
+  traits?: boolean;
 }
-const { p, nivel = 'h3', vt = false, datos = true, marca = false, categoria = false, linea = 'resumen', sizes = '(min-width: 1200px) 370px, (min-width: 900px) 30vw, (min-width: 640px) 46vw, 88vw', priority = false } = Astro.props;
+const { p, nivel = 'h3', vt = false, datos = true, marca = false, categoria = false, linea = 'resumen', sizes = '(min-width: 1200px) 370px, (min-width: 900px) 30vw, (min-width: 640px) 46vw, 88vw', priority = false, traits = true } = Astro.props;
 const url = urlFicha(p);
 const c = CAT[p.categoria];
 const H = nivel;
@@ -41,7 +42,7 @@ const texto = linea === 'ideal' && p.idealPara ? `Para ${p.idealPara}.` : p.resu
     {(marca || categoria) && <p class="pc__meta">{[marca && p.marca, categoria && c.corto].filter(Boolean).join(' · ')}</p>}
     <H class="pc__name" id={id}>{p.nombre}</H>
     <p class="pc__line">{texto}</p>
-    {!url && p.caracteristicas.length > 0 && (
+    {traits && !url && p.caracteristicas.length > 0 && (
       <ul class="traits">{p.caracteristicas.map((f) => <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>{f.titulo}</li>)}</ul>
     )}
     {datos && p.datosClave.length > 0 && (

@@ -1,0 +1,130 @@
+---
+// Guía: lectura cómoda (65 a 75 caracteres por línea), índice, tiempo de lectura, fecha, autor con
+// foto y enlace a Sobre nosotros, CTA a mitad (dentro del Markdown) y al final, y barra de progreso.
+import '../../styles/cards.css';
+import '../../styles/guia.css';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Img from '../../components/Img.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { producto } from '../../data/productos';
+import { EMPRESA } from '../../data/empresa';
+import { article, absUrl } from '../../lib/seo';
+import { h1Html, minutosLectura, fechaLarga, plano } from '../../lib/texto';
+
+export async function getStaticPaths() {
+  const guias = await getCollection('guias');
+  return guias.map((g) => ({ params: { slug: g.id }, props: { g } }));
+}
+interface Props { g: CollectionEntry<'guias'> }
+const { g } = Astro.props;
+const { Content, headings } = await render(g);
+const indice = headings.filter((h) => h.depth === 2);
+const minutos = minutosLectura(g.body || '');
+const url = `/guias/${g.id}`;
+const migas = [{ name: 'Inicio', href: '/' }, { name: 'Guías', href: '/guias' }, { name: g.data.corto, href: url }];
+const productos = g.data.relacionados.map((s) => producto(s)).filter((p): p is NonNullable<typeof p> => !!p).slice(0, 4);
+const otras = (await getCollection('guias')).filter((x) => x.id !== g.id).sort((a, b) => a.data.orden - b.data.orden);
+const og = `/og/${g.id}.jpg`;
+---
+<Base
+  title={g.data.seoTitle}
+  description={g.data.seoDescription}
+  path={url}
+  og={og}
+  ogType="article"
+  seccion="guias"
+  migas={migas}
+  lectura
+  jsonld={[article({ titulo: plano(g.data.titulo), descripcion: g.data.seoDescription, url, imagen: absUrl(og), fecha: g.data.fecha, actualizada: g.data.actualizada })]}
+>
+  <article class="gd">
+    <header class="gd__head" data-hero>
+      <div class="wrap">
+        <Breadcrumbs migas={migas} />
+        <div class="gd__intro">
+          <p class="gd__kicker" data-enter style="--ed:.1s">Guía · {minutos} min de lectura</p>
+          <h1 class="h1 gd__title" id="page-title" set:html={h1Html(g.data.titulo)} />
+          <p class="lead gd__lead" data-enter style="--ed:.38s">{g.data.resumen}</p>
+          <div class="gd__byline" data-enter style="--ed:.46s">
+            <a class="gd__author" href="/sobre-nosotros">
+              <Img name="fotos/javier-ruiz-fisioterapeuta" alt="" sizes="44px" widths={[88, 132]} class="gd__avatar" />
+              <span><strong>{EMPRESA.fundador}</strong>, fisioterapeuta</span>
+            </a>
+            <span class="gd__dot" aria-hidden="true"></span>
+            <time datetime={g.data.actualizada || g.data.fecha}>{g.data.actualizada ? `Actualizada el ${fechaLarga(g.data.actualizada)}` : fechaLarga(g.data.fecha)}</time>
+          </div>
+        </div>
+      </div>
+      <div class="wrap gd__cover-wrap" data-enter style="--ed:.3s">
+        <Img name={g.data.imagen} alt={g.data.imagenAlt} sizes="(min-width: 1000px) 924px, 92vw" widths={[480, 720, 944]} priority class="gd__cover" />
+      </div>
+    </header>
+
+    <div class="wrap gd__layout">
+      <nav class="gd__toc" aria-labelledby="toc-title" data-toc>
+        <details class="toc" open>
+          <summary class="toc__sum" id="toc-title">En esta guía<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <ol class="toc__list">
+            {indice.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </details>
+      </nav>
+      <div class="gd__body">
+        <div class="prose" data-article>
+          <Content />
+        </div>
+
+        <aside class="gd__end" aria-labelledby="end-title">
+          <p class="gd__end-t" id="end-title">¿Lo hablamos?</p>
+          <p class="gd__end-d">Cuéntame cómo trabajas y te recomiendo el equipo que encaja contigo, sin venderte lo que no necesitas.</p>
+          <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
+        </aside>
+
+        <aside class="gd__bio" aria-label="Sobre el autor">
+          <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="88px" widths={[176, 264]} class="gd__bio-img" />
+          <div>
+            <p class="gd__bio-k">Escrito por</p>
+            <p class="gd__bio-n">{EMPRESA.fundador}, fisioterapeuta</p>
+            <p class="gd__bio-d">Fisioterapeuta y fundador de VytalGroup. Monté la empresa para que a profesionales como tú no les engañen con los equipos, el mantenimiento ni los productos.</p>
+            <a class="link" href="/sobre-nosotros">Conoce la historia<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+
+  {productos.length > 0 && (
+    <section class="sec sec--white" aria-labelledby="rel-title">
+      <div class="wrap">
+        <div class="sec__head">
+          <h2 class="h2" id="rel-title" data-lines>Equipos de <em>esta guía.</em></h2>
+        </div>
+        <ul class="grid grid--4 gd-rel">
+          {productos.map((p) => <li><ProductCard p={p} marca datos={false} traits={false} sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 88vw" /></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {otras.length > 0 && (
+    <section class="sec" aria-labelledby="otras-title">
+      <div class="wrap">
+        <div class="sec__head">
+          <h2 class="h2" id="otras-title" data-lines>Sigue <em>leyendo.</em></h2>
+        </div>
+        <ul class="grid grid--2 gd-more">
+          {otras.map((x) => <li><GuideCard g={x} /></li>)}
+        </ul>
+        <div class="sec__cta" data-rv>
+          <a class="btn btn--line" href="/guias">Ver todas las guías</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaFinal />
+</Base>

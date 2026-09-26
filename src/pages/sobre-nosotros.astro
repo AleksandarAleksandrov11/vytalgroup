@@ -9,7 +9,7 @@ import WorldMap from '../components/WorldMap.astro';
 import Comparator from '../components/Comparator.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { EMPRESA, MARCAS } from '../data/empresa';
-import { EUROPA } from '../data/mapa';
+import { EUROPA, IBERIA } from '../data/mapa';
 import { aboutPage, organization } from '../lib/seo';
 
 const migas = [{ name: 'Inicio', href: '/' }, { name: 'Sobre nosotros', href: '/sobre-nosotros' }];
@@ -27,7 +27,7 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
 ---
 <Base
   title="Sobre VytalGroup: Javier Ruiz, fisioterapeuta y fundador"
-  description="VytalGroup nace de Javier Ruiz, fisioterapeuta, para que a otros profesionales no les engañen con los equipos ni el mantenimiento. De fisio a fisio, sin letra pequeña."
+  description="VytalGroup nace de Javier Ruiz, fisioterapeuta, para que a otros profesionales no les engañen con los equipos ni el mantenimiento. De fisio a fisio."
   path="/sobre-nosotros"
   og="/og/sobre-nosotros.jpg"
   seccion="sobre-nosotros"
@@ -45,7 +45,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
     </figure>
   </PageHero>
 
-  <svg class="sprite" aria-hidden="true" focusable="false"><defs><path id="eu-dots" d={EUROPA.d} /></defs></svg>
 
   <section class="sec sec--white story" id="historia" aria-labelledby="historia-title">
     <div class="wrap">
@@ -55,13 +54,13 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
       <ol class="story__list">
         <li class="story__item" data-rv>
           <div class="story__visual story__visual--map">
-            <svg viewBox={`0 0 ${EUROPA.w} ${EUROPA.h}`} role="img" aria-label="Mapa: de Huelva a Málaga">
-              <use href="#eu-dots" class="story__dots" />
-              <path class="story__route" d={curva(EUROPA.huelva, EUROPA.malaga, 1.2)} pathLength="1" />
-              <circle class="story__pin" cx={EUROPA.huelva[0]} cy={EUROPA.huelva[1]} r="7" />
-              <circle class="story__pin story__pin--to" cx={EUROPA.malaga[0]} cy={EUROPA.malaga[1]} r="7" />
-              <text x={EUROPA.huelva[0] - 12} y={EUROPA.huelva[1] - 18} text-anchor="middle">Huelva</text>
-              <text x={EUROPA.malaga[0] + 28} y={EUROPA.malaga[1] + 30} text-anchor="middle">Málaga</text>
+            <svg viewBox={`0 0 ${IBERIA.w} ${IBERIA.h}`} role="img" aria-label="Mapa: de Huelva a Málaga">
+              <path class="story__dots" d={IBERIA.d} />
+              <path class="story__route" d={curva(IBERIA.huelva, IBERIA.malaga, 0.35)} pathLength="1" />
+              <circle class="story__pin" cx={IBERIA.huelva[0]} cy={IBERIA.huelva[1]} r="7" />
+              <circle class="story__pin story__pin--to" cx={IBERIA.malaga[0]} cy={IBERIA.malaga[1]} r="7" />
+              <text x={IBERIA.huelva[0] - 14} y={IBERIA.huelva[1] - 18} text-anchor="middle">Huelva</text>
+              <text x={IBERIA.malaga[0] + 16} y={IBERIA.malaga[1] + 34} text-anchor="middle">Málaga</text>
             </svg>
           </div>
           <div class="story__txt">
@@ -84,12 +83,12 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
         <li class="story__item" data-rv>
           <div class="story__visual story__visual--map">
             <svg viewBox={`0 0 ${EUROPA.w} ${EUROPA.h}`} role="img" aria-label="Mapa: de Málaga a Luxemburgo">
-              <use href="#eu-dots" class="story__dots" />
-              <path class="story__route" d={curva(EUROPA.malaga, EUROPA.luxemburgo, 0.2)} pathLength="1" />
+              <path class="story__dots" d={EUROPA.d} />
+              <path class="story__route" d={curva(EUROPA.malaga, EUROPA.luxemburgo, 0.18)} pathLength="1" />
               <circle class="story__pin" cx={EUROPA.malaga[0]} cy={EUROPA.malaga[1]} r="7" />
               <circle class="story__pin story__pin--to" cx={EUROPA.luxemburgo[0]} cy={EUROPA.luxemburgo[1]} r="7" />
-              <text x={EUROPA.malaga[0] + 8} y={EUROPA.malaga[1] + 30} text-anchor="middle">Málaga</text>
-              <text x={EUROPA.luxemburgo[0] + 18} y={EUROPA.luxemburgo[1] - 18} text-anchor="middle">Luxemburgo</text>
+              <text x={EUROPA.malaga[0] - 16} y={EUROPA.malaga[1] + 7} text-anchor="end">Málaga</text>
+              <text x={EUROPA.luxemburgo[0] + 22} y={EUROPA.luxemburgo[1] - 20} text-anchor="middle">Luxemburgo</text>
             </svg>
           </div>
           <div class="story__txt">
@@ -100,7 +99,7 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
         </li>
         <li class="story__item" data-rv>
           <div class="story__visual story__visual--photo">
-            <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fundador de VytalGroup" sizes="(min-width: 900px) 360px, 70vw" widths={[320, 384]} />
+            <Img name="fotos/diatermia-multifuncion-vytamed-en-consulta" alt="Diatermia Multifunción de VytaMeD en una consulta de fisioterapia" sizes="(min-width: 1080px) 488px, (min-width: 900px) 44vw, 92vw" />
           </div>
           <div class="story__txt">
             <p class="story__n">04</p>

@@ -12,6 +12,7 @@ import LegalPage from '../components/LegalPage.astro';
       <tbody>
         <tr><td data-label="Nombre"><code>vg_consent</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Guardar tu elección sobre cookies (almacenamiento local)</td><td data-label="Duración">12 meses</td><td data-label="Tipo">Necesaria</td></tr>
         <tr><td data-label="Nombre"><code>vg_attr</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Guardar el origen de la visita (UTM y fbclid) para asociarlo a tu solicitud (almacenamiento de sesión)</td><td data-label="Duración">Sesión</td><td data-label="Tipo">Necesaria</td></tr>
+        <tr><td data-label="Nombre"><code>va</code> (Vercel Web Analytics)</td><td data-label="Titular">Vercel (encargado del tratamiento)</td><td data-label="Finalidad">Contar de forma anónima las visitas a cada página y su origen. No instala cookies: usa un identificador calculado que caduca a las 24 horas</td><td data-label="Duración">24 horas</td><td data-label="Tipo">Analítica</td></tr>
         <tr><td data-label="Nombre"><code>vg_lead_*</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Evitar que un mismo evento de medición se envíe dos veces (almacenamiento de sesión)</td><td data-label="Duración">Sesión</td><td data-label="Tipo">Marketing</td></tr>
         <tr><td data-label="Nombre"><code>_fbp</code></td><td data-label="Titular">Meta</td><td data-label="Finalidad">Identificar el navegador para medir los anuncios de Meta</td><td data-label="Duración">3 meses</td><td data-label="Tipo">Marketing</td></tr>
         <tr><td data-label="Nombre"><code>_fbc</code></td><td data-label="Titular">Meta</td><td data-label="Finalidad">Guardar el identificador del clic en un anuncio de Meta</td><td data-label="Duración">3 meses</td><td data-label="Tipo">Marketing</td></tr>
@@ -19,9 +20,9 @@ import LegalPage from '../components/LegalPage.astro';
     </table>
   </div>
   <p>Las cookies de Meta solo se instalan si aceptas la categoría de marketing. Meta puede usar además sus propias cookies en sus dominios, según su <a href="https://www.facebook.com/privacy/policies/cookies/" target="_blank" rel="noopener">política de cookies</a>.</p>
-  <p><strong>Analítica:</strong> ahora mismo esta web no usa ninguna herramienta de analítica. Si en el futuro se añade, se cargará solo si aceptas esa categoría y se incluirá en esta tabla.</p>
+  <p><strong>Analítica:</strong> usamos Vercel Web Analytics, la analítica de la plataforma en la que se publica la web, para saber cuántas visitas tiene cada página. No usa cookies ni guarda datos que te identifiquen, y aun así solo se carga si aceptas la categoría de analítica. Más información en la <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener">política de privacidad de Vercel Web Analytics</a>.</p>
   <h2>3. Cómo gestionar tus preferencias</h2>
-  <p>Al entrar por primera vez puedes aceptar, rechazar o configurar las cookies. Puedes cambiar tu elección cuando quieras:</p>
+  <p>Al entrar por primera vez puedes aceptar, rechazar o configurar las cookies por categorías: necesarias (siempre activas), analítica y marketing. Tu elección se guarda 12 meses y puedes cambiarla cuando quieras:</p>
   <p class="legal__cta"><button type="button" class="btn btn--primary" data-cookie-settings>Configurar cookies</button></p>
   <p>También puedes borrar o bloquear las cookies desde la configuración de tu navegador (Chrome, Safari, Firefox o Edge). Si bloqueas las necesarias, es posible que alguna parte de la web no funcione bien.</p>
   <h2>4. Responsable</h2>

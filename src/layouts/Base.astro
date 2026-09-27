@@ -4,7 +4,7 @@
 import '../styles/base.css';
 import geistUrl from '../assets/fonts/geist.woff2?url';
 import serifUrl from '../assets/fonts/instrument-serif-italic.woff2?url';
-import { SHEETS_ENDPOINT, META_PIXEL_ID, SITE_URL } from '../config';
+import { SHEETS_ENDPOINT, META_PIXEL_ID, SITE_URL, VERCEL_ANALYTICS } from '../config';
 import Sprite from '../components/Sprite.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -25,7 +25,6 @@ interface Props {
   jsonld?: object[];
   migas?: Miga[];
   seccion?: Seccion;
-  heroOscuro?: boolean;
   conFormulario?: boolean;
   /** ViewContent del píxel en fichas y páginas pilar */
   viewContent?: { ids?: string[]; type: string; category: string; name: string };
@@ -34,7 +33,7 @@ interface Props {
 }
 const {
   title, description, path, og = '/og/inicio.jpg', ogAlt, ogType = 'website', noindex = false, jsonld = [], migas,
-  seccion = '', heroOscuro = false, conFormulario = true, viewContent, lectura = false, bodyClass,
+  seccion = '', conFormulario = true, viewContent, lectura = false, bodyClass,
 } = Astro.props;
 
 const canonical = absUrl(path);
@@ -44,7 +43,7 @@ if (migas?.length) nodos.push(breadcrumbList(migas));
 if (!nodos.some((n: any) => n['@type'] === 'Organization')) nodos.push(organization());
 ---
 <!doctype html>
-<html lang="es" data-sheets={SHEETS_ENDPOINT} data-pixel={META_PIXEL_ID}>
+<html lang="es" data-sheets={SHEETS_ENDPOINT} data-pixel={META_PIXEL_ID} data-analytics={VERCEL_ANALYTICS ? '1' : undefined}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -82,7 +81,7 @@ if (!nodos.some((n: any) => n['@type'] === 'Organization')) nodos.push(organizat
 <body class={bodyClass} data-vc={viewContent ? JSON.stringify(viewContent) : undefined} data-site={SITE_URL}>
 <Sprite />
 <a class="skip" href="#main">Saltar al contenido</a>
-<Header seccion={seccion} oscuro={heroOscuro} conFormulario={conFormulario} path={path} />
+<Header seccion={seccion} conFormulario={conFormulario} path={path} />
 {lectura && <div class="read-progress" data-read-progress aria-hidden="true"><span></span></div>}
 <main id="main" tabindex="-1">
   <slot />

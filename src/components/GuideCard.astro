@@ -8,7 +8,7 @@ interface Props { g: CollectionEntry<'guias'>; nivel?: 'h2' | 'h3' }
 const { g, nivel = 'h3' } = Astro.props;
 const H = nivel;
 ---
-<article class="gc" data-halo>
+<article class="gc" data-halo data-tilt>
   <div class="gc__media" data-rvi><Img name={g.data.imagen} alt={g.data.imagenAlt} sizes="(min-width: 900px) 370px, (min-width: 640px) 46vw, 88vw" /></div>
   <div class="gc__body">
     <p class="gc__meta">Guía · {minutosLectura(g.body || '')} min de lectura</p>
@@ -27,7 +27,7 @@ const H = nivel;
   .gc__title a::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--r-lg); }
   .gc__txt { font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
   @media (hover: hover) and (pointer: fine) {
-    .gc:hover { transform: translateY(-6px); box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
+    .gc:hover { box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
     .gc:hover .gc__media img { scale: 1.04; }
     .gc:hover .gc__title a { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
   }

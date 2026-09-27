@@ -1,19 +1,22 @@
 import type { Producto } from '../tipos';
 
 // Fuentes: catálogo ADC Global Tech | VytalGroup 2026, páginas 11 a 14 (camillas) y 43 a 49 (estética).
-// Las camillas no tienen ficha propia: el catálogo da nombre, una descripción y tres rasgos, sin
-// especificaciones. Se muestran en su categoría y en el catálogo navegable, con CTA de información.
+// Camillas: el catálogo da nombre, descripción, tres rasgos, certificación CE y garantía mínima de 2 años.
+// Su ficha solo usa eso (y el tipo de accionamiento que indica el propio nombre del modelo).
 
 const camilla = (
   slug: string,
   nombre: string,
   orden: number,
   descripcion: string,
-  rasgos: string[],
+  rasgos: [string, string][],
+  specs: [string, string][],
+  usos: string[],
   imagen: string,
   pagina: number,
   codigo: string,
   dato: { valor: string; etiqueta: string },
+  relacionados: string[],
 ): Producto => ({
   slug,
   nombre,
@@ -23,48 +26,80 @@ const camilla = (
   destacado: false,
   orden,
   resumen: descripcion,
-  idealPara: '',
+  idealPara: usos.join(', ').toLowerCase(),
   descripcion,
-  datosClave: [dato, { valor: '2+ años', etiqueta: 'Garantía' }],
-  caracteristicas: rasgos.map((r) => ({ titulo: r, texto: '' })),
-  especificaciones: [],
-  usos: [],
-  paraQuien: [],
+  datosClave: [dato, { valor: '2+ años', etiqueta: 'Garantía mínima' }, { valor: 'CE', etiqueta: 'Certificación' }],
+  caracteristicas: rasgos.map(([titulo, texto]) => ({ titulo, texto })),
+  especificaciones: [...specs.map(([clave, valor]) => ({ clave, valor })), { clave: 'Certificación', valor: 'CE' }, { clave: 'Garantía', valor: 'Mínimo 2 años' }],
+  usos,
+  paraQuien: [
+    { icono: 'consulta', texto: usos[0] },
+    { icono: 'rehab', texto: usos[1] ?? 'Fisioterapia y rehabilitación' },
+    { icono: 'movilidad', texto: 'Clínicas de fisioterapia' },
+  ],
   incluye: [],
   normativa: 'Certificación CE',
   imagenes: [imagen],
   paginaCatalogo: pagina,
   codigos: [codigo],
-  relacionados: [],
-  ficha: false,
+  relacionados,
+  ficha: true,
 });
+
+// Title (50 a 60) y description (140 a 160) propios: la plantilla general se queda larga con estos nombres
+const SEO: Record<string, [string, string]> = {
+  'camilla-electrica-premium': ['Camilla Eléctrica Premium para fisioterapia | VytalGroup', 'Camilla Eléctrica Premium: control eléctrico multisección de altura y posición, tapizado antimicrobiano y mando a pedal. CE y 2 años de garantía como mínimo.'],
+  'camilla-hidraulica-pro': ['Camilla Hidráulica Pro para fisioterapia | VytalGroup', 'Camilla Hidráulica Pro: hidráulica silenciosa, respaldo articulado, laterales abatibles y superficie extra ancha para sesiones largas. CE y 2 años de garantía.'],
+  'camilla-hidraulica-clinica': ['Camilla Hidráulica Clínica para fisioterapia | VytalGroup', 'Camilla Hidráulica Clínica para consultas de alto tráfico: regulación hidráulica, posapiés desmontable y tapizado antimicrobiano. CE y 2 años de garantía.'],
+  'camilla-hidraulica-compacta': ['Camilla Hidráulica Compacta de 3 secciones | VytalGroup', 'Camilla Hidráulica Compacta: 3 secciones articuladas, respaldo muy elevado, estructura robusta y ruedas bloqueables. Certificación CE y 2 años de garantía.'],
+  'camilla-electrica-multiposicion': ['Camilla Eléctrica Multiposición con orificio | VytalGroup', 'Camilla Eléctrica Multiposición: superficie plana con orificio facial y mando a pedal ergonómico, para masaje y exploración. CE y 2 años de garantía mínima.'],
+  'camilla-electrica-estandar': ['Camilla Eléctrica Estándar para fisioterapia | VytalGroup', 'Camilla Eléctrica Estándar: la entrada a la camilla eléctrica profesional, fiable y sólida para el uso diario, con ajuste motorizado. CE y 2 años de garantía.'],
+};
 
 export const CAMILLAS: Producto[] = [
   camilla('camilla-electrica-premium', 'Camilla Eléctrica Premium', 100,
     'Control eléctrico motorizado de altura y posición, tapizado antimicrobiano, acero reforzado y mando a pedal.',
-    ['Control eléctrico multisección', 'Mando a pedal incluido', 'Tapizado antimicrobiano'],
-    'camilla-electrica-premium', 12, 'ADC-FIS-007', { valor: 'Eléctrica', etiqueta: 'Multisección' }),
+    [['Control eléctrico multisección', 'Altura y posición motorizadas.'], ['Mando a pedal incluido', 'Viene con la camilla.'], ['Tapizado antimicrobiano', 'Sobre una estructura de acero reforzado.']],
+    [['Accionamiento', 'Eléctrico motorizado, altura y posición'], ['Secciones', 'Multisección'], ['Mando', 'A pedal, incluido'], ['Tapizado', 'Antimicrobiano'], ['Estructura', 'Acero reforzado']],
+    ['Tratamientos de fisioterapia', 'Exploración'],
+    'camilla-electrica-premium', 12, 'ADC-FIS-007', { valor: 'Eléctrica', etiqueta: 'Multisección' },
+    ['camilla-electrica-multiposicion', 'camilla-hidraulica-pro', 'camilla-electrica-estandar']),
   camilla('camilla-hidraulica-pro', 'Camilla Hidráulica Pro', 101,
     'Hidráulica de precisión con respaldo articulado y laterales abatibles, pensada para tratamientos de larga duración.',
-    ['Hidráulica silenciosa', 'Respaldo y laterales abatibles', 'Superficie extra ancha'],
-    'camilla-hidraulica-pro', 12, 'ADC-FIS-008', { valor: 'Hidráulica', etiqueta: 'Silenciosa' }),
+    [['Hidráulica silenciosa', 'Regulación de precisión, sin ruido.'], ['Respaldo y laterales abatibles', 'Respaldo articulado y laterales que se abaten.'], ['Superficie extra ancha', 'Óptima para tratamientos de larga duración.']],
+    [['Accionamiento', 'Hidráulico de precisión, silencioso'], ['Respaldo', 'Articulado'], ['Laterales', 'Abatibles'], ['Superficie', 'Extra ancha']],
+    ['Tratamientos de larga duración', 'Fisioterapia y rehabilitación'],
+    'camilla-hidraulica-pro', 12, 'ADC-FIS-008', { valor: 'Hidráulica', etiqueta: 'Silenciosa' },
+    ['camilla-hidraulica-clinica', 'camilla-electrica-premium', 'camilla-hidraulica-compacta']),
   camilla('camilla-hidraulica-clinica', 'Camilla Hidráulica Clínica', 102,
     'Pensada para entornos de alto tráfico: regulación hidráulica, posapiés desmontable y tapizado antimicrobiano.',
-    ['Alto tráfico clínico', 'Posapiés desmontable', 'Fácil limpieza'],
-    'camilla-hidraulica-clinica', 13, 'ADC-FIS-009', { valor: 'Hidráulica', etiqueta: 'Alto tráfico' }),
+    [['Alto tráfico clínico', 'Pensada para entornos de alto tráfico.'], ['Posapiés desmontable', 'Se quita cuando no lo necesitas.'], ['Fácil limpieza', 'Tapizado antimicrobiano.']],
+    [['Accionamiento', 'Hidráulico'], ['Posapiés', 'Desmontable'], ['Tapizado', 'Antimicrobiano, fácil de limpiar'], ['Uso', 'Entornos de alto tráfico']],
+    ['Consultas de alto tráfico', 'Fisioterapia y rehabilitación'],
+    'camilla-hidraulica-clinica', 13, 'ADC-FIS-009', { valor: 'Hidráulica', etiqueta: 'Alto tráfico' },
+    ['camilla-hidraulica-pro', 'camilla-hidraulica-compacta', 'camilla-electrica-estandar']),
   camilla('camilla-hidraulica-compacta', 'Camilla Hidráulica Compacta', 103,
     '3 secciones articuladas con respaldo muy elevado y estructura blanca robusta con ruedas bloqueables.',
-    ['3 secciones articuladas', 'Respaldo muy elevado', 'Ruedas bloqueables'],
-    'camilla-hidraulica-compacta', 13, 'ADC-FIS-010', { valor: '3', etiqueta: 'Secciones articuladas' }),
+    [['3 secciones articuladas', 'Sobre una estructura blanca robusta.'], ['Respaldo muy elevado', 'El respaldo sube mucho más que en una camilla plana.'], ['Ruedas bloqueables', 'Para moverla y dejarla fija.']],
+    [['Accionamiento', 'Hidráulico'], ['Secciones', '3 articuladas'], ['Respaldo', 'Muy elevado'], ['Estructura', 'Blanca, robusta'], ['Ruedas', 'Bloqueables']],
+    ['Fisioterapia y exploración', 'Rehabilitación'],
+    'camilla-hidraulica-compacta', 13, 'ADC-FIS-010', { valor: '3', etiqueta: 'Secciones articuladas' },
+    ['camilla-hidraulica-clinica', 'camilla-hidraulica-pro', 'camilla-electrica-multiposicion']),
   camilla('camilla-electrica-multiposicion', 'Camilla Eléctrica Multiposición', 104,
     'Superficie plana con orificio facial y mando a pedal ergonómico, para masajes y exploraciones.',
-    ['Mando a pedal ergonómico', 'Orificio facial', 'Ajuste eléctrico de altura'],
-    'camilla-electrica-multiposicion', 14, 'ADC-FIS-011', { valor: 'Eléctrica', etiqueta: 'Con orificio facial' }),
+    [['Mando a pedal ergonómico', 'Superficie plana, ideal para masaje y exploración.'], ['Orificio facial', 'Para trabajar con el paciente boca abajo.'], ['Ajuste eléctrico de altura', 'Motorizado.']],
+    [['Accionamiento', 'Eléctrico, ajuste de altura'], ['Superficie', 'Plana, con orificio facial'], ['Mando', 'A pedal, ergonómico']],
+    ['Masaje', 'Exploración'],
+    'camilla-electrica-multiposicion', 14, 'ADC-FIS-011', { valor: 'Eléctrica', etiqueta: 'Con orificio facial' },
+    ['camilla-electrica-estandar', 'camilla-electrica-premium', 'camilla-hidraulica-compacta']),
   camilla('camilla-electrica-estandar', 'Camilla Eléctrica Estándar', 105,
     'La entrada al segmento profesional eléctrico: fiable y sólida para el uso diario, con ajuste motorizado.',
-    ['Ajuste eléctrico de altura', 'Uso diario profesional', 'Sólida y fiable'],
-    'camilla-electrica-estandar', 14, 'ADC-FIS-012', { valor: 'Eléctrica', etiqueta: 'Ajuste motorizado' }),
-];
+    [['Ajuste eléctrico de altura', 'Motorizado.'], ['Uso diario profesional', 'Fiable y sólida para el uso diario.'], ['Sólida y fiable', 'La entrada al segmento profesional eléctrico.']],
+    [['Accionamiento', 'Eléctrico, ajuste motorizado de altura'], ['Uso', 'Diario, profesional']],
+    ['Uso diario en consulta', 'Fisioterapia y rehabilitación'],
+    'camilla-electrica-estandar', 14, 'ADC-FIS-012', { valor: 'Eléctrica', etiqueta: 'Ajuste motorizado' },
+    ['camilla-electrica-multiposicion', 'camilla-electrica-premium', 'camilla-hidraulica-clinica']),
+].map((p) => ({ ...p, seoTitle: SEO[p.slug][0], seoDescription: SEO[p.slug][1] }));
 
 const NOTA_ESTETICA = 'Configuración y accesorios sujetos a propuesta técnica personalizada.';
 

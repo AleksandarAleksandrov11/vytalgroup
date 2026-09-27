@@ -50,14 +50,14 @@ export const CATEGORIAS: Categoria[] = [
     orden: 1,
     h1: 'Ecógrafos para fisioterapia. *Elegidos por fisios.*',
     apoyo: 'Inalámbricos, portátiles y de carro. Te ayudamos a elegir el que encaja con tu forma de trabajar.',
-    descripcion: 'Sonda inalámbrica, portátiles y carros de consulta EDAN Acclarix.',
+    descripcion: 'Sonda inalámbrica y ecógrafos EDAN de bolsillo, portátiles y de carro.',
     queEs: [
       'La ecografía permite ver en tiempo real músculos, tendones y partes blandas. En fisioterapia se usa para explorar y para guiar procedimientos.',
     ],
     imagen: 'ecografo-portatil-acclarix-ax8-edan',
     formEquipo: 'Ecógrafo',
     seoTitle: 'Ecógrafo para fisioterapia: inalámbrico, portátil o de carro',
-    seoDescription: 'Ecógrafos para fisioterapia y medicina: sonda inalámbrica Eco Wireless y gama EDAN Acclarix. 2 años de garantía y te asesoran fisioterapeutas.',
+    seoDescription: 'Ecógrafos para fisioterapia y medicina: sonda inalámbrica Eco Wireless y gama EDAN de bolsillo, portátil y de carro. 2 años de garantía y asesoría experta.',
   },
   {
     id: 'diatermia',

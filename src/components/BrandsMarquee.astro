@@ -1,0 +1,64 @@
+---
+// Cinta de marcas: solo los logotipos oficiales, separados y en bucle continuo hacia la izquierda
+// (como la cinta de confianza). Se pausa al pasar el ratón y fuera de pantalla; con movimiento
+// reducido queda quieta. Los logos son SVG de un solo color (scripts/imagenes/logos.py).
+import edan from '../assets/marcas/edan.svg?raw';
+import itech from '../assets/marcas/i-tech.svg?raw';
+import eme from '../assets/marcas/eme.svg?raw';
+import easytech from '../assets/marcas/easytech.svg?raw';
+import likamed from '../assets/marcas/likamed.svg?raw';
+
+interface Props { titulo?: string }
+const { titulo = 'Marcas con las que trabajamos' } = Astro.props;
+// Cada logo como <symbol> (una sola vez) y en la cinta con <use>
+const simbolo = (id: string, svg: string) => {
+  const vb = svg.match(/viewBox="([^"]+)"/)![1];
+  const cuerpo = svg.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+  return { id, vb, cuerpo, ratio: Number(vb.split(' ')[2]) / Number(vb.split(' ')[3]) };
+};
+const LOGOS = [
+  { nombre: 'EDAN', ...simbolo('mk-edan', edan), alto: 1.25 },
+  { nombre: 'I-Tech Medical Division', ...simbolo('mk-itech', itech), alto: 1 },
+  { nombre: 'EME', ...simbolo('mk-eme', eme), alto: .95 },
+  { nombre: 'EasyTech', ...simbolo('mk-easytech', easytech), alto: 1.05 },
+  { nombre: 'LiKAMED', ...simbolo('mk-likamed', likamed), alto: .62 },
+];
+---
+<section class="bm" aria-label={titulo}>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    {LOGOS.map((l) => <symbol id={l.id} viewBox={l.vb} set:html={l.cuerpo} />)}
+  </svg>
+  <p class="bm__title">{titulo}</p>
+  <div class="bm__ticker" data-marquee>
+    <div class="bm__track">
+      {[0, 1, 2, 3].map((k) => (
+        <ul class="bm__list" aria-hidden={k > 0 ? 'true' : undefined}>
+          {LOGOS.map((l) => (
+            <li style={`--r:${l.ratio.toFixed(3)};--a:${l.alto}`}><svg class="bm__logo" role="img" aria-label={l.nombre}><use href={`#${l.id}`}/></svg></li>
+          ))}
+          <li class="bm__word"><span role="img" aria-label="VytaMeD, nuestra marca propia">VytaMeD</span></li>
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+<style is:global>
+  .bm { position: relative; padding: 26px 0 30px; background: #FFF; box-shadow: 0 1px 0 var(--line), 0 -1px 0 var(--line); }
+  .bm__title { margin-bottom: 14px; text-align: center; font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+  .bm__ticker { position: relative; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .bm__track { display: flex; width: max-content; animation: bm-loop 60s linear infinite; }
+  .bm__ticker:hover .bm__track, [data-marquee].is-paused .bm__track { animation-play-state: paused; }
+  .bm__list { display: flex; flex: none; align-items: center; }
+  .bm__list li { --h: 30px; display: grid; place-items: center; height: 64px; padding: 0 clamp(28px, 4vw, 56px); color: var(--ink-3); transition: color .3s ease; }
+  .bm__list li:hover { color: var(--ink); }
+  .bm__logo { height: calc(var(--h) * var(--a, 1)); width: calc(var(--h) * var(--a, 1) * var(--r, 3)); fill: currentColor; }
+  .bm__word span { font-size: 1.75rem; font-weight: 600; letter-spacing: -.045em; line-height: 1; }
+  @media (min-width: 900px) { .bm__list li { --h: 36px; height: 76px; } .bm__word span { font-size: 2.125rem; } }
+  @keyframes bm-loop { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .bm__track { animation: none; width: auto; justify-content: center; }
+    .bm__list[aria-hidden="true"] { display: none; }
+    .bm__list { flex: 1; flex-wrap: wrap; justify-content: center; }
+    .bm__ticker { -webkit-mask-image: none; mask-image: none; }
+  }
+</style>

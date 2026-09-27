@@ -5,3 +5,6 @@ tests/output/
 .DS_Store
 *.log
 .vercel
+
+# Python
+__pycache__/

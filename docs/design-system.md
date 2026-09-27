@@ -55,7 +55,7 @@ Patrón de marca: todos los H1 y H2 terminan con una palabra o frase en cursiva:
 
 - Margen lateral `--g`: 16 px (móvil), 24 px (desde 640), 32 px (desde 1024).
 - Altura de cabecera `--hd`: 64 px, 72 px desde 1024.
-- Ritmo vertical de sección `--sec`: `clamp(80px, 3rem + 6vw, 152px)`.
+- Ritmo vertical de sección `--sec`: `clamp(70px, 3rem + 6vw - 10px, 142px)` (10 px menos arriba y abajo que la landing, a petición del cliente).
 - Escala de espaciado (múltiplos de 4): 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, 80, 96.
 - Anchura máxima de contenido: 1200 px + márgenes (`.wrap`). Estrecha: 760 px (FAQ, legales). Formulario: 600 px. Lectura de guías: 68ch.
 - Radios: píldora 999 px (botones, segmentado, chips), 28 px (tarjeta del formulario), 24 px (tarjetas de producto y paneles), 20 px (categorías, aviso de cookies), 16 px (imágenes dentro de tarjetas, campos, opciones), 12 px y 8 px (detalles).
@@ -81,12 +81,15 @@ Patrón de marca: todos los H1 y H2 terminan con una palabra o frase en cursiva:
 |---|---|
 | Botón | Píldora, 48 px (sm 44, lg 56). Primario turquesa con texto marino, brillo que recorre y hundimiento al pulsar; línea (borde fino que se rellena de marino al pasar); oscuro (marino con icono turquesa, para descargas). Magnetismo leve en el CTA principal en escritorio. |
 | Enlace | Subrayado de 1 px desplazado 5 px, que se intensifica al pasar. |
-| Cabecera | Fija, transparente sobre el hero y con fondo desenfocado al hacer scroll; en móvil se oculta al bajar. Desplegable de Equipos con miniaturas. Panel móvil a pantalla completa. |
-| Tarjeta de producto | Blanca, radio 24, imagen 4:3 con radio 16, nombre, línea, 2 datos clave con cifra grande, botón. Halo de luz que sigue al cursor y zoom suave. |
-| Tarjeta de categoría | Imagen 4:3 y nombre; al pasar, una línea de descripción. |
+| Cabecera | Fija y con fondo blanco sólido en todas las páginas y anchos (también en móvil, sin ocultarse). Animaciones circulares: punto turquesa que viaja bajo el enlace activo o señalado, relleno que crece en círculo desde el cursor y desplegable de Equipos que se abre en círculo, con miniaturas redondas. En móvil, hamburguesa de 3 líneas en un círculo que se convierte en aspa y panel marino con brillos de color que se revela en círculo desde el botón: enlaces grandes numerados en cursiva, desplegables propios (Ecógrafos, Diatermias y Equipos) y contacto directo. |
+| Tarjeta de producto | La misma en toda la web: blanca, radio 24, escenario 4:3 con el equipo sin fondo, marca y categoría, nombre (2 líneas máx.), línea (3 máx.), 2 datos clave y "Ver ficha". En rejillas y carruseles las filas se alinean con subgrid. Inclinación 3D hacia el cursor, halo de luz, el equipo flota y su sombra se recoge. |
+| Tarjeta de categoría | Escenario 4:3 y nombre; al pasar, una línea de descripción. Inclinación 3D. |
+| Rejillas de tarjetas | Las tarjetas de una misma fila alinean sus partes con subgrid (producto, características de la ficha, razones, "Cómo elegir", "Quiénes estamos" y "Nuestra forma de trabajar"), así títulos de una o dos líneas no descuadran textos ni botones. Una última fila incompleta va centrada (3, 5 o 7 tarjetas; y la tarjeta sola en rejillas de 2 columnas). |
+| Datos con unidades | Número y unidad nunca se separan ("2 h", "9,25 kg", "12 MHz"): `unidades()` de `src/lib/texto.ts` en tarjetas, fichas y comparativas. |
+| Escenario de producto (`.stage`) | Las fotos de equipo no tienen fondo: degradado radial suave y sombra de contacto del ancho real del equipo (`--sw`, de `encuadre.json`) en la línea del 88 %. |
 | Control segmentado | Píldora gris con indicador turquesa que se desliza. |
 | Acordeón | Filas con borde inferior, icono "+" en círculo que gira a "×" y se rellena de marino. |
-| Comparador | Tarjeta blanca sobre turquesa claro, aspas grises y texto tachado frente a checks blancos sobre turquesa que se dibujan. |
+| Comparador | Filas "Lo habitual → Con VytalGroup": lo habitual se tacha solo al aparecer, una flecha en círculo y lo nuestro con su check que se dibuja. |
 | Formulario | Tarjeta blanca radio 28, barra de progreso turquesa de 3 px, una pregunta por pantalla, opciones de 60 px con radio personalizado, desplegables propios (hoja inferior en móvil), consentimiento con casilla propia. |
 | Cookies | Aviso flotante con tres botones de igual peso y panel en diálogo con interruptores propios. |
 | Pie | Marino, logo, claim con acento, columnas con título pequeño en mayúsculas turquesa, y "VytalGroup" a todo el ancho con las letras que suben una a una. |

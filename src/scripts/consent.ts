@@ -1,16 +1,19 @@
 // Consentimiento de cookies: aviso, panel de configuración y almacenamiento (12 meses).
-// Solo hay una categoría opcional: marketing (píxel de Meta). Las necesarias siempre están activas.
-// Emite `vg:consent` con { necessary, marketing } cuando cambia.
+// Categorías: necesarias (siempre activas), analítica (Vercel Web Analytics) y marketing (píxel de
+// Meta). Emite `vg:consent` con { necessary, analytics, marketing } cuando cambia. Si la elección
+// guardada es de una versión anterior (sin analítica) o tiene más de 12 meses, se vuelve a preguntar.
 
 const KEY = 'vg_consent';
+const VERSION = 3;
 const MAX_AGE = 365 * 24 * 60 * 60 * 1000;
 
-export interface Consent { v: number; date: string; necessary: true; marketing: boolean }
+export interface Consent { v: number; date: string; necessary: true; analytics: boolean; marketing: boolean }
+type Opcionales = Pick<Consent, 'analytics' | 'marketing'>;
 
 export function getConsent(): Consent | null {
   try {
     const c = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (!c || !c.date || Date.now() - Date.parse(c.date) > MAX_AGE) return null;
+    if (!c || c.v !== VERSION || !c.date || Date.now() - Date.parse(c.date) > MAX_AGE) return null;
     return c;
   } catch {
     return null;
@@ -20,8 +23,8 @@ export function getConsent(): Consent | null {
 let current: Consent | null = null;
 export const consentState = () => current || getConsent();
 
-function save(marketing: boolean) {
-  const c: Consent = { v: 2, date: new Date().toISOString(), necessary: true, marketing: !!marketing };
+function save({ analytics, marketing }: Opcionales) {
+  const c: Consent = { v: VERSION, date: new Date().toISOString(), necessary: true, analytics: !!analytics, marketing: !!marketing };
   try { localStorage.setItem(KEY, JSON.stringify(c)); } catch { /* sin almacenamiento: vale para esta visita */ }
   current = c;
   window.dispatchEvent(new CustomEvent('vg:consent', { detail: c }));
@@ -34,7 +37,10 @@ export function initConsent({ delay = 900 } = {}) {
   const panel = document.getElementById('cookie-panel') as HTMLDialogElement | null;
   if (!banner || !panel) return;
   const html = document.documentElement;
-  const toggle = panel.querySelector<HTMLInputElement>('[data-consent="marketing"]')!;
+  const toggles = {
+    analytics: panel.querySelector<HTMLInputElement>('[data-consent="analytics"]')!,
+    marketing: panel.querySelector<HTMLInputElement>('[data-consent="marketing"]')!,
+  };
 
   function showBanner() {
     banner!.hidden = false;
@@ -53,10 +59,11 @@ export function initConsent({ delay = 900 } = {}) {
     clearTimeout(closing);
     panel!.classList.remove('is-closing');
     const c = consentState();
-    toggle.checked = !!(c && c.marketing);
+    toggles.analytics.checked = !!(c && c.analytics);
+    toggles.marketing.checked = !!(c && c.marketing);
     if (typeof panel!.showModal === 'function') panel!.showModal();
     else panel!.setAttribute('open', '');
-    toggle.focus({ preventScroll: true });
+    toggles.analytics.focus({ preventScroll: true });
   }
   function closePanel() {
     if (!panel!.open || panel!.classList.contains('is-closing')) return;
@@ -74,8 +81,8 @@ export function initConsent({ delay = 900 } = {}) {
     closing = window.setTimeout(done, 400);
   }
   panel.addEventListener('cancel', (e) => { e.preventDefault(); closePanel(); });
-  function decide(marketing: boolean) {
-    save(marketing);
+  function decide(o: Opcionales) {
+    save(o);
     closePanel();
     hideBanner();
   }
@@ -85,10 +92,10 @@ export function initConsent({ delay = 900 } = {}) {
     if (b.hasAttribute('data-cookie-settings')) { openPanel(); return; }
     if (b.hasAttribute('data-cpanel-close')) { closePanel(); return; }
     switch (b.dataset.cookie) {
-      case 'accept': decide(true); break;
-      case 'reject': decide(false); break;
+      case 'accept': decide({ analytics: true, marketing: true }); break;
+      case 'reject': decide({ analytics: false, marketing: false }); break;
       case 'config': openPanel(); break;
-      case 'save': decide(toggle.checked); break;
+      case 'save': decide({ analytics: toggles.analytics.checked, marketing: toggles.marketing.checked }); break;
     }
   });
   panel.addEventListener('click', (e) => { if (e.target === panel) closePanel(); });

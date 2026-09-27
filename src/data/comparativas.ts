@@ -1,5 +1,6 @@
 // Tablas comparativas de las páginas pilar. Solo datos de las fuentes (catálogo ADC | VytalGroup
-// 2026 y brief). Donde la fuente no da el dato, "Consultar": te lo confirmamos, no lo inventamos.
+// 2026, brief y web oficial de EDAN para Nano, U60, U50, DUS60 y U2). Donde la fuente no da el
+// dato, "Consultar": te lo confirmamos, no lo inventamos.
 
 export const COMPARATIVA_ECOGRAFOS = {
   columnas: ['Formato y peso', 'Monitor', 'Puertos de sonda', 'Batería', 'Ideal para'],
@@ -14,6 +15,11 @@ export const COMPARATIVA_ECOGRAFOS = {
     { slug: 'acclarix-lx25', valores: ['Carro 3D/4D', '21,5″ y táctil de 14″', '3', 'Consultar', 'Obstetricia, abdomen y vascular'] },
     { slug: 'acclarix-lx85', valores: ['Carro', '21,5″ LED y táctil de 14″', '5', 'Doble, integrada', 'Diagnóstico experto'] },
     { slug: 'acclarix-gx9', valores: ['Carro compacto', 'Táctil de gran formato', 'Consultar', 'Consultar', 'Salud de la mujer'] },
+    { slug: 'edan-nano', valores: ['Sonda de bolsillo', 'El de tu smartphone o tablet Android', 'Sonda lineal (L12 EXP) o convexa (C5 EXP)', 'Carga rápida por USB-C', 'Deporte, domicilio y urgencias'] },
+    { slug: 'edan-u60', valores: ['Sobremesa compacto', '15″', '2', 'Integrada', 'Imagen general y procedimientos'] },
+    { slug: 'edan-u50', valores: ['Sobremesa', '12,1″', '2', 'Litio, hasta 90 min', 'Imagen general con Doppler color'] },
+    { slug: 'edan-dus60', valores: ['Portátil, blanco y negro', '12,1″ TFT-LCD', '2', 'Hasta 2 h', 'Imagen general en blanco y negro'] },
+    { slug: 'edan-u2', valores: ['Carro', '15″ (19″ opcional)', '4', 'Consultar', 'Consulta con varias especialidades'] },
   ],
 };
 

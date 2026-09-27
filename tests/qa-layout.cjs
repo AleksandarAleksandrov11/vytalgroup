@@ -14,7 +14,8 @@ const PAGES = [
   ['/ecografos', 'pilar-ecografos'],
   ['/diatermias', 'pilar-diatermias'],
   ['/ecografos/acclarix-ax8', 'ficha'],
-  ['/equipos/camillas', 'categoria-sin-fichas'],
+  ['/equipos/camillas', 'categoria-camillas'],
+  ['/equipos/laser', 'categoria-impar'],
   ['/equipos/ondas-de-choque', 'categoria'],
   ['/equipos', 'equipos'],
   ['/catalogo', 'catalogo'],
@@ -35,7 +36,7 @@ const PAGES = [
     for (const [w, h] of SIZES) {
       const touch = w < 1024;
       const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: touch, hasTouch: touch });
-      await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 2, date: new Date().toISOString(), necessary: true, marketing: false })); } catch (e) { /* */ } });
+      await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: false })); } catch (e) { /* */ } });
       const p = await ctx.newPage();
       const errs = [];
       p.on('pageerror', (e) => errs.push(e.message));

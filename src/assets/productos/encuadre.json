@@ -1,0 +1,326 @@
+{
+ "camilla-electrica-estandar": {
+  "w": 0.66,
+  "h": 0.546,
+  "x": 0.17,
+  "y": 0.334
+ },
+ "camilla-electrica-multiposicion": {
+  "w": 0.688,
+  "h": 0.524,
+  "x": 0.156,
+  "y": 0.356
+ },
+ "camilla-electrica-premium": {
+  "w": 0.681,
+  "h": 0.528,
+  "x": 0.159,
+  "y": 0.352
+ },
+ "camilla-hidraulica-clinica": {
+  "w": 0.615,
+  "h": 0.585,
+  "x": 0.192,
+  "y": 0.295
+ },
+ "camilla-hidraulica-compacta": {
+  "w": 0.695,
+  "h": 0.518,
+  "x": 0.152,
+  "y": 0.362
+ },
+ "camilla-hidraulica-pro": {
+  "w": 0.585,
+  "h": 0.615,
+  "x": 0.207,
+  "y": 0.266
+ },
+ "diatermia-hr-tek-eme": {
+  "w": 0.626,
+  "h": 0.543,
+  "x": 0.187,
+  "y": 0.338
+ },
+ "diatermia-microondas-radarmed-2500-cp-eme": {
+  "w": 0.243,
+  "h": 0.82,
+  "x": 0.378,
+  "y": 0.06
+ },
+ "diatermia-multifuncion-vytamed": {
+  "w": 0.496,
+  "h": 0.605,
+  "x": 0.252,
+  "y": 0.275
+ },
+ "diatermia-reacare-i-tech": {
+  "w": 0.67,
+  "h": 0.538,
+  "x": 0.165,
+  "y": 0.343
+ },
+ "diatermia-reatherm-i-tech": {
+  "w": 0.652,
+  "h": 0.552,
+  "x": 0.173,
+  "y": 0.328
+ },
+ "ecografo-de-bolsillo-nano-c5-exp-edan": {
+  "w": 0.513,
+  "h": 0.584,
+  "x": 0.243,
+  "y": 0.296
+ },
+ "ecografo-de-bolsillo-nano-l12-exp-edan": {
+  "w": 0.468,
+  "h": 0.64,
+  "x": 0.266,
+  "y": 0.241
+ },
+ "ecografo-de-carro-acclarix-gx9-edan": {
+  "w": 0.309,
+  "h": 0.8,
+  "x": 0.345,
+  "y": 0.08
+ },
+ "ecografo-de-carro-acclarix-lx25-edan": {
+  "w": 0.282,
+  "h": 0.8,
+  "x": 0.359,
+  "y": 0.08
+ },
+ "ecografo-de-carro-acclarix-lx3-edan": {
+  "w": 0.339,
+  "h": 0.8,
+  "x": 0.33,
+  "y": 0.08
+ },
+ "ecografo-de-carro-acclarix-lx85-edan": {
+  "w": 0.325,
+  "h": 0.8,
+  "x": 0.338,
+  "y": 0.08
+ },
+ "ecografo-de-carro-acclarix-lx9-edan": {
+  "w": 0.297,
+  "h": 0.8,
+  "x": 0.352,
+  "y": 0.08
+ },
+ "ecografo-de-carro-u2-edan": {
+  "w": 0.252,
+  "h": 0.714,
+  "x": 0.373,
+  "y": 0.167
+ },
+ "ecografo-inalambrico-eco-wireless-vytamed": {
+  "w": 0.259,
+  "h": 0.74,
+  "x": 0.37,
+  "y": 0.141
+ },
+ "ecografo-portatil-acclarix-ax2-edan": {
+  "w": 0.518,
+  "h": 0.655,
+  "x": 0.241,
+  "y": 0.225
+ },
+ "ecografo-portatil-acclarix-ax3-edan": {
+  "w": 0.58,
+  "h": 0.585,
+  "x": 0.209,
+  "y": 0.295
+ },
+ "ecografo-portatil-acclarix-ax8-edan": {
+  "w": 0.569,
+  "h": 0.633,
+  "x": 0.216,
+  "y": 0.247
+ },
+ "ecografo-portatil-acclarix-ax9-edan": {
+  "w": 0.555,
+  "h": 0.611,
+  "x": 0.222,
+  "y": 0.269
+ },
+ "ecografo-portatil-dus60-edan": {
+  "w": 0.566,
+  "h": 0.636,
+  "x": 0.217,
+  "y": 0.244
+ },
+ "ecografo-portatil-u50-edan": {
+  "w": 0.619,
+  "h": 0.582,
+  "x": 0.191,
+  "y": 0.298
+ },
+ "ecografo-portatil-u60-edan": {
+  "w": 0.588,
+  "h": 0.612,
+  "x": 0.205,
+  "y": 0.268
+ },
+ "electrolisis-percutanea-physio-invasiva-easytech": {
+  "w": 0.555,
+  "h": 0.577,
+  "x": 0.223,
+  "y": 0.303
+ },
+ "electroterapia-t-one-coach-i-tech": {
+  "w": 0.336,
+  "h": 0.775,
+  "x": 0.332,
+  "y": 0.105
+ },
+ "electroterapia-therapic-eme": {
+  "w": 0.612,
+  "h": 0.589,
+  "x": 0.194,
+  "y": 0.292
+ },
+ "estetica-ageless": {
+  "w": 0.402,
+  "h": 0.747,
+  "x": 0.299,
+  "y": 0.133
+ },
+ "estetica-biorev-tech": {
+  "w": 0.57,
+  "h": 0.597,
+  "x": 0.215,
+  "y": 0.283
+ },
+ "estetica-echos": {
+  "w": 0.608,
+  "h": 0.494,
+  "x": 0.196,
+  "y": 0.386
+ },
+ "estetica-epil-evo-smart": {
+  "w": 0.287,
+  "h": 0.82,
+  "x": 0.356,
+  "y": 0.06
+ },
+ "estetica-reshape-plus": {
+  "w": 0.574,
+  "h": 0.627,
+  "x": 0.212,
+  "y": 0.253
+ },
+ "estetica-rigenera-3-pro-age": {
+  "w": 0.345,
+  "h": 0.753,
+  "x": 0.327,
+  "y": 0.127
+ },
+ "laser-alta-potencia-crystal-yag-bipower-lux-eme": {
+  "w": 0.658,
+  "h": 0.547,
+  "x": 0.171,
+  "y": 0.333
+ },
+ "laser-baja-potencia-lasermed-2200-eme": {
+  "w": 0.748,
+  "h": 0.481,
+  "x": 0.126,
+  "y": 0.399
+ },
+ "laser-de-barrido-pr999-eme": {
+  "w": 0.32,
+  "h": 0.82,
+  "x": 0.34,
+  "y": 0.06
+ },
+ "laser-ondas-de-choque-intelect": {
+  "w": 0.729,
+  "h": 0.493,
+  "x": 0.135,
+  "y": 0.386
+ },
+ "laser-terapeutico-alta-potencia": {
+  "w": 0.733,
+  "h": 0.491,
+  "x": 0.134,
+  "y": 0.39
+ },
+ "magnetoterapia-lamagneto-i-tech": {
+  "w": 0.38,
+  "h": 0.684,
+  "x": 0.31,
+  "y": 0.196
+ },
+ "magnetoterapia-magnetomed-eme": {
+  "w": 0.665,
+  "h": 0.542,
+  "x": 0.167,
+  "y": 0.339
+ },
+ "magnetoterapia-superinductiva-clinica-vytamed": {
+  "w": 0.562,
+  "h": 0.604,
+  "x": 0.219,
+  "y": 0.276
+ },
+ "magnetoterapia-superinductiva-vytamed": {
+  "w": 0.414,
+  "h": 0.724,
+  "x": 0.293,
+  "y": 0.156
+ },
+ "multiterapia-polyter-evo-eme": {
+  "w": 0.288,
+  "h": 0.8,
+  "x": 0.355,
+  "y": 0.08
+ },
+ "ondas-de-choque-likawave-vario-2i-likamed": {
+  "w": 0.585,
+  "h": 0.581,
+  "x": 0.207,
+  "y": 0.299
+ },
+ "ondas-de-choque-likawave-vario-3i-likamed": {
+  "w": 0.3,
+  "h": 0.82,
+  "x": 0.35,
+  "y": 0.06
+ },
+ "ondas-de-choque-shock-med-eme": {
+  "w": 0.508,
+  "h": 0.591,
+  "x": 0.246,
+  "y": 0.29
+ },
+ "presoterapia-beauty-press": {
+  "w": 0.512,
+  "h": 0.507,
+  "x": 0.244,
+  "y": 0.373
+ },
+ "presoterapia-i-press-i-tech": {
+  "w": 0.475,
+  "h": 0.631,
+  "x": 0.262,
+  "y": 0.249
+ },
+ "terapia-combinada-combimed-eme": {
+  "w": 0.656,
+  "h": 0.549,
+  "x": 0.172,
+  "y": 0.331
+ },
+ "ultrasonidos-ultrasonic-eme": {
+  "w": 0.733,
+  "h": 0.491,
+  "x": 0.134,
+  "y": 0.39
+ },
+ "ultrasonidos-ut2-i-tech": {
+  "w": 0.612,
+  "h": 0.555,
+  "x": 0.194,
+  "y": 0.325
+ }
+}

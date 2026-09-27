@@ -17,7 +17,7 @@ const SOLO = process.argv[2] ? process.argv[2].split(',') : null;
   let fails = 0;
   for (const [w, h, movil] of [[390, 844, true], [1440, 900, false]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: movil, hasTouch: movil, reducedMotion: 'reduce', bypassCSP: true });
-    await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 2, date: new Date().toISOString(), necessary: true, marketing: false })); } catch (e) { /* */ } });
+    await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: false })); } catch (e) { /* */ } });
     const p = await ctx.newPage();
     for (const r of rutas) {
       if (SOLO && !SOLO.includes(r)) continue;
@@ -42,7 +42,7 @@ const SOLO = process.argv[2] ? process.argv[2].split(',') : null;
           for (let n = el; n; n = n.parentElement) {
             const cs = getComputedStyle(n);
             if (/url\(/.test(cs.backgroundImage) || n.tagName === 'PICTURE' || n.querySelector(':scope > picture, :scope > img, :scope > video')) {
-              if (n !== el && n.matches('.hero, .hero *, .gal, .gal *')) return null;
+              if (n !== el && n.matches('.hx, .hx *, .gal, .gal *')) return null;
             }
             const c = rgb(cs.backgroundColor);
             if (c && c.a > 0) { capas.push(c); if (c.a >= 0.99) break; }

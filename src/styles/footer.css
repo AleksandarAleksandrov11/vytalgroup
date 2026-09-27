@@ -7,16 +7,16 @@
 .ft__brand { display: grid; justify-items: center; gap: 12px; text-align: center; }
 .ft__logo { display: flex; align-items: center; min-height: 44px; border-radius: 8px; }
 .ft__logo .logo { height: 30px; }
-.ft__claim { max-width: 26ch; font-size: 1.125rem; font-weight: 500; line-height: 1.35; letter-spacing: -.015em; color: #FFF; }
+.ft__claim { max-width: 26ch; font-size: 1.125rem; font-weight: 500; line-height: 1.35; letter-spacing: -.015em; color: #FFF; text-wrap: balance; }
 .ft__claim em { display: block; font-family: var(--serif); font-size: 1.12em; font-weight: 400; color: var(--teal-light); }
 .ft__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 16px; text-align: center; }
 .ft__col--equipos { grid-column: 1 / -1; }
 .ft__h { margin-bottom: 8px; font-size: .75rem; font-weight: 560; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-on-dark); }
 .ft__list { display: grid; justify-items: center; }
 .ft__list--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
-/* En móvil, las categorías con su nombre corto (el de los filtros del catálogo) para que no se partan */
+/* En móvil y entre 1024 y 1279 (tres columnas estrechas), las categorías con su nombre corto (el de los filtros del catálogo) para que no se partan */
 .ft__short { display: none; }
-@media (max-width: 639px) { .ft__full { display: none; } .ft__short { display: inline; } }
+@media (max-width: 639px), (min-width: 1024px) and (max-width: 1279px) { .ft__full { display: none; } .ft__short { display: inline; } }
 .ft a, .ft button { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: rgba(255, 255, 255, .86); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font-size: inherit; text-align: inherit; line-height: 1.3; }
 .ft__list .icon { width: 18px; height: 18px; color: var(--teal-on-dark); }
 .ft a:hover, .ft button:hover { color: #FFF; text-decoration: underline; text-underline-offset: 4px; }

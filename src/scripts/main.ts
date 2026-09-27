@@ -6,6 +6,7 @@
 // Solo se animan transform, opacity y variables CSS. Con prefers-reduced-motion quedan los fundidos.
 import { captureAttribution } from './attribution';
 import { initConsent } from './consent';
+import { initAnalytics } from './analytics';
 import { initTracking, catalogDownload, contact } from './tracking';
 
 const html = document.documentElement;
@@ -19,6 +20,7 @@ const belowFold = (el: Element) => el.getBoundingClientRect().top > window.inner
 
 captureAttribution();
 initTracking();
+initAnalytics();
 initConsent();
 
 // ------------------------------------------------------------------ cabecera, progreso de lectura y parallax
@@ -26,18 +28,11 @@ const header = $('[data-header]')!;
 const readBar = $('[data-read-progress]');
 const plx = fine && desktop.matches && !reduced ? $$('[data-parallax]') : [];
 const scrollHooks: ((y: number, vh: number) => void)[] = [];
-let lastY = window.scrollY;
 let ticking = false;
 function onScroll() {
   const y = window.scrollY;
   const vh = window.innerHeight;
   header.classList.toggle('is-scrolled', y > 8);
-  // En móvil la cabecera se oculta al bajar y reaparece al subir
-  if (!desktop.matches && !html.classList.contains('menu-open')) {
-    if (y > lastY + 6 && y > 160) header.classList.add('is-hidden');
-    else if (y < lastY - 6 || y < 80) header.classList.remove('is-hidden');
-  } else header.classList.remove('is-hidden');
-  lastY = y;
   if (readBar) {
     const art = $('[data-article]');
     const top = art ? art.getBoundingClientRect().top + y : 0;
@@ -56,6 +51,43 @@ function onScroll() {
 }
 window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
 window.addEventListener('resize', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+
+// ------------------------------------------------------------------ relleno circular desde el cursor
+// El círculo crece desde el punto por el que entra el puntero y se recoge hacia el punto por el que sale.
+if (fine) {
+  const fill = (e: PointerEvent) => {
+    const el = e.currentTarget as HTMLElement;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--fx', `${(e.clientX - r.left).toFixed(0)}px`);
+    el.style.setProperty('--fy', `${(e.clientY - r.top).toFixed(0)}px`);
+  };
+  $$('[data-fill], .btn--line').forEach((el) => { el.addEventListener('pointerenter', fill); el.addEventListener('pointerleave', fill); });
+}
+
+// ------------------------------------------------------------------ punto de la navegación
+// Se coloca bajo la sección actual y viaja hasta el enlace señalado con el ratón o el teclado.
+const navList = $('[data-nav]');
+const dot = $('[data-nav-dot]');
+if (navList && dot) {
+  const links = $$<HTMLElement>('.hd__link', navList);
+  const activo = $('.hd__item.is-active .hd__link', navList);
+  const ir = (el: HTMLElement | null) => {
+    if (!el || !desktop.matches) { dot.classList.remove('is-on'); return; }
+    const base = navList.getBoundingClientRect().left;
+    const r = el.getBoundingClientRect();
+    dot.style.setProperty('--dx', `${(r.left - base + r.width / 2).toFixed(1)}px`);
+    dot.classList.add('is-on');
+  };
+  links.forEach((l) => {
+    l.addEventListener('pointerenter', () => ir(l));
+    l.addEventListener('focus', () => ir(l));
+  });
+  navList.addEventListener('pointerleave', () => ir(activo));
+  navList.addEventListener('focusout', (e) => { if (!navList.contains(e.relatedTarget as Node)) ir(activo); });
+  const colocar = () => { dot.style.transition = 'none'; ir(activo); dot.getBoundingClientRect(); dot.style.transition = ''; };
+  if (document.fonts?.ready) document.fonts.ready.then(colocar); else colocar();
+  window.addEventListener('resize', colocar, { passive: true });
+}
 
 // ------------------------------------------------------------------ desplegable de Equipos
 const ddBtn = $<HTMLButtonElement>('[data-dropdown-btn]');
@@ -81,7 +113,7 @@ if (ddBtn && dd) {
     dd.classList.remove('is-open');
     if (reduced) { dd.hidden = true; } else {
       dd.classList.add('is-closing');
-      closeT = window.setTimeout(() => { dd.hidden = true; dd.classList.remove('is-closing'); }, 180);
+      closeT = window.setTimeout(() => { dd.hidden = true; dd.classList.remove('is-closing'); }, 240);
     }
     if (focusBtn) ddBtn.focus();
   };
@@ -107,32 +139,53 @@ if (ddBtn && dd) {
   }
 }
 
-// ------------------------------------------------------------------ menú móvil a pantalla completa
+// ------------------------------------------------------------------ menú móvil (panel de color)
+// Se revela en círculo desde el botón; "Ecógrafos", "Diatermias" y "Equipos" son desplegables propios.
 const menuBtn = $<HTMLButtonElement>('[data-menu-btn]');
 const menu = $('[data-menu]');
 if (menuBtn && menu) {
-  const focusables = () => [menuBtn, ...$$<HTMLElement>('a, button', menu)];
+  let endT = 0;
+  const accs = $$<HTMLButtonElement>('[data-mm-acc]', menu);
+  const setAcc = (btn: HTMLButtonElement, open: boolean) => {
+    const sub = document.getElementById(btn.getAttribute('aria-controls')!)!;
+    btn.setAttribute('aria-expanded', String(open));
+    sub.classList.toggle('is-open', open);
+    sub.toggleAttribute('inert', !open);
+  };
+  accs.forEach((b) => b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    accs.forEach((o) => { if (o !== b) setAcc(o, false); });
+    setAcc(b, open);
+  }));
+  const focusables = () => [menuBtn, ...$$<HTMLElement>('a, button', menu).filter((el) => !el.closest('[inert]'))];
+  const origen = () => {
+    const r = menuBtn.getBoundingClientRect();
+    menu.style.setProperty('--ox', `${(r.left + r.width / 2).toFixed(0)}px`);
+    menu.style.setProperty('--oy', `${(r.top + r.height / 2 - header.offsetHeight).toFixed(0)}px`);
+  };
   const open = () => {
+    clearTimeout(endT);
+    origen();
     menu.hidden = false;
     menu.classList.remove('is-closing');
     menu.classList.add('is-open');
+    menu.scrollTop = 0;
     menuBtn.setAttribute('aria-expanded', 'true');
     menuBtn.setAttribute('aria-label', 'Cerrar el menú');
     html.classList.add('menu-open');
     header.classList.add('is-open');
-    header.classList.remove('is-hidden');
-    setTimeout(() => $<HTMLAnchorElement>('a', menu)?.focus({ preventScroll: true }), 60);
+    setTimeout(() => $<HTMLElement>('.mm__link', menu)?.focus({ preventScroll: true }), 80);
   };
   const close = (focus = true) => {
     menuBtn.setAttribute('aria-expanded', 'false');
     menuBtn.setAttribute('aria-label', 'Abrir el menú');
     html.classList.remove('menu-open');
     header.classList.remove('is-open');
-    const end = () => { menu.hidden = true; menu.classList.remove('is-open', 'is-closing'); };
-    if (reduced) end(); else { menu.classList.add('is-closing'); setTimeout(end, 220); }
+    const end = () => { menu.hidden = true; menu.classList.remove('is-open', 'is-closing'); accs.forEach((b) => setAcc(b, false)); };
+    if (reduced) end(); else { origen(); menu.classList.add('is-closing'); endT = window.setTimeout(end, 430); }
     if (focus) menuBtn.focus({ preventScroll: true });
   };
-  menuBtn.addEventListener('click', () => (menu.hidden ? open() : close()));
+  menuBtn.addEventListener('click', () => (menu.hidden || menu.classList.contains('is-closing') ? open() : close()));
   menu.addEventListener('click', (e) => { if ((e.target as Element).closest('a')) close(false); });
   document.addEventListener('keydown', (e) => {
     if (menu.hidden) return;
@@ -143,7 +196,7 @@ if (menuBtn && menu) {
     if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
     else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
   });
-  desktop.addEventListener('change', () => { if (!menu.hidden) close(false); });
+  matchMedia('(min-width: 1180px)').addEventListener('change', (e) => { if (e.matches && !menu.hidden) close(false); });
 }
 
 // ------------------------------------------------------------------ entradas al hacer scroll
@@ -214,19 +267,45 @@ if (reveal && !reduced) {
   });
 }
 
-// ------------------------------------------------------------------ halo de luz en tarjetas (escritorio)
+// ------------------------------------------------------------------ tarjetas de producto: toda la tarjeta es clicable
+document.addEventListener('click', (e) => {
+  const t = e.target as Element;
+  const card = t.closest<HTMLElement>('.pc');
+  if (!card || t.closest('a, button, input, select, textarea, summary') || (e as MouseEvent).button !== 0) return;
+  if (getSelection()?.toString()) return;
+  const cta = $<HTMLAnchorElement>('.pc__cta', card);
+  if (!cta) return;
+  if ((e as MouseEvent).metaKey || (e as MouseEvent).ctrlKey) window.open(cta.href, '_blank', 'noopener');
+  else cta.click();
+});
+
+// ------------------------------------------------------------------ halo de luz y tarjetas en 3D (escritorio)
+// [data-halo]: un brillo sigue al cursor. [data-tilt]: además la tarjeta se inclina hacia el cursor
+// (máx. 7°) y vuelve suave a su sitio al salir.
 if (fine && !reduced) {
   let raf = 0;
+  let last: HTMLElement | null = null;
+  const reset = (c: HTMLElement) => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); c.classList.remove('is-tilt'); };
   document.addEventListener('pointermove', (e) => {
-    const card = (e.target as Element).closest<HTMLElement>('[data-halo]');
+    const card = (e.target as Element).closest<HTMLElement>('[data-halo], [data-tilt]');
+    if (last && last !== card && last.hasAttribute('data-tilt')) reset(last);
+    last = card;
     if (!card) return;
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
       const r = card.getBoundingClientRect();
-      card.style.setProperty('--hx', `${Math.round(e.clientX - r.left)}px`);
-      card.style.setProperty('--hy', `${Math.round(e.clientY - r.top)}px`);
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      card.style.setProperty('--hx', `${Math.round(x)}px`);
+      card.style.setProperty('--hy', `${Math.round(y)}px`);
+      if (card.hasAttribute('data-tilt')) {
+        card.classList.add('is-tilt');
+        card.style.setProperty('--rx', `${((0.5 - y / r.height) * 7).toFixed(2)}deg`);
+        card.style.setProperty('--ry', `${((x / r.width - 0.5) * 9).toFixed(2)}deg`);
+      }
     });
   }, { passive: true });
+  document.addEventListener('pointerleave', () => { if (last?.hasAttribute('data-tilt')) reset(last); last = null; });
 }
 
 // ------------------------------------------------------------------ botones magnéticos (escritorio)
@@ -320,6 +399,10 @@ $$('[data-seg]').forEach((seg) => {
     if (rail) rail.scrollLeft = 0;
     if (focus) tabs[i].focus();
   };
+  // Enlace directo a una pestaña (/ecografos#gama-portatil)
+  const porHash = () => { const k = tabs.findIndex((t) => `#${t.id}` === location.hash); if (k >= 0) select(k); };
+  porHash();
+  window.addEventListener('hashchange', porHash);
   tabs.forEach((t, i) => {
     t.addEventListener('click', () => select(i));
     t.addEventListener('keydown', (e) => {
@@ -335,7 +418,7 @@ $$('[data-seg]').forEach((seg) => {
 // ------------------------------------------------------------------ carruseles con scroll-snap: puntos
 $$('[data-rail]').forEach((track) => {
   const items = [...track.children] as HTMLElement[];
-  const dots = $$('.dots span', track.parentElement!);
+  const dots = $$('.dots span', track.closest('[role="tabpanel"]') || track.parentElement!);
   if (!dots.length) return;
   const mid = (el: Element) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
   let raf = 0;
@@ -348,6 +431,28 @@ $$('[data-rail]').forEach((track) => {
       dots.forEach((d, i) => d.classList.toggle('is-on', i === best));
     });
   }, { passive: true });
+});
+
+// ------------------------------------------------------------------ carruseles con flechas (toda la gama)
+$$('[data-carousel]').forEach((box) => {
+  const track = $('[data-rail]', box)!;
+  const prev = $<HTMLButtonElement>('[data-prev]', box);
+  const next = $<HTMLButtonElement>('[data-next]', box);
+  if (!prev || !next) return;
+  const paso = () => { const li = track.firstElementChild as HTMLElement; return li ? li.getBoundingClientRect().width + 20 : track.clientWidth; };
+  const estado = () => {
+    const max = track.scrollWidth - track.clientWidth - 4;
+    prev.disabled = track.scrollLeft <= 4;
+    next.disabled = track.scrollLeft >= max;
+    track.toggleAttribute('data-at-end', track.scrollLeft >= max);
+    const img = $('.pc__media', track);
+    if (img) box.style.setProperty('--w-img', `${(img.getBoundingClientRect().height / 2 + 18).toFixed(0)}px`);
+  };
+  prev.addEventListener('click', () => track.scrollBy({ left: -paso(), behavior: reduced ? 'auto' : 'smooth' }));
+  next.addEventListener('click', () => track.scrollBy({ left: paso(), behavior: reduced ? 'auto' : 'smooth' }));
+  track.addEventListener('scroll', () => requestAnimationFrame(estado), { passive: true });
+  window.addEventListener('resize', estado, { passive: true });
+  estado();
 });
 
 // ------------------------------------------------------------------ comparador: filas una a una y checks que se dibujan
@@ -459,6 +564,65 @@ $$('[data-mockup]').forEach((m) => {
     });
   }, { passive: true });
   zone.addEventListener('pointerleave', () => { m.style.removeProperty('--rx'); m.style.removeProperty('--ry'); });
+});
+
+// ------------------------------------------------------------------ escaparate del hero (inicio)
+// Un equipo cada 4,2 s dentro del círculo. Se para al pasar el ratón o con el foco dentro, fuera de
+// pantalla, con la pestaña oculta y con el botón de pausa; con movimiento reducido empieza parado.
+$$('[data-showcase]').forEach((st) => {
+  const hero = st.closest('.hx');
+  const slides = $$('[data-slide]', st);
+  const dots = $$<HTMLButtonElement>('[data-go]', st);
+  const play = $<HTMLButtonElement>('[data-play]', st);
+  if (slides.length < 2) return;
+  const DUR = 4200;
+  let i = 0;
+  let timer = 0;
+  let prepT = 0;
+  let visible = true;
+  let hover = false;
+  let paused = reduced;
+  const setPlay = () => {
+    if (!play) return;
+    play.setAttribute('aria-pressed', String(paused));
+    play.setAttribute('aria-label', paused ? 'Reanudar el carrusel' : 'Pausar el carrusel');
+  };
+  const prep = (n: number) => slides[n].classList.add('is-next');
+  const show = (n: number) => {
+    if (n === i) return;
+    hero?.classList.add('is-live');
+    const prev = slides[i];
+    const next = slides[n];
+    prep(n);
+    next.getBoundingClientRect();
+    prev.classList.remove('is-active');
+    prev.classList.add('is-leaving');
+    prev.inert = true;
+    window.setTimeout(() => prev.classList.remove('is-leaving'), 650);
+    next.classList.remove('is-next');
+    next.classList.add('is-active');
+    next.inert = false;
+    i = n;
+    dots.forEach((d, j) => d.setAttribute('aria-pressed', String(j === i)));
+  };
+  const plan = () => {
+    clearTimeout(timer);
+    clearTimeout(prepT);
+    if (paused || !visible || hover || document.hidden) return;
+    const n = (i + 1) % slides.length;
+    prepT = window.setTimeout(() => prep(n), DUR - 1600);
+    timer = window.setTimeout(() => { show(n); plan(); }, DUR);
+  };
+  dots.forEach((d) => d.addEventListener('click', () => { show(Number(d.dataset.go)); plan(); }));
+  play?.addEventListener('click', () => { paused = !paused; setPlay(); plan(); });
+  setPlay();
+  st.addEventListener('pointerenter', () => { hover = true; plan(); });
+  st.addEventListener('pointerleave', () => { hover = false; plan(); });
+  st.addEventListener('focusin', () => { hover = true; plan(); });
+  st.addEventListener('focusout', (e) => { if (!st.contains(e.relatedTarget as Node)) { hover = false; plan(); } });
+  document.addEventListener('visibilitychange', plan);
+  if (hasIO) new IntersectionObserver(([e]) => { visible = e.isIntersecting; plan(); }).observe(st);
+  else plan();
 });
 
 // ------------------------------------------------------------------ galería de producto: miniaturas y zoom

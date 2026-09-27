@@ -1,12 +1,12 @@
 // QA de interfaz contra dist/: cabecera y menús, catálogo (filtros, búsqueda, orden, URL y sin JS),
-// acordeones, control segmentado, galería, guías (índice y progreso), teclado, movimiento reducido,
+// acordeones, control segmentado, escaparate del hero, galería, guías (índice y progreso), teclado, movimiento reducido,
 // CSP sin violaciones, 404 real y cabeceras de caché.
 const { chromium } = require('playwright');
 
 const BASE = process.env.BASE || `http://localhost:${process.env.PORT || 8081}`;
 const results = [];
 const ok = (cond, name, extra = '') => results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}${extra ? `  · ${extra}` : ''}`);
-const CONSENT = () => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 2, date: new Date().toISOString(), necessary: true, marketing: false })); } catch (e) { /* */ } };
+const CONSENT = () => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: false })); } catch (e) { /* */ } };
 
 async function open(b, path, { width = 1280, height = 900, mobile = false, reduced = false, js = true } = {}) {
   const ctx = await b.newContext({ viewport: { width, height }, isMobile: mobile, hasTouch: mobile, reducedMotion: reduced ? 'reduce' : 'no-preference', javaScriptEnabled: js });
@@ -30,6 +30,14 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     const { ctx, p } = await open(b, '/ecografos');
     ok(await p.getAttribute('.hd__nav a[href="/ecografos"]', 'aria-current') === 'page', 'cabecera: marca la página activa');
     ok(!(await p.isVisible('.hd__menu')), 'cabecera: sin hamburguesa en escritorio');
+    ok(await p.isVisible('.hd__nav a[href="/guias"]'), 'cabecera: Guías en el menú');
+    ok(await p.evaluate(() => getComputedStyle(document.querySelector('.hd')).backgroundColor === 'rgb(255, 255, 255)'), 'cabecera: fondo sólido');
+    await p.waitForTimeout(300);
+    ok(await p.$eval('[data-nav-dot]', (d) => d.classList.contains('is-on')), 'cabecera: punto circular bajo la sección activa');
+    const dx0 = await p.$eval('[data-nav-dot]', (d) => d.style.getPropertyValue('--dx'));
+    await p.hover('.hd__list > li > a[href="/catalogo"]');
+    await p.waitForTimeout(300);
+    ok(await p.$eval('[data-nav-dot]', (d) => d.style.getPropertyValue('--dx')) !== dx0, 'cabecera: el punto viaja al enlace señalado');
     await p.click('[data-dropdown-btn]');
     await p.waitForTimeout(400);
     ok(await p.getAttribute('[data-dropdown-btn]', 'aria-expanded') === 'true' && await p.isVisible('#menu-equipos'), 'desplegable Equipos: se abre');
@@ -46,9 +54,17 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
 
   await block('Cabecera en móvil', async () => {
     const { ctx, p } = await open(b, '/', { width: 390, height: 844, mobile: true });
+    ok((await p.$$('.hd__burger span')).length === 3, 'menú móvil: hamburguesa de 3 líneas');
     await p.tap('[data-menu-btn]');
-    await p.waitForTimeout(600);
+    await p.waitForTimeout(800);
     ok(await p.getAttribute('[data-menu-btn]', 'aria-expanded') === 'true' && await p.isVisible('#menu-movil'), 'menú móvil: se abre');
+    ok(await p.isVisible('#menu-movil a[href="/guias"]'), 'menú móvil: incluye Guías');
+    await p.tap('[aria-controls="mm-eco"]');
+    await p.waitForTimeout(700);
+    ok(await p.getAttribute('[aria-controls="mm-eco"]', 'aria-expanded') === 'true' && await p.$eval('#mm-eco', (e) => !e.inert && e.getBoundingClientRect().height > 100), 'menú móvil: desplegable de Ecógrafos');
+    await p.tap('[aria-controls="mm-equipos"]');
+    await p.waitForTimeout(700);
+    ok(await p.$eval('#mm-eco', (e) => e.inert) && await p.$eval('#mm-equipos', (e) => !e.inert), 'menú móvil: un desplegable abierto cada vez');
     ok(await p.evaluate(() => getComputedStyle(document.documentElement).overflow === 'hidden' || getComputedStyle(document.body).overflow === 'hidden' || document.documentElement.classList.contains('menu-open') || document.body.classList.contains('menu-open')), 'menú móvil: bloquea el scroll de fondo');
     await p.keyboard.press('Escape');
     await p.waitForTimeout(600);
@@ -57,10 +73,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await p.waitForTimeout(500);
     await p.evaluate(() => window.scrollTo({ top: 1800, behavior: 'instant' }));
     await p.waitForTimeout(500);
-    ok(await p.evaluate(() => document.querySelector('.hd').classList.contains('is-hidden')), 'cabecera móvil: se oculta al bajar');
-    await p.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
-    await p.waitForTimeout(500);
-    ok(await p.evaluate(() => !document.querySelector('.hd').classList.contains('is-hidden')), 'cabecera móvil: reaparece al subir');
+    ok(await p.evaluate(() => { const r = document.querySelector('.hd').getBoundingClientRect(); return r.top === 0 && r.bottom > 40; }), 'cabecera móvil: fija y visible al bajar');
     ok(await p.evaluate(() => !document.querySelector('[data-mbar]').inert), 'barra móvil: visible tras el hero');
     await ctx.close();
   });
@@ -144,12 +157,31 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await p.mouse.move(900, 380, { steps: 5 });
     await p.waitForTimeout(200);
     ok(await p.$eval('[data-mockup]', (e) => e.style.getPropertyValue('--ry') !== ''), 'maqueta 3D: se inclina con el cursor');
-    await ir('.why__photo', 0.15);
+    await ir('.duo__media', 0.15);
     await p.mouse.wheel(0, 120);
     await p.waitForTimeout(400);
-    const py = await p.$eval('.why__photo [data-parallax]', (x) => x.style.getPropertyValue('--py'));
-    ok(py && py !== '0.0px' && Math.abs(parseFloat(py)) <= 16, 'parallax: la foto de Javier se desplaza levemente (16 px como máximo)', py);
+    const py = await p.$eval('.duo__media [data-parallax]', (x) => x.style.getPropertyValue('--py'));
+    ok(py && py !== '0.0px' && Math.abs(parseFloat(py)) <= 16, 'parallax: la foto del destacado se desplaza levemente (16 px como máximo)', py);
+    await ir('[data-cmp]', 0.2);
+    await p.waitForTimeout(1600);
+    ok(await p.$eval('[data-cmp]', (e) => e.classList.contains('is-in')), 'comparador: las filas entran y lo habitual se tacha');
     ok(await p.evaluate(() => [...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r.cssText.includes('@view-transition')); } catch (e) { return false; } }) || /@view-transition/.test(document.documentElement.innerHTML)), 'transiciones de página: @view-transition activo');
+    await ctx.close();
+  });
+
+  await block('Inicio: escaparate del hero', async () => {
+    const { ctx, p } = await open(b, '/');
+    const activo = () => p.$$eval('[data-showcase] [data-slide]', (xs) => xs.findIndex((x) => x.classList.contains('is-active')));
+    ok(await activo() === 0, 'escaparate: empieza por el primer equipo');
+    await p.mouse.move(5, 5);
+    await p.waitForTimeout(5200);
+    ok(await activo() === 1, 'escaparate: pasa solo al siguiente equipo');
+    await p.click('[data-showcase] [data-go="3"]');
+    await p.waitForTimeout(400);
+    ok(await activo() === 3 && await p.$eval('[data-showcase] [data-go="3"]', (d) => d.getAttribute('aria-pressed') === 'true'), 'escaparate: los puntos eligen equipo');
+    await p.click('[data-play]');
+    ok(await p.getAttribute('[data-play]', 'aria-pressed') === 'true', 'escaparate: se puede pausar');
+    ok(await p.$$eval('[data-showcase] [data-slide]', (xs) => xs.filter((x) => !x.inert).length === 1), 'escaparate: solo el equipo visible es navegable');
     await ctx.close();
   });
 
@@ -162,6 +194,13 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await p.waitForTimeout(500);
     ok(await p.$eval('[data-zoom]', (d) => !d.open), 'ficha: Escape cierra la ampliación');
     ok(/p-acclarix-ax8/.test(await p.$eval('.gal img', (i) => i.style.viewTransitionName || getComputedStyle(i).viewTransitionName)), 'ficha: la imagen tiene view-transition-name propio');
+    ok((await p.$$('#preguntas .acc__item')).length >= 3, 'ficha: sección de preguntas frecuentes con 3 o más');
+    for (const ruta of ['/ecografos/edan-nano', '/equipos/camillas/camilla-electrica-premium']) {
+      const f = await ctx.newPage();
+      const res = await f.goto(BASE + ruta, { waitUntil: 'domcontentloaded' });
+      ok(res.status() === 200 && (await f.$$('#preguntas .acc__item')).length >= 3, `ficha ${ruta}: existe y tiene sus preguntas`);
+      await f.close();
+    }
     await ctx.close();
   });
 

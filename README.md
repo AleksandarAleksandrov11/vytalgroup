@@ -2,10 +2,11 @@
 
 Web multipágina de VytalGroup: **equipos médicos de alta calidad, sin letra pequeña**. Astro con salida 100 % estática, JavaScript vanilla solo donde hace falta (formulario, filtros, menús, cookies y animaciones), mismo sistema de diseño que la landing de campañas (https://vsl-vytalgroup.vercel.app/) y preparada para publicarse en **https://vytalgroup.org**.
 
-- 67 páginas HTML: inicio, 2 páginas pilar (ecógrafos y diatermias), índice de equipos, 10 páginas de categoría, 42 fichas de producto, catálogo navegable, sobre nosotros, contacto, índice de guías y 3 guías, 3 legales y 404.
-- 53 productos en un único origen de datos (`src/data/productos/`): los 48 del catálogo 2026 y 5 modelos EDAN pendientes de confirmar. 42 tienen ficha propia.
+- 78 páginas HTML: inicio, 2 páginas pilar (ecógrafos y diatermias), índice de equipos, 10 páginas de categoría, 53 fichas de producto, catálogo navegable, sobre nosotros, contacto, índice de guías y 3 guías, 3 legales y 404.
+- 53 productos en un único origen de datos (`src/data/productos/`): los 48 del catálogo 2026 y 5 modelos EDAN (Nano, U60, U50, DUS60 y U2) con los datos de la web oficial de EDAN. Todos tienen ficha propia con la misma estructura y sus preguntas frecuentes.
+- Fotos de producto mejoradas con IA (Real-ESRGAN) y sin fondo (BiRefNet), sin cambiar el contenido de las fotos.
 - Formulario de 4 pasos idéntico al de la landing, conectado a la **misma hoja de Google Sheets** (columnas nuevas Origen y Página).
-- Meta Pixel condicionado al consentimiento de cookies, con los eventos del brief.
+- Aviso de cookies con tres categorías (necesarias, analítica y marketing): Vercel Web Analytics y Meta Pixel solo se cargan con consentimiento.
 - Imágenes OG de 1200 × 630 generadas en el build para cada página, categoría, ficha y guía.
 
 ---
@@ -24,19 +25,19 @@ Web multipágina de VytalGroup: **equipos médicos de alta calidad, sin letra pe
 - `scripts/`
   - `serve.mjs`: Servidor local que imita a Vercel (cabeceras, URLs limpias y 404 real)
   - `check-content.mjs`: Validador de los datos de producto y categorías
-  - `imagenes/`: Recorte y limpieza de las fotos de producto desde el PDF (Python)
+  - `imagenes/`: Fotos con IA (`mejorar_ia.py`: Real-ESRGAN y BiRefNet), medida de cada equipo para su sombra (`encuadre.py`) y logotipos de marcas en SVG (`logos.py`), en Python
   - `mapa/`: Generador de los mapas de puntos (Natural Earth)
   - `fuentes/`: Subconjunto de la fuente serif
 - `src/`
-  - `config.ts`: SITE_URL, SHEETS_ENDPOINT y META_PIXEL_ID (lo único que hay que tocar para publicar)
+  - `config.ts`: SITE_URL, SHEETS_ENDPOINT, META_PIXEL_ID y VERCEL_ANALYTICS (lo único que hay que tocar para publicar)
   - `data/`: Único origen de datos: empresa, categorías, productos, FAQ, comparativas y mapas
   - `content/guias/`: Guías en Markdown (colección de contenido)
-  - `assets/`: Fuentes woff2, fotos y fotos de producto maestras (Astro genera AVIF y WebP)
+  - `assets/`: Fuentes woff2, fotos, fotos de producto maestras sin fondo con su `encuadre.json` (Astro genera AVIF y WebP) y logotipos de marcas (`marcas/`)
   - `components/`: Cabecera, pie, tarjetas, formulario, ficha de producto, comparador, mapa, etc.
   - `layouts/Base.astro`: SEO (title, description, canonical, OG, Twitter), JSON-LD, sprite y scripts
   - `lib/`: SEO y JSON-LD, textos, imágenes, rutas indexables e imágenes OG
   - `pages/`: Rutas (todas generadas desde src/data y src/content)
-  - `scripts/`: JS vanilla: main (orquestador), formulario, catálogo, consentimiento, tracking
+  - `scripts/`: JS vanilla: main (orquestador), formulario, catálogo, consentimiento, analítica (Vercel) y tracking (Meta)
   - `styles/`: tokens.css (colores, tipografía, espacios, radios, sombras) y estilos por plantilla
 - `tests/`: Pruebas automáticas (npm test)
 
@@ -86,7 +87,7 @@ Todos los productos están en `src/data/productos/` (un archivo por grupo: `ecog
    - `imagenes`: nombres de archivo de `src/assets/productos/` (sin extensión).
    - `relacionados`: slugs de otros productos.
    - `seoTitle` y `seoDescription` solo si la plantilla automática no encaja (50 a 60 y 140 a 160 caracteres).
-2. Añade la imagen en `src/assets/productos/` (PNG o WebP, fondo blanco, 640 × 480 como el resto). Para recortar desde el PDF del catálogo: `python3 scripts/imagenes/build_productos.py <carpeta de pdfimages> <carpeta de imágenes de la landing>`.
+2. Añade la imagen en `src/assets/productos/`: WebP (o PNG) **con fondo transparente**, lienzo 4:3 de 1280 × 960 con el equipo centrado y apoyado en la línea del 88 % de la altura, como el resto. El fondo suave y la sombra de contacto los pone el CSS. Para prepararla desde una foto con fondo, añádela a la tabla `PRODUCTOS` de `scripts/imagenes/mejorar_ia.py` y ejecuta `python3 scripts/imagenes/mejorar_ia.py <pdfimages> <imágenes de la landing> <imágenes de EDAN> <pesos de Real-ESRGAN> <nombre>` (escalado con Real-ESRGAN, recorte con BiRefNet y encuadre común) y después `python3 scripts/imagenes/encuadre.py` (mide el ancho del equipo para su sombra).
 3. Ejecuta `npm run check:content` y `npm run build`.
 
 **No inventes datos:** ni precios, ni plazos, ni certificaciones que no estén en el catálogo o en la documentación del fabricante.
@@ -170,6 +171,14 @@ Sin ID no se carga nada. Con ID, el píxel **no se descarga hasta que el usuario
 
 Los UTM y el `fbclid` se guardan en la primera visita (`sessionStorage`) y viajan entre páginas; si no existe la cookie `_fbc`, se construye desde el `fbclid`.
 
+## 6 bis. Analítica (Vercel Web Analytics)
+
+La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`). No usa cookies (Vercel calcula un identificador anónimo que caduca a las 24 horas), pero aun así **solo se carga si el visitante acepta la categoría "Analítica"** del aviso de cookies; si la retira, deja de enviar datos en esa misma visita. El script y los envíos van al propio dominio (`/_vercel/insights/...`), así que la CSP no cambia.
+
+1. En Vercel, abre el proyecto y entra en **Analytics > Enable** (Web Analytics).
+2. `src/config.ts` ya trae `VERCEL_ANALYTICS = true`; ponlo a `false` para desactivarla sin tocar nada más.
+3. En local (`localhost`) nunca se carga, para no ensuciar los datos.
+
 ---
 
 ## 7. Despliegue en Vercel y dominio
@@ -194,10 +203,11 @@ Los UTM y el `fbclid` se guardan en la primera visita (`sessionStorage`) y viaja
 - [ ] **URL del Apps Script** en `src/config.ts` (`SHEETS_ENDPOINT`), siguiendo el apartado 5.
 - [ ] **Datos legales del titular** (razón social o nombre, NIF o CIF, domicilio y datos registrales) en `src/components/LegalTitular.astro`, y el **plazo de conservación de los leads** en `src/pages/privacidad.astro`. Ahora están vacíos y marcados en amarillo como "[Pendiente: ...]".
 - [ ] **Revisión de las 3 guías por Javier** antes de publicar (`src/content/guias/`). Están escritas en su voz, con datos solo del catálogo y del brief, pero debe leerlas y aprobarlas.
-- [ ] **Confirmar disponibilidad de los modelos que solo aparecen en el catálogo EDAN**: Nano, U60, U50, U2 y DUS60. Están solo en el catálogo navegable (sin ficha y con "Pregúntanos por su disponibilidad y configuración"), marcados con `confirmar: true` en `src/data/productos/ecografia.ts`.
-- [ ] **Catálogo EDAN** ("ENG-2024-25 Product Catalogue"): no estaba en el material recibido. Con él se pueden completar las fichas EDAN y dar ficha a los modelos anteriores.
-- [ ] **Fotos:** las fotos de producto salen del PDF comprimido del catálogo (entre 325 y 380 px de ancho en origen). Con fotos originales en alta resolución, y fotos de Javier en su contexto de trabajo, la web ganaría mucho. Basta con sustituir los archivos de `src/assets/` manteniendo el nombre.
-- [ ] **Camillas:** el catálogo solo trae nombre, una línea y tres rasgos por modelo, así que no tienen ficha propia. Con su ficha técnica (medidas, peso admitido, secciones, motor), se les puede crear.
+- [ ] **Revisar los 5 EDAN de la web oficial** (Nano, U60, U50, DUS60 y U2): tienen ficha completa con los datos y fotos de edan.com. Confirmar que se ofrecen en España y con qué configuración; el catálogo EDAN ("ENG-2024-25 Product Catalogue") no estaba en el material recibido.
+- [ ] **Fotos originales:** las fotos de producto se han mejorado con IA desde el PDF comprimido del catálogo y la web de EDAN. Con las fotos originales en alta resolución (y fotos de Javier en su contexto de trabajo) la web ganaría aún más. Basta con procesarlas con `scripts/imagenes/mejorar_ia.py` manteniendo el nombre.
+- [ ] **Camillas:** ya tienen ficha con lo que da el catálogo (descripción, rasgos, certificación CE y garantía). Con su ficha técnica (medidas, peso admitido, motor) se pueden completar.
+- [ ] **Logotipo de VytaMeD:** no hay logotipo publicado de la marca propia; en la cinta de marcas de Sobre nosotros aparece su nombre en texto. Basta con añadir su SVG en `src/assets/marcas/`.
+- [ ] **Vercel Web Analytics:** activarlo en el panel de Vercel (apartado 6 bis).
 
 ---
 
@@ -213,7 +223,7 @@ Los UTM y el `fbclid` se guardan en la primera visita (`sessionStorage`) y viaja
 | `qa-ui` | Cabecera y menús (ratón y teclado), catálogo (filtros, búsqueda, orden, URL, sin JavaScript), segmentado, acordeón, galería, guías (índice y progreso), teclado, movimiento reducido, CSP sin violaciones, 404 real y caché |
 | `qa-a11y` | axe-core (WCAG 2.2 AA y buenas prácticas) en las 67 páginas a 390 y 1440 px, más un cálculo de contraste propio donde axe no puede resolver el fondo (degradados y pseudoelementos) |
 | `html-validate` | HTML válido en todas las páginas (reglas en `.htmlvalidate.json`) |
-| `qa-layout` | 14 plantillas en los 12 anchos del brief (320 a 1920): sin scroll horizontal, sin elementos fuera de pantalla, sin textos cortados, botones en una línea, áreas táctiles de 44 px, H1 en la primera pantalla y sin errores de consola. Guarda capturas de página completa en `tests/output/screenshots/` |
+| `qa-layout` | 15 páginas (todas las plantillas, más una categoría con fila impar) en los 12 anchos del brief (320 a 1920): sin scroll horizontal, sin elementos fuera de pantalla, sin textos cortados, botones en una línea, áreas táctiles de 44 px, H1 en la primera pantalla y sin errores de consola. Guarda capturas de página completa en `tests/output/screenshots/` |
 
 Se puede lanzar una sola: `node tests/run.mjs qa-form`.
 
@@ -226,8 +236,10 @@ Se puede lanzar una sola: `node tests/run.mjs qa-form`.
 - **Material de referencia.** No había carpeta `referencias/`: se usó el código fuente de la landing (repositorio `vsl-vytalgroup`) como `referencias/landing/`, con su catálogo PDF de 53 páginas, su foto de Javier y sus imágenes. El catálogo EDAN en inglés no estaba disponible, así que los datos de ecografía salen del catálogo ADC Global Tech | VytalGroup 2026 y del brief.
 - **Color de acento.** El brief proponía `#00C9A7` "a confirmar"; el CSS de la landing usa el turquesa **`#48A0A8`** (y `#7FD3D6` sobre fondo oscuro), así que se mantiene el de la landing para ser coherentes al 100 %. Todo está en `docs/design-system.md` y `src/styles/tokens.css`.
 - **Fuentes.** Geist (el mismo archivo de la landing) e Instrument Serif cursiva recortada a los caracteres del español y cifras (`scripts/fuentes/subset_fonts.sh`), autoalojadas en woff2; solo se precarga la del H1.
-- **Imágenes.** Las fotos de producto del PDF se recortaron, se limpiaron de fondo y se colocaron en un lienzo común con sombra de contacto para que se vean como una familia. Nunca se amplían más de un 12 %. Astro genera AVIF y WebP en varios anchos.
-- **Fichas.** Tienen ficha los 42 productos con nombre, descripción y varias especificaciones. Sin ficha: las 6 camillas (el catálogo solo da tres rasgos por modelo) y los 5 modelos EDAN que no están en el catálogo ADC (por confirmar). Sus tarjetas abren el formulario con el producto preseleccionado.
+- **Imágenes.** Cada foto de producto parte del original de más calidad disponible (catálogo, web de EDAN o landing), se escala ×4 con Real-ESRGAN x4plus, se recorta con BiRefNet y se coloca en un lienzo transparente común de 1280 × 960 con el mismo encuadre para todas. Para no inventar nada: nunca se publica el ×4 tal cual (se reduce al tamaño final) y se mezcla un 25 % del original ampliado sin IA, así textos, pantallas y logotipos no cambian; en las fotos de contexto y de Javier se usa el modelo general, más conservador, sin restauración facial. El fondo suave y la sombra de contacto de cada equipo los pone el CSS (`.stage`), con el ancho real del equipo medido en `src/assets/productos/encuadre.json`. Astro genera AVIF y WebP en varios anchos.
+- **Fichas.** Los 53 productos tienen ficha con la misma estructura y orden: galería y datos clave, para quién es, lo que importa, especificaciones con aplicaciones, qué incluye y normativa, garantía y servicio, preguntas frecuentes (4 a 7 por equipo, generadas desde sus datos y las condiciones de la empresa, con su FAQPage), relacionados y formulario. Las camillas solo usan lo que da el catálogo; los EDAN de la web oficial lo indican en su nota de fuente.
+- **Tarjetas.** Una única tarjeta de producto en toda la web (categorías, catálogo, gama, guías y fichas). En rejillas y carruseles sus filas son las de la rejilla (CSS subgrid), así nombres, textos, datos y botones quedan alineados aunque cada equipo tenga un texto distinto; los textos están acotados a 2 y 3 líneas. En escritorio se inclinan en 3D hacia el cursor.
+- **Marcas.** Logotipos oficiales de cada web (EDAN, I-Tech, EME y LiKAMED) y de la página de empresa de EasyTech, vectorizados en un solo color (`scripts/imagenes/logos.py`); VytaMeD, sin logotipo publicado, va en texto.
 - **Precio.** Las fichas dicen "Precio según configuración. Pídenos una propuesta sin compromiso." y nunca muestran precios ni `offers` en JSON-LD.
 - **Catálogo.** Todo el catálogo está en el HTML estático (rastreable y visible sin JS). En escritorio, la fila de categorías se desplaza con flechas; en móvil, las tarjetas pasan a filas compactas para no convertir 53 equipos en un scroll interminable. El estado del filtro va en la URL y el canonical sigue siendo `/catalogo`.
 - **Contacto.** El formulario grande está arriba (es el protagonista de la página) y la página termina con las dudas y un botón que vuelve a él, en lugar de repetir un segundo formulario idéntico. Sin mapa ni dirección.

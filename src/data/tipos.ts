@@ -1,4 +1,4 @@
-import type { CategoriaId } from './categorias';
+import type { CategoriaId, Faq } from './categorias';
 
 export interface Dato { valor: string; etiqueta: string }
 export interface Spec { clave: string; valor: string }
@@ -43,13 +43,15 @@ export interface Producto {
   imagenes: string[];
   /** Página del PDF del catálogo ADC | VytalGroup 2026 donde aparece */
   paginaCatalogo?: number;
+  /** Fuente de los datos si no es el catálogo: "la web oficial de EDAN (edan.com)" */
+  fuente?: string;
   /** Códigos CRM del catálogo */
   codigos: string[];
   relacionados: string[];
-  /** Tiene ficha propia (información suficiente en el catálogo) */
+  /** Tiene ficha propia */
   ficha: boolean;
-  /** Modelos que solo aparecen en el catálogo EDAN: disponibilidad por confirmar con el cliente */
-  confirmar?: boolean;
+  /** Preguntas propias del equipo; la ficha las completa con las comunes (garantía, precio y envío) */
+  faqs?: Faq[];
   /** Nota del catálogo que acompaña al equipo */
   nota?: string;
   seoTitle?: string;

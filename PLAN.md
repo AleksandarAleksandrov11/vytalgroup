@@ -124,3 +124,17 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - Revisión en los 12 anchos: anillo giratorio de Javier que desbordaba en móviles estrechos (ahora gira el círculo, no la caja); lista de garantías del hero quitada porque repetía la cinta de justo debajo; tarjetas alineadas por filas con subgrid (características de la ficha, razones, "Cómo elegir", "Quiénes estamos"); última fila incompleta centrada (guías, relacionados, láser, ultrasonidos, estética y características en tableta); pie con nombres cortos de categoría entre 1024 y 1279 para que no se partan; número y unidad sin separarse en tarjetas, fichas y comparativas.
 - Pruebas de la ronda 2: SEO 1906/1906 en 78 páginas, HTML válido, Apps Script 18/18, formulario y píxel 60/60 (con la analítica de Vercel solo tras aceptarla), interfaz 72/72, accesibilidad 156/156 (axe a 390 y 1440) y maquetación en los 12 anchos sin fallos.
 - Lighthouse móvil de la ronda 2 (Rendimiento · Accesibilidad · Buenas prácticas · SEO): inicio 100 · 100 · 100 · 100; pilar ecógrafos 99 · 100 · 100 · 100; pilar diatermias 100 · 100 · 100 · 100; ficha 100 · 100 · 100 · 100; categoría 100 · 100 · 100 · 100; catálogo 100 · 100 · 100 · 100; sobre nosotros 100 · 100 · 100 · 100; contacto 100 · 100 · 100 · 100; guía 100 · 100 · 100 · 100. CLS 0 y LCP entre 1,30 y 1,59 s en todas.
+
+## Ronda 3 (cambios pedidos tras la segunda entrega)
+- [x] Hero del inicio nuevo y más sencillo: foto de consulta a sangre con capa marina, barrido de ecografía, haz de luz y zoom de entrada; sin etiquetas ni escaparate
+- [x] "Un ecógrafo para cada forma de trabajar" como estaba (la foto salía dos veces en escritorio)
+- [x] Javier: solo su foto, sin disco ni animación, y la frase con la firma
+- [x] Comparador "Lo habitual, y lo nuestro" como sección propia con fondo turquesa
+- [x] Marcas con fondo propio justo debajo del hero (inicio y Sobre nosotros); fuera la cinta de confianza, que repetía textos
+- [x] Todas las cabeceras con la misma estructura: fondo marino, antetítulo, H1, apoyo y acciones a la izquierda y visual 4:3 a la derecha (pilares, categorías, equipos, catálogo, guías, guía, contacto, sobre nosotros, fichas, legales y 404)
+- [x] Preguntas frecuentes: al menos 3 en cada página (categorías con 5, comprobado en check-content)
+- [x] Limpieza: "Sin letra pequeña" solo en el pie; menos botones repetidos de asesoramiento; fuera el mapa del inicio (ya está en Sobre nosotros)
+- [x] SEO del audit: canonical al dominio de producción de Vercel, alt descriptivo en todas las imágenes, sin negritas repetidas, menos encabezados (pie, tarjetas de categoría, pasos), anclas "Ver ficha" únicas, H1 del inicio con las palabras del title
+- [x] Rendimiento: miniaturas de menú en un solo WebP pequeño, imágenes diferidas salvo la del hero, animaciones solo con transform y opacity
+
+- Pruebas de la ronda 3: SEO 1914/1914, HTML válido, Apps Script 18/18, formulario 60/60, interfaz 71/71, accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en las 9 plantillas, CLS 0 y LCP entre 1,28 y 1,72 s.

@@ -566,65 +566,6 @@ $$('[data-mockup]').forEach((m) => {
   zone.addEventListener('pointerleave', () => { m.style.removeProperty('--rx'); m.style.removeProperty('--ry'); });
 });
 
-// ------------------------------------------------------------------ escaparate del hero (inicio)
-// Un equipo cada 4,2 s dentro del círculo. Se para al pasar el ratón o con el foco dentro, fuera de
-// pantalla, con la pestaña oculta y con el botón de pausa; con movimiento reducido empieza parado.
-$$('[data-showcase]').forEach((st) => {
-  const hero = st.closest('.hx');
-  const slides = $$('[data-slide]', st);
-  const dots = $$<HTMLButtonElement>('[data-go]', st);
-  const play = $<HTMLButtonElement>('[data-play]', st);
-  if (slides.length < 2) return;
-  const DUR = 4200;
-  let i = 0;
-  let timer = 0;
-  let prepT = 0;
-  let visible = true;
-  let hover = false;
-  let paused = reduced;
-  const setPlay = () => {
-    if (!play) return;
-    play.setAttribute('aria-pressed', String(paused));
-    play.setAttribute('aria-label', paused ? 'Reanudar el carrusel' : 'Pausar el carrusel');
-  };
-  const prep = (n: number) => slides[n].classList.add('is-next');
-  const show = (n: number) => {
-    if (n === i) return;
-    hero?.classList.add('is-live');
-    const prev = slides[i];
-    const next = slides[n];
-    prep(n);
-    next.getBoundingClientRect();
-    prev.classList.remove('is-active');
-    prev.classList.add('is-leaving');
-    prev.inert = true;
-    window.setTimeout(() => prev.classList.remove('is-leaving'), 650);
-    next.classList.remove('is-next');
-    next.classList.add('is-active');
-    next.inert = false;
-    i = n;
-    dots.forEach((d, j) => d.setAttribute('aria-pressed', String(j === i)));
-  };
-  const plan = () => {
-    clearTimeout(timer);
-    clearTimeout(prepT);
-    if (paused || !visible || hover || document.hidden) return;
-    const n = (i + 1) % slides.length;
-    prepT = window.setTimeout(() => prep(n), DUR - 1600);
-    timer = window.setTimeout(() => { show(n); plan(); }, DUR);
-  };
-  dots.forEach((d) => d.addEventListener('click', () => { show(Number(d.dataset.go)); plan(); }));
-  play?.addEventListener('click', () => { paused = !paused; setPlay(); plan(); });
-  setPlay();
-  st.addEventListener('pointerenter', () => { hover = true; plan(); });
-  st.addEventListener('pointerleave', () => { hover = false; plan(); });
-  st.addEventListener('focusin', () => { hover = true; plan(); });
-  st.addEventListener('focusout', (e) => { if (!st.contains(e.relatedTarget as Node)) { hover = false; plan(); } });
-  document.addEventListener('visibilitychange', plan);
-  if (hasIO) new IntersectionObserver(([e]) => { visible = e.isIntersecting; plan(); }).observe(st);
-  else plan();
-});
-
 // ------------------------------------------------------------------ galería de producto: miniaturas y zoom
 $$('[data-gallery]').forEach((g) => {
   const slides = $$('[data-slide]', g);

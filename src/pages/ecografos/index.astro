@@ -44,14 +44,11 @@ const PREGUNTAS = [
   jsonld={[collectionPage('/ecografos', 'Ecógrafos para fisioterapia'), itemList('Ecógrafos', todos), faqPage(FAQ_ECOGRAFIA)]}
   viewContent={{ ids: todos.map((p) => p.slug), type: 'product_group', category: 'Ecografía', name: 'Ecógrafos' }}
 >
-  <PageHero migas={migas} titulo={c.h1} lead="Ecógrafos inalámbricos, portátiles y de carro para fisioterapia y medicina. Te ayudamos a elegir el que encaja con tu forma de trabajar." oscuro sweep>
+  <PageHero migas={migas} titulo={c.h1} lead="Inalámbricos, portátiles y de carro para fisioterapia y medicina. Te ayudamos a elegir el que encaja con tu forma de trabajar." kicker={`${todos.length} ecógrafos`} imagen="ecografo-portatil-acclarix-ax8-edan" alt="Ecógrafo portátil Acclarix AX8 de EDAN con doble pantalla táctil">
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#comparativa">Ver la comparativa<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="pil-visual stage" style={escena('ecografo-portatil-acclarix-ax8-edan')}>
-      <Img name="ecografo-portatil-acclarix-ax8-edan" alt="Ecógrafo portátil Acclarix AX8 de EDAN con doble pantalla táctil" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
-    </div>
   </PageHero>
 
   <section class="sec sec--white" aria-labelledby="elegir-title">
@@ -104,22 +101,16 @@ const PREGUNTAS = [
           </div>
         ))}
       </div>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
   <section class="sec sec--white" id="comparativa" aria-labelledby="cmp-title">
     <div class="wrap">
       <div class="sec__head">
-        <h2 class="h2" id="cmp-title" data-lines>Comparativa, <em>sin letra pequeña.</em></h2>
+        <h2 class="h2" id="cmp-title" data-lines>Compara los <em>ecógrafos.</em></h2>
         <p class="lead" data-rv>Formato, pantalla, puertos de sonda y batería de cada modelo, con los datos del catálogo.</p>
       </div>
       <CompareTable columnas={COMPARATIVA_ECOGRAFOS.columnas} filas={COMPARATIVA_ECOGRAFOS.filas} caption="Comparativa de ecógrafos: formato y peso, monitor, puertos de sonda, batería e ideal para" />
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -151,5 +142,5 @@ const PREGUNTAS = [
 
   <Faq faqs={FAQ_ECOGRAFIA} titulo="Dudas sobre *ecografía.*" id="dudas-ecografia" />
 
-  <CtaFinal preset={{ equipo: 'Ecógrafo' }} subtitulo="Cuéntanos cómo trabajas y te recomendamos el ecógrafo y las sondas que encajan. Sin letra pequeña." />
+  <CtaFinal preset={{ equipo: 'Ecógrafo' }} subtitulo="Cuéntanos cómo trabajas y te recomendamos el ecógrafo y las sondas que encajan." />
 </Base>

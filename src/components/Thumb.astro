@@ -1,0 +1,12 @@
+---
+// Miniatura pequeña (menús): un solo WebP al doble de tamaño, sin <picture> ni srcset, para no
+// engordar el HTML de todas las páginas. Carga diferida.
+import { getImage } from 'astro:assets';
+import { imagen } from '../lib/imagenes';
+
+interface Props { name: string; alt: string; size: number }
+const { name, alt, size } = Astro.props;
+const meta = imagen(name);
+const img = await getImage({ src: meta, width: size * 2, format: 'webp', quality: 70 });
+---
+<img src={img.src} width={img.attributes.width} height={img.attributes.height} alt={alt} loading="lazy" decoding="async" />

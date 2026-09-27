@@ -20,7 +20,7 @@ const curva = ([x1, y1]: [number, number], [x2, y2]: [number, number], k = 0.25)
   return `M${x1} ${y1}Q${mx} ${my} ${x2} ${y2}`;
 };
 const PRINCIPIOS = [
-  { icono: 'i-shield', t: 'Sin timos, todo claro', d: 'Sin letra pequeña en la garantía, en el mantenimiento ni en la propuesta. Si algo no te conviene, te lo decimos.' },
+  { icono: 'i-shield', t: 'Sin timos, todo claro', d: 'Garantía, mantenimiento y propuesta explicados desde el principio. Si algo no te conviene, te lo decimos.' },
   { icono: 'i-users', t: 'Te asesoran fisioterapeutas', d: 'Hablas con gente de tu profesión, que entiende cómo trabajas y qué necesitas de verdad.' },
   { icono: 'i-tool', t: 'Te acompañamos después', d: 'Instalación, formación y soporte según el proyecto, 2 años de garantía y un mantenimiento claro desde el día uno.' },
 ];
@@ -35,16 +35,14 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
   migas={migas}
   jsonld={[aboutPage('/sobre-nosotros'), organization(), persona]}
 >
-  <PageHero migas={migas} titulo="De fisio *a fisio.*" lead="Soy Javier Ruiz, fisioterapeuta. Monté VytalGroup para que a profesionales como tú no les engañen con los equipos, el mantenimiento ni los productos.">
+  <PageHero migas={migas} titulo="De fisio *a fisio.*" lead="Soy Javier Ruiz, fisioterapeuta. Monté VytalGroup para que a profesionales como tú no les engañen con los equipos, el mantenimiento ni los productos." kicker="Sobre nosotros" imagen="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" foco="50% 22%">
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#historia">Leer la historia<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <figure slot="visual" class="ab-photo">
-      <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" sizes="(min-width: 900px) 384px, 72vw" widths={[320, 384]} priority parallax />
-      <figcaption><svg class="sign__svg" viewBox="0 0 3592 1230" role="img" aria-label="Firma de Javier Ruiz"><use href="#sig"/></svg><span>Javier Ruiz, fisioterapeuta y fundador</span></figcaption>
-    </figure>
   </PageHero>
+
+  <BrandsMarquee />
 
 
   <section class="sec sec--white story" id="historia" aria-labelledby="historia-title">
@@ -110,9 +108,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
           </div>
         </li>
       </ol>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -130,9 +125,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
           </li>
         ))}
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -161,8 +153,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
     </div>
   </section>
 
-  <BrandsMarquee />
-
   <section class="sec sec--white" aria-labelledby="alcance-title">
     <div class="wrap">
       <div class="sec__head">
@@ -170,9 +160,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
         <p class="lead" data-rv>Envíos a la UE, USA y LATAM, con la aduana gestionada.</p>
       </div>
       <WorldMap />
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -182,9 +169,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
         <h2 class="h2" id="vs-title" data-lines>¿Por qué elegir <em>VytalGroup?</em></h2>
       </div>
       <Comparator />
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 

@@ -16,7 +16,7 @@ const { pasos = PASOS_TRABAJO } = Astro.props;
   {pasos.map((p, i) => (
     <li class="tl__step" data-tl-step>
       <span class="tl__dot" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-      <h3 class="tl__t">{p.t}</h3>
+      <p class="tl__t">{p.t}</p>
       <p class="tl__d">{p.d}</p>
     </li>
   ))}

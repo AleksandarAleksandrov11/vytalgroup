@@ -27,9 +27,9 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
   migas={migas}
   jsonld={[collectionPage('/catalogo', 'Catálogo de equipos de fisioterapia y equipamiento médico'), itemList('Catálogo VytalGroup 2026', PRODUCTOS)]}
 >
-  <PageHero migas={migas} titulo="El catálogo completo. *Sin dejar tus datos.*" lead={`Todos los equipos del catálogo internacional 2026, aquí mismo. Y sus ${EMPRESA.catalogoPaginas} páginas en PDF, con descarga directa y sin formularios.`}>
+  <PageHero migas={migas} titulo="El catálogo *completo.*" lead={`Todos los equipos del catálogo internacional 2026, aquí mismo. Y sus ${EMPRESA.catalogoPaginas} páginas en PDF, con descarga directa y sin dejar tus datos.`} kicker={`${PRODUCTOS.length} equipos`}>
     <Fragment slot="acciones">
-      <a class="btn btn--dark btn--lg" href={EMPRESA.catalogoPdf} download data-catalog data-origen="catalogo" data-magnetic><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Descargar catálogo (PDF)</a>
+      <a class="btn btn--primary btn--lg" href={EMPRESA.catalogoPdf} download data-catalog data-origen="catalogo" data-magnetic><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Descargar catálogo (PDF)</a>
       <a class="link" href="#productos">Ver los equipos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
     <div slot="visual" class="catv"><CatalogMockup /></div>
@@ -71,11 +71,8 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
         <p class="cf__empty-d">Pregúntanos y te decimos si lo tenemos.</p>
         <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
       </div>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
-  <CtaFinal subtitulo="¿No ves lo que buscas o dudas entre dos equipos? Te asesoran fisioterapeutas, sin letra pequeña." />
+  <CtaFinal subtitulo="¿No ves lo que buscas o dudas entre dos equipos? Te asesoran fisioterapeutas." />
 </Base>

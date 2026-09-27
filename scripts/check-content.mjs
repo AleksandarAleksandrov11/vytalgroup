@@ -3,9 +3,9 @@
 // (U+2014 y U+2013), menciones veterinarias y que cada ficha tenga lo mínimo para su plantilla.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { PRODUCTOS, seoTitle, seoDescription, urlFicha } from '../src/data/productos/index.ts';
+import { PRODUCTOS, seoTitle, seoDescription, urlFicha, deCategoria } from '../src/data/productos/index.ts';
 import { CATEGORIAS } from '../src/data/categorias.ts';
-import { faqsFicha } from '../src/data/faqs.ts';
+import { faqsFicha, faqsCategoria, FAQ_GENERAL, FAQ_ECOGRAFIA, FAQ_DIATERMIA, FAQ_CONTACTO } from '../src/data/faqs.ts';
 
 const errors = [];
 const warn = [];
@@ -44,7 +44,10 @@ for (const c of CATEGORIAS) {
   if (c.seoTitle.length < 50 || c.seoTitle.length > 60) errors.push(`Categoría ${c.id}: title de ${c.seoTitle.length}: "${c.seoTitle}"`);
   if (c.seoDescription.length < 140 || c.seoDescription.length > 160) errors.push(`Categoría ${c.id}: description de ${c.seoDescription.length}: "${c.seoDescription}"`);
   if (!img(c.imagen)) errors.push(`Categoría ${c.id}: falta la imagen ${c.imagen}`);
+  if (!c.pilar && faqsCategoria(c, deCategoria(c.id)).length < 3) errors.push(`Categoría ${c.id}: menos de 3 preguntas frecuentes`);
 }
+// Cada página con preguntas frecuentes, al menos 3
+for (const [k, v] of Object.entries({ FAQ_GENERAL, FAQ_ECOGRAFIA, FAQ_DIATERMIA, FAQ_CONTACTO })) if (v.length < 3) errors.push(`${k}: menos de 3 preguntas frecuentes`);
 
 // Texto prohibido en todos los datos y contenidos
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]);

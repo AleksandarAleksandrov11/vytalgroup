@@ -5,9 +5,9 @@
 // Equipos, que se abre en círculo. En móvil la cabecera queda fija; la hamburguesa de 3 líneas abre un
 // panel de color que se revela en círculo desde el botón, con desplegables propios y enlaces escalonados.
 import '../styles/header.css';
-import Img from './Img.astro';
+import Thumb from './Thumb.astro';
 import { CATEGORIAS } from '../data/categorias';
-import { PRODUCTOS, deCategoria, urlFicha } from '../data/productos';
+import { PRODUCTOS, deCategoria, urlFicha, altProducto } from '../data/productos';
 import { EMPRESA, wa } from '../data/empresa';
 import type { Seccion } from '../layouts/Base.astro';
 
@@ -56,7 +56,7 @@ const num = () => String(++n).padStart(2, '0');
                       {CATEGORIAS.map((c, i) => (
                         <li style={`--i:${i}`}>
                           <a class="dd__cat" href={c.ruta} aria-current={actual(c.ruta)}>
-                            <span class="dd__thumb"><Img name={c.imagen} alt="" sizes="56px" widths={[112]} /></span>
+                            <span class="dd__thumb"><Thumb name={c.imagen} alt={`Equipo de ${c.corto.toLowerCase()}`} size={56} /></span>
                             <span class="dd__txt"><span class="dd__name">{c.nombre}</span><span class="dd__count">{cuenta(deCategoria(c.id).length)}</span></span>
                           </a>
                         </li>
@@ -100,7 +100,7 @@ const num = () => String(++n).padStart(2, '0');
             <div class="mm__sub-in">
               <ul class="mm__rows">
                 {formatos.map((f, i) => (
-                  <li style={`--j:${i}`}><a class="mm__row" href={`/ecografos#gama-${f.id}`}><span class="mm__thumb"><Img name={f.img} alt="" sizes="48px" widths={[96]} /></span><span class="mm__row-t">{f.label}</span><span class="mm__row-n">{f.n}</span></a></li>
+                  <li style={`--j:${i}`}><a class="mm__row" href={`/ecografos#gama-${f.id}`}><span class="mm__thumb"><Thumb name={f.img} alt={`Ecógrafo ${f.label.toLowerCase()}`} size={48} /></span><span class="mm__row-t">{f.label}</span><span class="mm__row-n">{f.n}</span></a></li>
                 ))}
               </ul>
               <a class="mm__all" href="/ecografos" aria-current={actual('/ecografos')}>Ver todos los ecógrafos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -115,7 +115,7 @@ const num = () => String(++n).padStart(2, '0');
             <div class="mm__sub-in">
               <ul class="mm__rows">
                 {diatermias.map((p, i) => (
-                  <li style={`--j:${i}`}><a class="mm__row" href={urlFicha(p)} aria-current={actual(urlFicha(p)!)}><span class="mm__thumb"><Img name={p.imagenes[0]} alt="" sizes="48px" widths={[96]} /></span><span class="mm__row-t">{p.nombre}<small>{p.marca}</small></span></a></li>
+                  <li style={`--j:${i}`}><a class="mm__row" href={urlFicha(p)} aria-current={actual(urlFicha(p)!)}><span class="mm__thumb"><Thumb name={p.imagenes[0]} alt={altProducto(p)} size={48} /></span><span class="mm__row-t">{p.nombre}<small>{p.marca}</small></span></a></li>
                 ))}
               </ul>
               <a class="mm__all" href="/diatermias" aria-current={actual('/diatermias')}>Ver todas las diatermias<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -130,7 +130,7 @@ const num = () => String(++n).padStart(2, '0');
             <div class="mm__sub-in">
               <ul class="mm__rows mm__rows--2">
                 {CATEGORIAS.filter((c) => !c.pilar).map((c, i) => (
-                  <li style={`--j:${i}`}><a class="mm__row" href={c.ruta} aria-current={actual(c.ruta)}><span class="mm__thumb"><Img name={c.imagen} alt="" sizes="48px" widths={[96]} /></span><span class="mm__row-t">{c.nombre}<small>{cuenta(deCategoria(c.id).length)}</small></span></a></li>
+                  <li style={`--j:${i}`}><a class="mm__row" href={c.ruta} aria-current={actual(c.ruta)}><span class="mm__thumb"><Thumb name={c.imagen} alt={`Equipo de ${c.corto.toLowerCase()}`} size={48} /></span><span class="mm__row-t">{c.nombre}<small>{cuenta(deCategoria(c.id).length)}</small></span></a></li>
                 ))}
               </ul>
               <a class="mm__all" href="/equipos" aria-current={actual('/equipos')}>Ver todas las categorías<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>

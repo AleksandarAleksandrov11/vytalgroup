@@ -19,7 +19,7 @@ export const organization = () => ({
   logo: `${SITE_URL}/icon-512.png`,
   email: EMPRESA.email,
   telephone: EMPRESA.telefono,
-  description: 'Equipos médicos de alta calidad para profesionales sanitarios, sin letra pequeña: ecógrafos, diatermias y todo el equipamiento de fisioterapia y rehabilitación. Te asesoran fisioterapeutas.',
+  description: 'Equipos médicos de alta calidad para profesionales sanitarios: ecógrafos, diatermias y todo el equipamiento de fisioterapia y rehabilitación. Te asesoran fisioterapeutas.',
   sameAs: [EMPRESA.instagramMarca.url, EMPRESA.instagramJavier.url],
   founder: { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioterapeuta' },
   contactPoint: [{ '@type': 'ContactPoint', telephone: EMPRESA.telefono, email: EMPRESA.email, contactType: 'customer service', availableLanguage: ['es'] }],

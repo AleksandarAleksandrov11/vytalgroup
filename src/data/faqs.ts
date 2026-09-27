@@ -6,7 +6,7 @@ import type { Faq } from './categorias';
 /** Las 6 de la landing (Inicio y Sobre nosotros) */
 export const FAQ_GENERAL: Faq[] = [
   { q: '¿Cuál me conviene?', a: 'Depende de cómo trabajas. Nos lo cuentas y te recomendamos uno, sin venderte lo que no necesitas.' },
-  { q: '¿Qué garantía tienen?', a: '2 años en piezas y mano de obra, sin letra pequeña.' },
+  { q: '¿Qué garantía tienen?', a: '2 años en piezas y mano de obra.' },
   { q: '¿Y el mantenimiento?', a: 'Está asegurado, y sabes lo que incluye desde el principio. Sin sorpresas.' },
   { q: '¿Están certificados?', a: 'Sí. Son productos sanitarios con marcado CE / MDR y su documentación.' },
   { q: '¿Enviáis fuera de España?', a: 'Sí, a la UE, USA y LATAM, con la aduana gestionada.' },
@@ -64,4 +64,21 @@ export function faqsFicha(p: Producto): Faq[] {
   out.push({ q: `¿Cuánto cuesta ${s}?`, a: 'No publicamos precios: cada propuesta se prepara según el equipo, la configuración y el país de entrega. Cuéntanos cómo trabajas y te la preparamos sin compromiso.' });
   out.push({ q: '¿Lo enviáis fuera de España?', a: 'Sí, a la UE, USA y LATAM, con la aduana gestionada.' });
   return out.slice(0, 7);
+}
+
+/** Preguntas de cada página de categoría: las propias de la categoría y, hasta tener al menos 5, las
+ *  comunes construidas con sus equipos (qué modelos hay, cuál elegir, garantía, precio y envíos). */
+export function faqsCategoria(c: { corto: string; faqs?: Faq[] }, productos: Producto[]): Faq[] {
+  const n = productos.length;
+  const nombre = c.corto.toLowerCase();
+  const modelos = lista(productos.map((p) => `${p.nombre} de ${p.marca}`));
+  const comunes: Faq[] = [
+    { q: `¿Qué equipos de ${nombre} tenéis?`, a: n === 1 ? `${modelos}. En su ficha tienes sus datos, qué incluye y para qué se usa.` : `${n} equipos: ${modelos}. En cada ficha tienes sus datos, qué incluye y para qué se usa.` },
+    ...(n > 1 ? [{ q: '¿Cuál me conviene?', a: 'Depende de lo que tratas, de cuántos pacientes ves y de dónde trabajas. Cuéntanoslo en el formulario y un fisioterapeuta te recomienda el que encaja, sin venderte lo que no necesitas.' }] : []),
+    { q: '¿Qué garantía y mantenimiento tienen?', a: '2 años de garantía en piezas y mano de obra, y sabes qué incluye el mantenimiento desde el primer día.' },
+    { q: '¿Cuánto cuestan?', a: 'No publicamos precios: cada propuesta se prepara según el equipo, la configuración y el país de entrega. Te la enviamos sin compromiso.' },
+    { q: '¿Los enviáis fuera de España?', a: 'Sí, a la UE, USA y LATAM, con la aduana gestionada.' },
+  ];
+  const propias = c.faqs ?? [];
+  return [...propias, ...comunes].slice(0, Math.max(5, propias.length));
 }

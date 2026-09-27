@@ -219,6 +219,6 @@ export const DIATERMIA: Producto[] = [
     codigos: ['ADC-ITE-002'],
     relacionados: ['reatherm', 'hr-tek', 'diatermia-multifuncion'],
     ficha: true,
-    seoDescription: 'Reacare de I-Tech: diatermia capacitiva y resistiva de 160 W, de 400 a 600 kHz, para rehabilitación y deporte. Te asesoran fisioterapeutas, sin letra pequeña.',
+    seoDescription: 'Reacare de I-Tech: diatermia capacitiva y resistiva de 160 W, de 400 a 600 kHz, para rehabilitación y deporte. Te asesoran fisioterapeutas, de fisio a fisio.',
   },
 ];

@@ -76,7 +76,7 @@ export function seoDescription(p: Producto): string {
     `${base} Te asesoran fisioterapeutas, con 2 años de garantía.`,
     `${base} Te asesoran fisioterapeutas y 2 años de garantía.`,
     `${base} 2 años de garantía y te asesoran fisioterapeutas.`,
-    `${base} Te asesoran fisioterapeutas, sin letra pequeña.`,
+    `${base} Te asesoran fisioterapeutas, de fisio a fisio.`,
     `${base} Te asesoran fisioterapeutas.`,
     `${base}${dato} Te asesoran fisioterapeutas.`,
     `${base} Con 2 años de garantía.`,

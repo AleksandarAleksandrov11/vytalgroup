@@ -4,15 +4,18 @@ import '../styles/cards.css';
 import Img from './Img.astro';
 import { escena } from '../lib/imagenes';
 import type { Categoria } from '../data/categorias';
-import { deCategoria } from '../data/productos';
+import { deCategoria, altProducto } from '../data/productos';
 
-interface Props { c: Categoria; cuenta?: boolean; big?: boolean; sizes?: string; nivel?: 'h2' | 'h3' }
-const { c, cuenta = true, big = false, sizes = '(min-width: 1200px) 370px, (min-width: 640px) 30vw, 46vw', nivel = 'h3' } = Astro.props;
-const n = deCategoria(c.id).length;
+interface Props { c: Categoria; cuenta?: boolean; big?: boolean; sizes?: string; nivel?: 'h2' | 'h3' | 'p' }
+const { c, cuenta = true, big = false, sizes = '(min-width: 1200px) 370px, (min-width: 640px) 30vw, 46vw', nivel = 'p' } = Astro.props;
+const lista = deCategoria(c.id);
+const n = lista.length;
+const repr = lista.find((p) => p.imagenes[0] === c.imagen);
+const alt = repr ? altProducto(repr) : `Equipo de ${c.corto.toLowerCase()}`;
 const H = nivel;
 ---
 <a class:list={['cc', 'lift', { 'cc--big': big }]} href={c.ruta} data-halo data-tilt>
-  <span class="cc__media stage" style={escena(c.imagen)} data-rvi><Img name={c.imagen} alt="" sizes={sizes} widths={[240, 360, 480, 640]} parallax /></span>
+  <span class="cc__media stage" style={escena(c.imagen)} data-rvi><Img name={c.imagen} alt={alt} sizes={sizes} widths={[240, 360, 480, 640]} parallax /></span>
   <span class="cc__arrow" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
   <H class="cc__name"><span>{c.nombre}</span>{cuenta && <span class="cc__count">{n} {n === 1 ? 'equipo' : 'equipos'}</span>}</H>
   <span class="cc__desc">{c.descripcion}</span>

@@ -68,6 +68,7 @@ const PAGES = [
           const box = el.getBoundingClientRect();
           const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
           while (tw.nextNode()) {
+            if (tw.currentNode.parentElement.closest('.sr-only')) continue;
             const range = document.createRange();
             range.selectNodeContents(tw.currentNode);
             for (const t of range.getClientRects()) {
@@ -81,7 +82,7 @@ const PAGES = [
           const tops = new Set();
           const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
           while (tw.nextNode()) {
-            if (!tw.currentNode.textContent.trim()) continue;
+            if (!tw.currentNode.textContent.trim() || tw.currentNode.parentElement.closest('.sr-only')) continue;
             const range = document.createRange();
             range.selectNodeContents(tw.currentNode);
             for (const r of range.getClientRects()) if (r.width) tops.add(Math.round(r.top / 4));

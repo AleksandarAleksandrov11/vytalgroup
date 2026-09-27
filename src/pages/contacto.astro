@@ -4,7 +4,7 @@
 import '../styles/form.css';
 import '../styles/contacto.css';
 import Base from '../layouts/Base.astro';
-import Breadcrumbs from '../components/Breadcrumbs.astro';
+import PageHero from '../components/PageHero.astro';
 import LeadForm from '../components/LeadForm.astro';
 import Img from '../components/Img.astro';
 import Timeline from '../components/Timeline.astro';
@@ -12,7 +12,6 @@ import Faq from '../components/Faq.astro';
 import { EMPRESA, wa } from '../data/empresa';
 import { FAQ_CONTACTO } from '../data/faqs';
 import { contactPage, faqPage, organization } from '../lib/seo';
-import { h1Html } from '../lib/texto';
 
 const migas = [{ name: 'Inicio', href: '/' }, { name: 'Contacto', href: '/contacto' }];
 const CANALES = [
@@ -23,7 +22,7 @@ const CANALES = [
 const PASOS = [
   { t: 'Te escribimos', d: 'Por WhatsApp o por correo, como hayas elegido en el formulario.' },
   { t: 'Entendemos lo que necesitas', d: 'Nos cuentas cómo trabajas, qué tratas y dónde, y vemos qué equipos encajan contigo.' },
-  { t: 'Te enviamos una propuesta clara', d: 'Con el equipo, la configuración, la garantía y el mantenimiento explicados, sin letra pequeña.' },
+  { t: 'Te enviamos una propuesta clara', d: 'Con el equipo, la configuración, la garantía y el mantenimiento explicados.' },
 ];
 ---
 <Base
@@ -35,16 +34,19 @@ const PASOS = [
   migas={migas}
   jsonld={[contactPage('/contacto'), organization(), faqPage(FAQ_CONTACTO)]}
 >
-  <section class="cto" id="asesoramiento" data-hero aria-labelledby="page-title">
+  <PageHero migas={migas} titulo="Cuéntanos qué *necesitas.*" lead="Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara." kicker="Contacto" imagen="fotos/superinductiva-vytamed-en-consulta" alt="Magnetoterapia superinductiva de VytaMeD con brazo articulado en una consulta">
+    <Fragment slot="acciones">
+      <a class="btn btn--primary btn--lg" href="#asesoramiento">Empezar las 4 preguntas</a>
+      <a class="link" href={wa('Hola, quiero asesoramiento sobre un equipo.')} target="_blank" rel="noopener" data-origen="contacto-hero">Escríbenos por WhatsApp<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </Fragment>
+  </PageHero>
+
+  <section class="cto" id="asesoramiento" aria-labelledby="form-title">
     <div class="wrap">
-      <Breadcrumbs migas={migas} />
-      <div class="cto__head">
-        <h1 class="h1 cto__title" id="page-title" set:html={h1Html('Cuéntanos qué *necesitas.*')} />
-        <p class="lead cto__lead" data-enter style="--ed:.38s">Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara, sin letra pequeña.</p>
-      </div>
+      <h2 class="sr-only" id="form-title">Pide asesoramiento</h2>
       <div class="cto__grid">
         <div class="fcard cto__form" data-enter style="--ed:.46s">
-          <LeadForm tituloId="page-title" />
+          <LeadForm tituloId="form-title" />
         </div>
         <aside class="cto__side" aria-labelledby="canales-title" data-enter style="--ed:.56s">
           <h2 class="cto__side-t" id="canales-title">¿Prefieres hablar ya?</h2>

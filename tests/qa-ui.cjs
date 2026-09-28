@@ -1,5 +1,5 @@
 // QA de interfaz contra dist/: cabecera y menús, catálogo (filtros, búsqueda, orden, URL y sin JS),
-// acordeones, control segmentado, escaparate del hero, galería, guías (índice y progreso), teclado, movimiento reducido,
+// acordeones, control segmentado, hero y marcas, galería, guías (índice y progreso), teclado, movimiento reducido,
 // CSP sin violaciones, 404 real y cabeceras de caché.
 const { chromium } = require('playwright');
 
@@ -149,8 +149,6 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     ok(activos.length >= 3 && new Set(activos).size === activos.length, 'sticky de ecografía: la imagen cambia con cada mensaje', activos.join(','));
     await ir('[data-timeline]', 0.2);
     ok(await p.$eval('[data-timeline]', (e) => Number(getComputedStyle(e).getPropertyValue('--tl')) > 0.5), 'línea temporal: se dibuja con el scroll');
-    await ir('[data-map]');
-    ok(await p.$eval('[data-map]', (e) => e.classList.contains('is-on')), 'mapa: los puntos se encienden');
     await ir('[data-mockup]');
     ok(await p.$eval('[data-mockup]', (e) => e.classList.contains('is-open')), 'maqueta 3D: se abre en abanico');
     await p.mouse.move(700, 300);
@@ -167,21 +165,19 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     ok(await p.$eval('[data-cmp]', (e) => e.classList.contains('is-in')), 'comparador: las filas entran y lo habitual se tacha');
     ok(await p.evaluate(() => [...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r.cssText.includes('@view-transition')); } catch (e) { return false; } }) || /@view-transition/.test(document.documentElement.innerHTML)), 'transiciones de página: @view-transition activo');
     await ctx.close();
+    const nos = await open(b, '/sobre-nosotros');
+    await nos.p.evaluate(() => { const e = document.querySelector('[data-map]'); window.scrollTo({ top: e.getBoundingClientRect().top + scrollY - innerHeight * 0.5, behavior: 'instant' }); });
+    await nos.p.waitForTimeout(1200);
+    ok(await nos.p.$eval('[data-map]', (e) => e.classList.contains('is-on')), 'mapa (Sobre nosotros): los puntos se encienden');
+    await nos.ctx.close();
   });
 
-  await block('Inicio: escaparate del hero', async () => {
+  await block('Inicio: hero con foto y marcas', async () => {
     const { ctx, p } = await open(b, '/');
-    const activo = () => p.$$eval('[data-showcase] [data-slide]', (xs) => xs.findIndex((x) => x.classList.contains('is-active')));
-    ok(await activo() === 0, 'escaparate: empieza por el primer equipo');
-    await p.mouse.move(5, 5);
-    await p.waitForTimeout(5200);
-    ok(await activo() === 1, 'escaparate: pasa solo al siguiente equipo');
-    await p.click('[data-showcase] [data-go="3"]');
-    await p.waitForTimeout(400);
-    ok(await activo() === 3 && await p.$eval('[data-showcase] [data-go="3"]', (d) => d.getAttribute('aria-pressed') === 'true'), 'escaparate: los puntos eligen equipo');
-    await p.click('[data-play]');
-    ok(await p.getAttribute('[data-play]', 'aria-pressed') === 'true', 'escaparate: se puede pausar');
-    ok(await p.$$eval('[data-showcase] [data-slide]', (xs) => xs.filter((x) => !x.inert).length === 1), 'escaparate: solo el equipo visible es navegable');
+    ok(await p.$eval('.hx__photo', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager'), 'hero: la foto de fondo es la prioritaria (LCP)');
+    ok(await p.$eval('.hx', (h) => !h.querySelector('.badge, [class*="badge"], [data-showcase]')), 'hero: sin escaparate ni etiquetas');
+    ok(await p.evaluate(() => { const h = document.querySelector('.hx'); const m = document.querySelector('.bm'); return !!m && h.nextElementSibling === m; }), 'marcas: justo debajo del hero');
+    ok(await p.$$eval('.bm__list:first-child .bm__logo', (xs) => xs.length >= 5), 'marcas: los logos reales en la cinta');
     await ctx.close();
   });
 
@@ -239,7 +235,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     const { ctx, p } = await open(b, '/', { reduced: true });
     const hidden = await p.$$eval('[data-rv], .rv', (els) => els.filter((e) => e.checkVisibility() && parseFloat(getComputedStyle(e).opacity) < 0.99).length);
     ok(hidden === 0, 'movimiento reducido: todo el contenido visible sin animaciones de entrada', `${hidden}`);
-    const marquee = await p.$eval('.ticker__track', (e) => getComputedStyle(e).animationName);
+    const marquee = await p.$eval('.bm__track', (e) => getComputedStyle(e).animationName);
     ok(marquee === 'none', 'movimiento reducido: la cinta no se mueve', marquee);
     ok(await p.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior !== 'smooth'), 'movimiento reducido: sin scroll suave');
     await ctx.close();

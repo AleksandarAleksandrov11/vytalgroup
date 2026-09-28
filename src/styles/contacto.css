@@ -1,12 +1,8 @@
 /* ==========================================================================
    Contacto
    ========================================================================== */
-.cto { position: relative; padding: calc(var(--hd) + 20px) 0 var(--sec); background: radial-gradient(70% 40% at 50% 0%, rgba(72, 160, 168, .1), transparent 70%), var(--bg); }
-.cto .bc ol { justify-content: center; }
-.cto__head { max-width: 1040px; margin: clamp(28px, 5vw, 56px) auto 0; text-align: center; }
-.cto__title { font-size: clamp(2.375rem, 1.7rem + 3.1vw, 4.5rem); }
-.cto__lead { max-width: 44ch; margin: 18px auto 0; }
-.cto__grid { display: grid; gap: 28px; max-width: 1060px; margin: clamp(28px, 4vw, 48px) auto 0; }
+.cto { position: relative; padding: var(--sec) 0; background: var(--bg); scroll-margin-top: var(--hd); }
+.cto__grid { display: grid; gap: 28px; max-width: 1060px; margin: 0 auto; }
 .cto__form { margin-top: 0; }
 .cto__side { display: grid; gap: 12px; align-content: start; }
 .cto__side-t { font-size: 1.125rem; font-weight: 560; letter-spacing: -.01em; }

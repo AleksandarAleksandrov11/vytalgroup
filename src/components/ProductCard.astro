@@ -39,5 +39,5 @@ const texto = linea === 'ideal' && p.idealPara ? `Para ${p.idealPara}.` : p.resu
   <dl class="pc__data">
     {p.datosClave.slice(0, 2).map((d) => <div><dt>{d.etiqueta}</dt><dd>{unidades(d.valor)}</dd></div>)}
   </dl>
-  <a class="btn btn--line pc__cta" href={url} aria-describedby={id} data-fill>Ver ficha<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  <a class="btn btn--line pc__cta" href={url} data-fill>Ver ficha<span class="sr-only"> de {p.nombre}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 </article>

@@ -5,7 +5,7 @@ import '../../styles/cards.css';
 import '../../styles/guia.css';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PageHero from '../../components/PageHero.astro';
 import Img from '../../components/Img.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import GuideCard from '../../components/GuideCard.astro';
@@ -13,7 +13,7 @@ import CtaFinal from '../../components/CtaFinal.astro';
 import { producto } from '../../data/productos';
 import { EMPRESA } from '../../data/empresa';
 import { article, absUrl } from '../../lib/seo';
-import { h1Html, minutosLectura, fechaLarga, plano } from '../../lib/texto';
+import { minutosLectura, fechaLarga, plano } from '../../lib/texto';
 
 export async function getStaticPaths() {
   const guias = await getCollection('guias');
@@ -42,27 +42,16 @@ const og = `/og/${g.id}.jpg`;
   jsonld={[article({ titulo: plano(g.data.titulo), descripcion: g.data.seoDescription, url, imagen: absUrl(og), fecha: g.data.fecha, actualizada: g.data.actualizada })]}
 >
   <article class="gd">
-    <header class="gd__head" data-hero>
-      <div class="wrap">
-        <Breadcrumbs migas={migas} />
-        <div class="gd__intro">
-          <p class="gd__kicker" data-enter style="--ed:.1s">Guía · {minutos} min de lectura</p>
-          <h1 class="h1 gd__title" id="page-title" set:html={h1Html(g.data.titulo)} />
-          <p class="lead gd__lead" data-enter style="--ed:.38s">{g.data.resumen}</p>
-          <div class="gd__byline" data-enter style="--ed:.46s">
-            <a class="gd__author" href="/sobre-nosotros">
-              <Img name="fotos/javier-ruiz-fisioterapeuta" alt="" sizes="44px" widths={[88, 132]} class="gd__avatar" />
-              <span><strong>{EMPRESA.fundador}</strong>, fisioterapeuta</span>
-            </a>
-            <span class="gd__dot" aria-hidden="true"></span>
-            <time datetime={g.data.actualizada || g.data.fecha}>{g.data.actualizada ? `Actualizada el ${fechaLarga(g.data.actualizada)}` : fechaLarga(g.data.fecha)}</time>
-          </div>
-        </div>
+    <PageHero migas={migas} titulo={g.data.titulo} lead={g.data.resumen} kicker={`Guía · ${minutos} min de lectura`} imagen={g.data.imagen} alt={g.data.imagenAlt}>
+      <div slot="extra" class="gd__byline">
+        <a class="gd__author" href="/sobre-nosotros">
+          <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz" sizes="44px" widths={[88, 132]} class="gd__avatar" />
+          <span><strong>{EMPRESA.fundador}</strong>, fisioterapeuta</span>
+        </a>
+        <span class="gd__dot" aria-hidden="true"></span>
+        <time datetime={g.data.actualizada || g.data.fecha}>{g.data.actualizada ? `Actualizada el ${fechaLarga(g.data.actualizada)}` : fechaLarga(g.data.fecha)}</time>
       </div>
-      <div class="wrap gd__cover-wrap" data-enter style="--ed:.3s">
-        <Img name={g.data.imagen} alt={g.data.imagenAlt} sizes="(min-width: 1000px) 924px, 92vw" widths={[480, 720, 944]} priority class="gd__cover" />
-      </div>
-    </header>
+    </PageHero>
 
     <div class="wrap gd__layout">
       <nav class="gd__toc" aria-labelledby="toc-title" data-toc>

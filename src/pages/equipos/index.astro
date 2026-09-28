@@ -30,7 +30,7 @@ const lista = {
   migas={migas}
   jsonld={[collectionPage('/equipos', 'Equipos por categorías'), lista]}
 >
-  <PageHero migas={migas} titulo="Todo lo que tu clínica *necesita.*" lead={`${CATEGORIAS.length} categorías y ${total} equipos del catálogo 2026, en un solo sitio. Ecografía y diatermia, primero.`} centrado compacto />
+  <PageHero migas={migas} titulo="Todo lo que tu clínica *necesita.*" lead="Del ecógrafo a la camilla: el equipamiento de fisioterapia y rehabilitación del catálogo 2026, en un solo sitio." kicker={`${CATEGORIAS.length} categorías y ${total} equipos`} imagen="fotos/superinductiva-clinica-vytamed-en-consulta" alt="Magnetoterapia superinductiva Clínica de VytaMeD junto a una camilla en una consulta de fisioterapia" />
 
   <section class="sec sec--tight eq-top" aria-label="Ecografía y diatermia">
     <div class="wrap">
@@ -60,9 +60,6 @@ const lista = {
         <h2 class="h2" id="porque-title" data-lines>Un solo proveedor. <em>Sin sorpresas.</em></h2>
       </div>
       <Reasons />
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 

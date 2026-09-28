@@ -14,6 +14,7 @@ import CtaFinal from '../../../components/CtaFinal.astro';
 import { CATEGORIAS, type Categoria } from '../../../data/categorias';
 import { deCategoria, PRODUCTOS, altProducto } from '../../../data/productos';
 import { acento } from '../../../lib/texto';
+import { faqsCategoria } from '../../../data/faqs';
 import { collectionPage, faqPage, itemList } from '../../../lib/seo';
 
 export function getStaticPaths() {
@@ -24,7 +25,8 @@ const { c } = Astro.props;
 const productos = deCategoria(c.id);
 const migas = [{ name: 'Inicio', href: '/' }, { name: 'Equipos', href: '/equipos' }, { name: c.nombre, href: c.ruta }];
 const jsonld: object[] = [collectionPage(c.ruta, c.nombre), itemList(c.nombre, productos)];
-if (c.faqs?.length) jsonld.push(faqPage(c.faqs));
+const faqs = faqsCategoria(c, productos);
+jsonld.push(faqPage(faqs));
 const n = productos.length;
 const repr = PRODUCTOS.find((p) => p.imagenes[0] === c.imagen);
 const altHero = repr ? altProducto(repr) : c.nombre;
@@ -38,14 +40,11 @@ const altHero = repr ? altProducto(repr) : c.nombre;
   migas={migas}
   jsonld={jsonld}
 >
-  <PageHero migas={migas} titulo={c.h1} lead={c.apoyo}>
+  <PageHero migas={migas} titulo={c.h1} lead={c.apoyo} kicker={`${n} ${n === 1 ? 'equipo' : 'equipos'} de ${c.corto.toLowerCase()}`} imagen={c.imagen} alt={altHero}>
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#equipos-categoria">Ver {n === 1 ? 'el equipo' : `los ${n} equipos`}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="pil-visual stage" style={escena(c.imagen)}>
-      <Img name={c.imagen} alt={altHero} sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
-    </div>
   </PageHero>
 
   <section class="sec sec--white" id="equipos-categoria" aria-labelledby="eq-title">
@@ -56,9 +55,6 @@ const altHero = repr ? altProducto(repr) : c.nombre;
       <ul class:list={['grid cat-grid', { 'cat-grid--1': n === 1, 'cat-grid--2': n === 2, 'cat-grid--4': n === 4 }]}>
         {productos.map((p) => <li><ProductCard p={p} vt /></li>)}
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -74,7 +70,7 @@ const altHero = repr ? altProducto(repr) : c.nombre;
     </div>
   </section>
 
-  {c.faqs && c.faqs.length > 0 && <Faq faqs={c.faqs} titulo={`Dudas sobre *${c.corto.toLowerCase()}.*`} id={`dudas-${c.id}`} fondo="blanco" />}
+  <Faq faqs={faqs} titulo={`Dudas sobre *${c.corto.toLowerCase()}.*`} id={`dudas-${c.id}`} fondo="blanco" />
 
   <CtaFinal preset={{ equipo: c.formEquipo, otro: c.formOtro }} />
 </Base>

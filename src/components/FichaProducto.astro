@@ -6,6 +6,7 @@ import '../styles/ficha.css';
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
+import Sweep from './Sweep.astro';
 import Img from './Img.astro';
 import ProductCard from './ProductCard.astro';
 import Reasons from './Reasons.astro';
@@ -53,33 +54,12 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
   jsonld={[product(p, [`${SITE_URL}${ogImg.src}`]), faqPage(faqs)]}
   viewContent={{ ids: [p.slug], type: 'product', category: c.nombre, name: `${p.nombre} (${p.marca})` }}
 >
-  <section class="fp" data-hero aria-labelledby="page-title">
+  <section class="phero fp on-dark" data-hero aria-labelledby="page-title">
+    <div class="phero__sweep" aria-hidden="true"><Sweep /></div>
     <div class="wrap">
-      <Breadcrumbs migas={migas} />
-      <div class="fp__grid">
-        <div class="gal" data-gallery>
-          <div class="gal__main">
-            {p.imagenes.map((n, i) => (
-              <div class:list={['gal__slide', { 'is-active': i === 0, 'gal__slide--foto': esFoto(n), stage: !esFoto(n) }]} style={escena(n)} data-slide inert={i !== 0}>
-                <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 960]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
-              </div>
-            ))}
-            <button class="gal__zoom" type="button" data-zoom-open aria-label="Ampliar la imagen"><svg class="icon" aria-hidden="true"><use href="#i-zoom"/></svg></button>
-          </div>
-          {p.imagenes.length > 1 && (
-            <div class="gal__thumbs" role="group" aria-label="Imágenes del equipo">
-              {p.imagenes.map((n, i) => (
-                <button class="gal__thumb" type="button" data-thumb aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Ver imagen ${i + 1} de ${p.imagenes.length}`}><Img name={n} alt="" sizes="88px" widths={[96, 192]} /></button>
-              ))}
-            </div>
-          )}
-          <dialog class="gal__dialog" data-zoom aria-label={`Imagen ampliada: ${altProducto(p)}`}>
-            <img src={zoom.src} width={zoom.attributes.width} height={zoom.attributes.height} alt={altProducto(p)} decoding="async" loading="lazy" />
-            <span class="gal__close" aria-hidden="true"><svg class="icon"><use href="#i-close"/></svg></span>
-          </dialog>
-        </div>
-
-        <div class="fp__info">
+      <Breadcrumbs migas={migas} oscuro />
+      <div class="phero__grid fp__grid">
+        <div class="phero__copy fp__info">
           <p class="fp__brand">{p.marca}<span aria-hidden="true"> · </span><a href={c.ruta}>{c.nombre}</a></p>
           <h1 class="h1 fp__title" id="page-title" set:html={h1Html(tituloH1)} />
           <p class="fp__ideal">Ideal para {p.idealPara}.</p>
@@ -96,6 +76,27 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
             <a class="link fp__wa" href={wa(waTexto)} target="_blank" rel="noopener" data-origen="ficha"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>Pregúntanos por WhatsApp</a>
           </div>
           <p class="fp__price">Precio según configuración. Pídenos una propuesta sin compromiso.{p.nota && ` ${p.nota}`}</p>
+        </div>
+        <div class="phero__visual gal" data-gallery>
+          <div class="gal__main">
+            {p.imagenes.map((n, i) => (
+              <div class:list={['gal__slide', { 'is-active': i === 0, 'gal__slide--foto': esFoto(n), stage: !esFoto(n) }]} style={escena(n)} data-slide inert={i !== 0}>
+                <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 960]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
+              </div>
+            ))}
+            <button class="gal__zoom" type="button" data-zoom-open aria-label="Ampliar la imagen"><svg class="icon" aria-hidden="true"><use href="#i-zoom"/></svg></button>
+          </div>
+          {p.imagenes.length > 1 && (
+            <div class="gal__thumbs" role="group" aria-label="Imágenes del equipo">
+              {p.imagenes.map((n, i) => (
+                <button class="gal__thumb" type="button" data-thumb aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Ver imagen ${i + 1} de ${p.imagenes.length}`}><Img name={n} alt={alt(i)} sizes="88px" widths={[96, 192]} /></button>
+              ))}
+            </div>
+          )}
+          <dialog class="gal__dialog" data-zoom aria-label={`Imagen ampliada: ${altProducto(p)}`}>
+            <img src={zoom.src} width={zoom.attributes.width} height={zoom.attributes.height} alt={altProducto(p)} decoding="async" loading="lazy" />
+            <span class="gal__close" aria-hidden="true"><svg class="icon"><use href="#i-close"/></svg></span>
+          </dialog>
         </div>
       </div>
     </div>
@@ -115,9 +116,6 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
           </li>
         ))}
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-want={etiquetaModelo(p)} data-equipo={c.formEquipo} data-otro={c.formOtro}>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -178,9 +176,6 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
       </aside>
     </div>
     <div class="wrap">
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-want={etiquetaModelo(p)} data-equipo={c.formEquipo} data-otro={c.formOtro}>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -209,5 +204,5 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
     </section>
   )}
 
-  <CtaFinal preset={preset} subtitulo={`Te asesoran fisioterapeutas sobre ${sujeto(p)} y su configuración. Sin compromiso y sin letra pequeña.`} />
+  <CtaFinal preset={preset} subtitulo={`Te asesoran fisioterapeutas sobre ${sujeto(p)} y su configuración. Sin compromiso.`} />
 </Base>

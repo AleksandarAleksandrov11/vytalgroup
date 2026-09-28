@@ -190,7 +190,7 @@ La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`).
    - `www`: registro **CNAME** a `cname.vercel-dns.com`
 
    (o cambia los DNS a los de Vercel). El certificado HTTPS se emite solo.
-4. Si algún día cambia el dominio, cambia `SITE_URL` en `src/config.ts`: canonical, Open Graph, JSON-LD, sitemap y `llms.txt` salen de ahí.
+4. **Canonical y dominio:** `SITE_URL` (en `src/config.ts`) toma solo el dominio de producción del proyecto de Vercel (`VERCEL_PROJECT_PRODUCTION_URL`). Mientras la web viva en `vytalgroup.vercel.app`, el canonical, Open Graph, JSON-LD, sitemap y `llms.txt` apuntan ahí; en cuanto `vytalgroup.org` sea el dominio de producción, apuntan a `vytalgroup.org` tras el siguiente despliegue. Para forzar otro dominio, define la variable de entorno `SITE_URL` en Vercel.
 5. En Google Search Console, añade la propiedad del dominio y envía `https://vytalgroup.org/sitemap.xml`.
 
 `vercel.json` incluye la CSP (solo scripts propios y el de Meta; conexión a Apps Script y Meta), cabeceras de seguridad, caché inmutable para `/_astro` y `/assets`, el PDF como descarga y redirecciones de rutas antiguas o probables (`/nosotros`, `/tecarterapia`, `/equipos/ecografia`...).

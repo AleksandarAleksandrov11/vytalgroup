@@ -12,7 +12,7 @@ export const GET: APIRoute = async () => {
   const guias = (await getCollection('guias')).sort((a, b) => a.data.orden - b.data.orden);
   const l: string[] = [];
   l.push(`# ${EMPRESA.nombre}`, '');
-  l.push(`> Equipos médicos de alta calidad para fisioterapeutas, clínicas y médicos, sin letra pequeña. Ecógrafos y diatermias como especialidad, y el resto del equipamiento de fisioterapia y rehabilitación en un solo sitio. De fisio a fisio.`, '');
+  l.push(`> Equipos médicos de alta calidad para fisioterapeutas, clínicas y médicos. Ecógrafos y diatermias como especialidad, y el resto del equipamiento de fisioterapia y rehabilitación en un solo sitio. De fisio a fisio.`, '');
   l.push(
     `${EMPRESA.nombre} la fundó ${EMPRESA.fundador}, fisioterapeuta, para que a otros profesionales no les engañen con los equipos, el mantenimiento ni los productos. Trabaja junto a ${EMPRESA.socio}, con quien comparte el ${EMPRESA.catalogoNombre}, y tiene marca propia, ${EMPRESA.marcaPropia}, con equipos desarrollados bajo el Reglamento Europeo de Productos Sanitarios MDR (UE) 2017/745 y soporte técnico local en España.`,
     '',

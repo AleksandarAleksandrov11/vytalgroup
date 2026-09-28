@@ -37,14 +37,11 @@ const MODOS = [
   jsonld={[collectionPage('/diatermias', 'Diatermia para fisioterapia y tecarterapia'), itemList('Diatermias', todas), faqPage(FAQ_DIATERMIA)]}
   viewContent={{ ids: todas.map((p) => p.slug), type: 'product_group', category: 'Diatermia', name: 'Diatermias' }}
 >
-  <PageHero migas={migas} titulo={c.h1} lead="Equipos de diatermia para fisioterapia: tecarterapia capacitiva, resistiva y bipolar de VytaMeD, I-Tech y EME. Cuatro equipos, cada uno con su sitio en la consulta." oscuro>
+  <PageHero migas={migas} titulo={c.h1} lead="Tecarterapia capacitiva, resistiva y bipolar de VytaMeD, I-Tech y EME. Cuatro equipos, cada uno con su sitio en la consulta." kicker="4 equipos de diatermia" imagen="diatermia-reatherm-i-tech" alt="Diatermia capacitiva y resistiva Reatherm de I-Tech con sus manípulos">
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#comparativa">Ver la comparativa<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="pil-visual stage" style={escena('diatermia-reatherm-i-tech')}>
-      <Img name="diatermia-reatherm-i-tech" alt="Diatermia capacitiva y resistiva Reatherm de I-Tech con sus manípulos" sizes="(min-width: 900px) 520px, 88vw" widths={[320, 480, 640]} priority />
-    </div>
   </PageHero>
 
   <section class="sec sec--white" aria-labelledby="modos-title">
@@ -75,22 +72,16 @@ const MODOS = [
       <ul class="grid dia-grid">
         {todas.map((p) => <li><ProductCard p={p} vt /></li>)}
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
   <section class="sec sec--white" id="comparativa" aria-labelledby="cmp-title">
     <div class="wrap">
       <div class="sec__head">
-        <h2 class="h2" id="cmp-title" data-lines>Comparativa, <em>sin letra pequeña.</em></h2>
+        <h2 class="h2" id="cmp-title" data-lines>Compara las <em>diatermias.</em></h2>
         <p class="lead" data-rv>Potencia, frecuencias, programas y para quién es cada una, con los datos del catálogo.</p>
       </div>
       <CompareTable columnas={COMPARATIVA_DIATERMIAS.columnas} filas={COMPARATIVA_DIATERMIAS.filas} caption="Comparativa de diatermias: potencia, frecuencias, programas, modos y para quién es" />
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -109,7 +100,7 @@ const MODOS = [
 
   <Faq faqs={FAQ_DIATERMIA} titulo="Dudas sobre *diatermia.*" id="dudas-diatermia" fondo="blanco" />
 
-  <CtaFinal preset={{ equipo: 'Diatermia' }} subtitulo="Cuéntanos qué tratas y cómo trabajas, y te recomendamos la diatermia que encaja. Sin letra pequeña." />
+  <CtaFinal preset={{ equipo: 'Diatermia' }} subtitulo="Cuéntanos qué tratas y cómo trabajas, y te recomendamos la diatermia que encaja." />
 </Base>
 <style is:global>
   @media (min-width: 640px) { .dia-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; --card-gap: 20px; } }

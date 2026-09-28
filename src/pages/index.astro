@@ -1,5 +1,5 @@
 ---
-// Inicio: hero, cinta de confianza, dos protagonistas, ecografía en profundidad (sticky), diatermias
+// Inicio: hero, marcas, dos protagonistas, ecografía en profundidad (sticky), diatermias
 // destacadas, todo tu equipamiento, sin timos + comparador, así trabajamos, envíos, catálogo,
 // guías, preguntas frecuentes y el bloque final con el formulario.
 import '../styles/inicio.css';
@@ -7,19 +7,18 @@ import '../styles/cards.css';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Sweep from '../components/Sweep.astro';
-import Marquee from '../components/Marquee.astro';
+import BrandsMarquee from '../components/BrandsMarquee.astro';
 import Img from '../components/Img.astro';
 import CategoryCard from '../components/CategoryCard.astro';
 import SinTimos from '../components/SinTimos.astro';
+import Comparator from '../components/Comparator.astro';
 import Timeline from '../components/Timeline.astro';
-import WorldMap from '../components/WorldMap.astro';
 import CatalogMockup from '../components/CatalogMockup.astro';
 import GuideCard from '../components/GuideCard.astro';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { CATEGORIAS } from '../data/categorias';
-import { MARCAS } from '../data/empresa';
-import { PRODUCTOS, producto, urlFicha, altProducto } from '../data/productos';
+import { producto, urlFicha, altProducto } from '../data/productos';
 import { FAQ_GENERAL } from '../data/faqs';
 import { EMPRESA } from '../data/empresa';
 import { h1Html } from '../lib/texto';
@@ -34,10 +33,7 @@ const ecoPasos = [
 const diatermias = ['diatermia-multifuncion', 'reatherm', 'hr-tek'].map(producto);
 const resto = CATEGORIAS.filter((c) => !c.pilar);
 const guias = (await getCollection('guias')).sort((a, b) => b.data.fecha.localeCompare(a.data.fecha) || a.data.orden - b.data.orden).slice(0, 3);
-const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
-// Escaparate del hero: un equipo de cada tipo, rotando dentro del círculo
-const escaparate = ['acclarix-ax8', 'diatermia-multifuncion', 'acclarix-lx9', 'shock-med', 'eco-wireless', 'reatherm'].map(producto);
-const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+const titulo = 'Ecógrafos, diatermias y equipos de *fisioterapia.*';
 ---
 <Base
   title="VytalGroup: ecógrafos, diatermias y equipos de fisioterapia"
@@ -47,49 +43,30 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
   seccion="inicio"
   jsonld={[organization(), website(), faqPage(FAQ_GENERAL)]}
 >
-  <!-- 1 · Hero: titular y escaparate circular con los equipos -->
-  <section class="hx" data-hero aria-labelledby="hero-title">
-    <div class="hx__bg" aria-hidden="true"></div>
+  <!-- 1 · Hero: foto a sangre de una consulta, capa marina, barrido de ecografía y el titular -->
+  <section class="hx on-dark" data-hero aria-labelledby="hero-title">
+    <div class="hx__media">
+      <Img name="fotos/diatermia-multifuncion-vytamed-en-consulta" alt="Diatermia Multifunción de VytaMeD en una consulta de fisioterapia" sizes="100vw" widths={[480, 768, 1080, 1440]} priority class="hx__photo" />
+    </div>
+    <div class="hx__fx" aria-hidden="true">
+      <Sweep class="hx__sweep" />
+      <span class="hx__scan"></span>
+    </div>
     <div class="wrap hx__wrap">
       <div class="hx__copy">
-        <p class="hx__kicker" data-enter style="--ed:.05s"><span class="hx__live" aria-hidden="true"></span>De fisio a fisio</p>
+        <p class="hx__kicker" data-enter style="--ed:.05s">De fisio a fisio</p>
         <h1 class="h1 hx__title" id="hero-title" set:html={h1Html(titulo)} />
-        <p class="hx__lead" data-enter style="--ed:.42s">Ecógrafos, diatermias y todo lo que tu clínica necesita. Te asesoran fisioterapeutas.</p>
-        <div class="hx__actions" data-enter style="--ed:.52s">
+        <p class="hx__lead" data-enter style="--ed:.45s">Equipamiento médico para clínicas y fisioterapeutas, elegido contigo por gente de tu profesión.</p>
+        <div class="hx__actions" data-enter style="--ed:.55s">
           <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-          <a class="btn btn--line btn--lg hx__cat" href="/catalogo" data-fill>Ver catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        </div>
-      </div>
-
-      <div class="hx__stage" data-showcase>
-        <div class="hx__disc" aria-hidden="true">
-          <span class="hx__ring"></span><span class="hx__ring"></span><span class="hx__ring"></span>
-          <Sweep class="hx__sweep" />
-        </div>
-        <svg class="hx__orbit" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="98" /><circle class="hx__sat" cx="100" cy="2" r="3.2" /></svg>
-        <ul class="hx__slides">
-          {escaparate.map((p, i) => (
-            <li class:list={['hx__slide', { 'is-active': i === 0 }]} data-slide inert={i !== 0}>
-              <a class="hx__prod" href={urlFicha(p)}>
-                <span class="hx__img stage" style={escena(p.imagenes[0])}><Img name={p.imagenes[0]} alt={altProducto(p)} sizes="(min-width: 1180px) 560px, (min-width: 900px) 46vw, 88vw" widths={[360, 480, 640, 960]} priority={i === 0} /></span>
-                <span class="hx__chip"><span class="hx__chip-k">{p.marca}</span><strong>{p.nombre}</strong><span class="hx__chip-t">{cap(p.tipo)}</span><span class="hx__chip-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-ne"/></svg></span></span>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <p class="hx__badge"><strong>{PRODUCTOS.length}</strong> equipos, {CATEGORIAS.length} categorías y {MARCAS.length} marcas</p>
-        <div class="hx__ctrl">
-          <div class="hx__dots" role="group" aria-label="Elegir equipo destacado">
-            {escaparate.map((p, i) => <button class="hx__dot" type="button" aria-label={`Ver ${p.nombre}`} aria-pressed={i === 0 ? 'true' : 'false'} data-go={i}><span></span></button>)}
-          </div>
-          <button class="hx__play" type="button" aria-label="Pausar el carrusel" data-play><svg viewBox="0 0 16 16" aria-hidden="true"><path class="hx__pause" d="M5 3.5v9M11 3.5v9"/><path class="hx__resume" d="M5 3.2v9.6L12.6 8z"/></svg></button>
+          <a class="btn btn--line btn--lg" href="/catalogo">Ver catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 2 · Cinta de confianza -->
-  <Marquee />
+  <!-- 2 · Marcas con las que trabajamos -->
+  <BrandsMarquee />
 
   <!-- 3 · Dos protagonistas -->
   <section class="sec duo" aria-labelledby="duo-title">
@@ -119,9 +96,6 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
           </a>
         </li>
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 
@@ -136,7 +110,7 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
           <div class="eco__frame">
             {ecoPasos.map((s, i) => (
               <div class:list={['eco__shot', { 'is-active': i === 0 }]} data-shot>
-                <span class="stage" style={escena(s.p.imagenes[0])}><Img name={s.p.imagenes[0]} alt="" sizes="(min-width: 900px) 560px, 1px" widths={[480, 640]} /></span>
+                <Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(min-width: 900px) 560px, 1px" widths={[480, 640]} />
               </div>
             ))}
             <span class="eco__bars">{ecoPasos.map((_, i) => <span class:list={{ 'is-active': i === 0 }} data-bar></span>)}</span>
@@ -145,7 +119,7 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
         <ol class="eco__steps">
           {ecoPasos.map((s, i) => (
             <li class:list={['eco__step', { 'is-active': i === 0 }]} data-step>
-              <div class="eco__inline stage" style={escena(s.p.imagenes[0])} data-rvi><Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(max-width: 899px) 88vw, 1px" widths={[320, 480, 640]} /></div>
+              <div class="eco__inline" data-rvi><Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(max-width: 899px) 88vw, 1px" widths={[320, 480, 640]} /></div>
               <p class="eco__kicker">{s.t}</p>
               <h3 class="eco__name">{s.p.nombre} <span>{s.p.marca}</span></h3>
               <p class="eco__txt">{s.d}</p>
@@ -186,7 +160,7 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
               <dl class="dia__data">
                 {p.datosClave.slice(0, 2).map((d) => <div><dt>{d.etiqueta}</dt><dd data-count>{d.valor}</dd></div>)}
               </dl>
-              <a class="btn btn--line" href={urlFicha(p)}>Ver ficha</a>
+              <a class="btn btn--line" href={urlFicha(p)}>Ver ficha<span class="sr-only"> de {p.nombre}</span></a>
             </div>
           </div>
         ))}
@@ -212,38 +186,26 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
     </div>
   </section>
 
-  <!-- 7 · Sin timos. Sin letra pequeña. -->
+  <!-- 7 · Quién está detrás -->
   <SinTimos />
 
-  <!-- 8 · Así trabajamos -->
+  <!-- 8 · Lo habitual frente a lo nuestro -->
+  <section class="sec vs" aria-labelledby="vs-title">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2 class="h2" id="vs-title" data-lines>Lo habitual, <em>y lo nuestro.</em></h2>
+      </div>
+      <Comparator />
+    </div>
+  </section>
+
+  <!-- 9 · Así trabajamos -->
   <section class="sec sec--white" aria-labelledby="tl-title">
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="tl-title" data-lines>Así <em>trabajamos.</em></h2>
       </div>
       <Timeline />
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 9 · Enviamos a medio mundo -->
-  <section class="sec world" aria-labelledby="world-title">
-    <div class="wrap">
-      <div class="sec__head">
-        <h2 class="h2" id="world-title" data-lines>Enviamos a <em>medio mundo.</em></h2>
-        <p class="lead" data-rv>Aduana gestionada en UE, USA y LATAM.</p>
-      </div>
-      <WorldMap />
-      <ul class="world__legend" data-rv>
-        <li><strong>UE</strong> Unión Europea</li>
-        <li><strong>USA</strong> Estados Unidos</li>
-        <li><strong>LATAM</strong> Latinoamérica</li>
-      </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--primary" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
-      </div>
     </div>
   </section>
 

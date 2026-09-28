@@ -23,7 +23,7 @@ const letras = 'VytalGroup'.split('');
       </div>
       <div class="ft__cols">
         <div class="ft__col ft__col--equipos">
-          <h2 class="ft__h">Equipos</h2>
+          <p class="ft__h">Equipos</p>
           <ul class="ft__list ft__list--2">
             {CATEGORIAS.map((c) => <li><a href={c.ruta}><span class="ft__full">{c.nombre}</span><span class="ft__short">{c.corto}</span></a></li>)}
             <li><a href="/catalogo">Catálogo completo</a></li>
@@ -31,7 +31,7 @@ const letras = 'VytalGroup'.split('');
           </ul>
         </div>
         <div class="ft__col">
-          <h2 class="ft__h">Empresa</h2>
+          <p class="ft__h">Empresa</p>
           <ul class="ft__list">
             <li><a href="/sobre-nosotros">Sobre nosotros</a></li>
             <li><a href="/guias">Guías</a></li>
@@ -40,7 +40,7 @@ const letras = 'VytalGroup'.split('');
           </ul>
         </div>
         <div class="ft__col">
-          <h2 class="ft__h">Legal</h2>
+          <p class="ft__h">Legal</p>
           <ul class="ft__list">
             <li><a href="/aviso-legal">Aviso legal</a></li>
             <li><a href="/privacidad">Privacidad</a></li>
@@ -49,7 +49,7 @@ const letras = 'VytalGroup'.split('');
           </ul>
         </div>
         <div class="ft__col">
-          <h2 class="ft__h">Síguenos</h2>
+          <p class="ft__h">Síguenos</p>
           <ul class="ft__list">
             <li><a href={EMPRESA.instagramMarca.url} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-insta"/></svg>@{EMPRESA.instagramMarca.usuario}</a></li>
             <li><a href={EMPRESA.instagramJavier.url} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-insta"/></svg>@{EMPRESA.instagramJavier.usuario}</a></li>

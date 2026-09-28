@@ -9,7 +9,7 @@ export const getStaticPaths = (async () => {
   const eco = CAT.ecografia;
   const dia = CAT.diatermia;
   const paginas: [string, OgDatos][] = [
-    ['inicio', { kicker: 'VytalGroup', titulo: 'Equipos médicos de alta calidad. *Sin letra pequeña.*', sub: 'Ecógrafos, diatermias y equipamiento de fisioterapia. Te asesoran fisioterapeutas.', imagen: 'ecografo-portatil-acclarix-ax8-edan' }],
+    ['inicio', { kicker: 'VytalGroup', titulo: 'Ecógrafos, diatermias y equipos de *fisioterapia.*', sub: 'Ecógrafos, diatermias y equipamiento de fisioterapia. Te asesoran fisioterapeutas.', imagen: 'ecografo-portatil-acclarix-ax8-edan' }],
     ['ecografos', { kicker: 'Ecografía', titulo: eco.h1, sub: 'Inalámbricos, portátiles y de carro. 2 años de garantía.', imagen: eco.imagen }],
     ['diatermias', { kicker: 'Diatermia y tecarterapia', titulo: dia.h1, sub: 'Capacitiva, resistiva y bipolar. 2 años de garantía.', imagen: dia.imagen }],
     ['equipos', { kicker: 'Equipos', titulo: 'Todo lo que tu clínica *necesita.*', sub: `${CATEGORIAS.length} categorías y ${PRODUCTOS.length} equipos del catálogo 2026, en un solo sitio.` }],

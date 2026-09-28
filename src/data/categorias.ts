@@ -48,7 +48,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/ecografos',
     pilar: true,
     orden: 1,
-    h1: 'Ecógrafos para fisioterapia. *Elegidos por fisios.*',
+    h1: 'Ecógrafos para *fisioterapia.*',
     apoyo: 'Inalámbricos, portátiles y de carro. Te ayudamos a elegir el que encaja con tu forma de trabajar.',
     descripcion: 'Sonda inalámbrica y ecógrafos EDAN de bolsillo, portátiles y de carro.',
     queEs: [
@@ -66,7 +66,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/diatermias',
     pilar: true,
     orden: 2,
-    h1: 'Diatermia y tecarterapia. *Sin letra pequeña.*',
+    h1: 'Diatermia y *tecarterapia.*',
     apoyo: 'Capacitiva, resistiva y bipolar. Cuatro equipos, cada uno con su sitio en la consulta.',
     descripcion: 'Diatermia capacitiva y resistiva de VytaMeD, I-Tech y EME.',
     queEs: [
@@ -75,7 +75,7 @@ export const CATEGORIAS: Categoria[] = [
     imagen: 'diatermia-multifuncion-vytamed',
     formEquipo: 'Diatermia',
     seoTitle: 'Diatermia para fisioterapia y tecarterapia | VytalGroup',
-    seoDescription: 'Equipos de diatermia capacitiva y resistiva para fisioterapia: VytaMeD, Reatherm, Reacare y HR Tek. Te asesoran fisioterapeutas, sin letra pequeña.',
+    seoDescription: 'Equipos de diatermia capacitiva y resistiva para fisioterapia: VytaMeD, Reatherm, Reacare y HR Tek. Te asesoran fisioterapeutas, de fisio a fisio.',
   },
   {
     id: 'ondas-de-choque',
@@ -84,7 +84,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/ondas-de-choque',
     pilar: false,
     orden: 3,
-    h1: 'Ondas de choque para fisioterapia. *Sin letra pequeña.*',
+    h1: 'Ondas de choque para *fisioterapia.*',
     apoyo: 'Equipos de ondas de choque radiales de EME y LiKAMED, y una plataforma que las combina con láser.',
     descripcion: 'Ondas de choque radiales de EME y LiKAWAVE para consulta y deporte.',
     queEs: [
@@ -107,7 +107,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/magnetoterapia',
     pilar: false,
     orden: 4,
-    h1: 'Magnetoterapia profesional. *Sin letra pequeña.*',
+    h1: 'Magnetoterapia *profesional.*',
     apoyo: 'Superinducción de alta intensidad VytaMeD y magnetoterapia de baja frecuencia de I-Tech y EME.',
     descripcion: 'Superinductiva VytaMeD y campos magnéticos pulsados de I-Tech y EME.',
     queEs: [
@@ -130,7 +130,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/laser',
     pilar: false,
     orden: 5,
-    h1: 'Láser de alta potencia para fisioterapia. *Sin letra pequeña.*',
+    h1: 'Láser de alta potencia para *fisioterapia.*',
     apoyo: 'Láser de diodo y Nd:YAG, de contacto y de barrido, con longitudes de onda de 808 a 1064 nm.',
     descripcion: 'Láser de alta potencia, de barrido y de baja potencia para consulta.',
     queEs: [
@@ -150,7 +150,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/electrolisis-percutanea',
     pilar: false,
     orden: 6,
-    h1: 'Electrólisis percutánea ecoguiada. *Sin letra pequeña.*',
+    h1: 'Electrólisis percutánea *ecoguiada.*',
     apoyo: 'Physio Invasiva 2.0 de EasyTech: electrólisis, PES, microcorrientes y TENS en un equipo compacto.',
     descripcion: 'Physio Invasiva 2.0: electrólisis ecoguiada, PES y TENS en un equipo.',
     queEs: [
@@ -173,7 +173,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/electroterapia',
     pilar: false,
     orden: 7,
-    h1: 'Electroterapia profesional. *Sin letra pequeña.*',
+    h1: 'Electroterapia *profesional.*',
     apoyo: 'Electroestimulación, corrientes para consulta y equipos que combinan varias terapias en uno.',
     descripcion: 'TENS, EMS e interferenciales, y equipos combinados de EME e I-Tech.',
     queEs: [
@@ -184,7 +184,7 @@ export const CATEGORIAS: Categoria[] = [
     formEquipo: 'Otro equipo',
     formOtro: 'Electroterapia',
     seoTitle: 'Electroterapia profesional y terapia combinada | VytalGroup',
-    seoDescription: 'Electroterapia para fisioterapia: T-One Coach de I-Tech, Therapic, Combimed y Polyter Evo de EME. Canales, corrientes y programas, explicados sin letra pequeña.',
+    seoDescription: 'Electroterapia para fisioterapia: T-One Coach de I-Tech, Therapic, Combimed y Polyter Evo de EME. Canales, corrientes y programas, explicados con claridad.',
   },
   {
     id: 'ultrasonidos',
@@ -193,7 +193,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/ultrasonidos',
     pilar: false,
     orden: 8,
-    h1: 'Ultrasonidos terapéuticos. *Sin letra pequeña.*',
+    h1: 'Ultrasonidos *terapéuticos.*',
     apoyo: 'Equipos de ultrasonidos de 1 y 3 MHz de I-Tech y EME, con uno o dos cabezales.',
     descripcion: 'Ultrasonidos de 1 y 3 MHz con uno o dos cabezales.',
     queEs: [
@@ -213,7 +213,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/presoterapia',
     pilar: false,
     orden: 9,
-    h1: 'Presoterapia profesional. *Sin letra pequeña.*',
+    h1: 'Presoterapia *profesional.*',
     apoyo: 'Compresión neumática secuencial para consulta, con prendas para piernas, brazos y abdomen.',
     descripcion: 'Compresión neumática secuencial para piernas, brazos y abdomen.',
     queEs: [
@@ -232,7 +232,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/camillas',
     pilar: false,
     orden: 10,
-    h1: 'Camillas de fisioterapia. *Sin letra pequeña.*',
+    h1: 'Camillas de *fisioterapia.*',
     apoyo: 'Seis modelos eléctricos e hidráulicos, con certificación CE y garantía mínima de 2 años.',
     descripcion: '6 modelos eléctricos e hidráulicos, con certificación CE.',
     queEs: [
@@ -252,7 +252,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/diatermia-microondas',
     pilar: false,
     orden: 11,
-    h1: 'Diatermia por microondas. *Sin letra pequeña.*',
+    h1: 'Diatermia por *microondas.*',
     apoyo: 'Radarmed 2500 CP de EME: calentamiento profundo con brazo articulado de tres articulaciones.',
     descripcion: 'Radarmed 2500 CP de EME, a 2450 MHz con brazo articulado.',
     queEs: [
@@ -272,7 +272,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/estetica-medica',
     pilar: false,
     orden: 12,
-    h1: 'Equipos de estética médica. *Sin letra pequeña.*',
+    h1: 'Equipos de estética *médica.*',
     apoyo: 'Tecnologías para tratamientos faciales, corporales y depilación en clínicas y centros especializados.',
     descripcion: 'Radiofrecuencia, láser de diodo, ondas acústicas y más para cabina.',
     queEs: [

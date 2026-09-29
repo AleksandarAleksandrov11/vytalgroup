@@ -2,20 +2,20 @@
 // Preguntas frecuentes en acordeón (mismo diseño que la landing). El FAQPage de JSON-LD lo añade la
 // página con los mismos datos, para que sea idéntico a lo visible.
 import type { Faq } from '../data/categorias';
-import { acento } from '../lib/texto';
+import { acento, enlaces } from '../lib/texto';
 import { wa } from '../data/empresa';
 
-interface Props { faqs: Faq[]; titulo?: string; id?: string; cta?: boolean; fondo?: 'claro' | 'blanco' }
-const { faqs, titulo = 'Lo que *nos preguntáis.*', id = 'dudas', cta = true, fondo = 'claro' } = Astro.props;
+interface Props { faqs: Faq[]; titulo?: string; id?: string; cta?: boolean; fondo?: 'niebla' | 'blanco' }
+const { faqs, titulo = 'Lo que *nos preguntáis.*', id = 'dudas', cta = true, fondo = 'niebla' } = Astro.props;
 ---
-<section class:list={['sec faq', { 'sec--white': fondo === 'blanco' }]} id={id} aria-labelledby={`${id}-title`}>
+<section class:list={['sec faq', fondo === 'blanco' ? 'sec--white' : 'sec--mist']} id={id} aria-labelledby={`${id}-title`}>
   <div class="wrap wrap--narrow">
     <h2 class="h2 faq__title" id={`${id}-title`} data-lines set:html={acento(titulo)} />
     <div class="acc" data-acc data-rv>
       {faqs.map((f, i) => (
         <div class="acc__item">
           <h3 class="acc__h"><button class="acc__btn" type="button" id={`${id}-q${i}`} aria-expanded="false" aria-controls={`${id}-a${i}`}>{f.q}<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id={`${id}-a${i}`} role="region" aria-labelledby={`${id}-q${i}`} hidden><p>{f.a}</p></div>
+          <div class="acc__panel" id={`${id}-a${i}`} role="region" aria-labelledby={`${id}-q${i}`} hidden><p set:html={enlaces(f.a)} /></div>
         </div>
       ))}
     </div>
@@ -38,8 +38,9 @@ const { faqs, titulo = 'Lo que *nos preguntáis.*', id = 'dudas', cta = true, fo
   .acc__icon::after { transform: rotate(90deg); }
   .acc__btn[aria-expanded="true"] .acc__icon { transform: rotate(135deg); background: var(--ink); color: #FFF; box-shadow: none; }
   .acc__panel p { max-width: 60ch; padding: 0 48px 24px 0; color: var(--ink-2); line-height: 1.6; }
+  .acc__panel a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--teal); text-underline-offset: 3px; }
   .acc__panel.is-opening p { animation: fade-up .5s var(--ease); }
   .faq__more { position: relative; }
-  .faq, .faq .acc__item, .faq__more { background: var(--bg); }
+  .faq, .faq .acc__item, .faq__more { background: var(--mist); }
   .faq.sec--white, .faq.sec--white .acc__item, .faq.sec--white .faq__more { background: #FFF; }
 </style>

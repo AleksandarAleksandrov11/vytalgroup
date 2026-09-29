@@ -29,13 +29,11 @@ const cuenta = (n: number) => `${n} ${n === 1 ? 'equipo' : 'equipos'}`;
 // Desplegables del menú móvil
 const eco = PRODUCTOS.filter((p) => p.categoria === 'ecografia');
 const formatos = [
-  { id: 'inalambrico', label: 'De bolsillo e inalámbricos', img: 'ecografo-inalambrico-eco-wireless-vytamed' },
-  { id: 'portatil', label: 'Portátiles', img: 'ecografo-portatil-acclarix-ax8-edan' },
-  { id: 'carro', label: 'De carro', img: 'ecografo-de-carro-acclarix-lx9-edan' },
+  { id: 'inalambrico', label: 'De bolsillo e inalámbricos', img: 'ecografo-inalambrico-eco-wireless-vytamed', alt: 'Ecógrafo inalámbrico Eco Wireless de VytaMeD' },
+  { id: 'portatil', label: 'Portátiles', img: 'ecografo-portatil-acclarix-ax8-edan', alt: 'Ecógrafo portátil Acclarix AX8 de EDAN' },
+  { id: 'carro', label: 'De carro', img: 'ecografo-de-carro-acclarix-lx9-edan', alt: 'Ecógrafo de carro Acclarix LX9 de EDAN' },
 ].map((f) => ({ ...f, n: eco.filter((p) => p.formato === f.id).length }));
 const diatermias = deCategoria('diatermia').filter((p) => p.categoria === 'diatermia');
-let n = 0;
-const num = () => String(++n).padStart(2, '0');
 ---
 <header class="hd" data-header>
   <div class="hd__bar wrap">
@@ -57,7 +55,7 @@ const num = () => String(++n).padStart(2, '0');
                         <li style={`--i:${i}`}>
                           <a class="dd__cat" href={c.ruta} aria-current={actual(c.ruta)}>
                             <span class="dd__thumb"><Thumb name={c.imagen} alt={`Equipo de ${c.corto.toLowerCase()}`} size={56} /></span>
-                            <span class="dd__txt"><span class="dd__name">{c.nombre}</span><span class="dd__count">{cuenta(deCategoria(c.id).length)}</span></span>
+                            <span class="dd__txt"><span class="dd__name">{c.nombre}</span> <span class="dd__count">{cuenta(deCategoria(c.id).length)}</span></span>
                           </a>
                         </li>
                       ))}
@@ -94,13 +92,13 @@ const num = () => String(++n).padStart(2, '0');
       <ul class="mm__list">
         <li class="mm__li" style="--i:0">
           <button class="mm__link mm__acc" type="button" aria-expanded="false" aria-controls="mm-eco" data-mm-acc>
-            <span class="mm__n">{num()}</span><span class="mm__t">Ecógrafos</span><span class="mm__chev" aria-hidden="true"></span>
+            <span class="mm__n" aria-hidden="true"></span><span class="mm__t">Ecógrafos</span><span class="mm__chev" aria-hidden="true"></span>
           </button>
           <div class="mm__sub" id="mm-eco" data-mm-sub inert>
             <div class="mm__sub-in">
               <ul class="mm__rows">
                 {formatos.map((f, i) => (
-                  <li style={`--j:${i}`}><a class="mm__row" href={`/ecografos#gama-${f.id}`}><span class="mm__thumb"><Thumb name={f.img} alt={`Ecógrafo ${f.label.toLowerCase()}`} size={48} /></span><span class="mm__row-t">{f.label}</span><span class="mm__row-n">{f.n}</span></a></li>
+                  <li style={`--j:${i}`}><a class="mm__row" href={`/ecografos#gama-${f.id}`}><span class="mm__thumb"><Thumb name={f.img} alt={f.alt} size={48} /></span><span class="mm__row-t">{f.label}</span> <span class="mm__row-n">{f.n}</span></a></li>
                 ))}
               </ul>
               <a class="mm__all" href="/ecografos" aria-current={actual('/ecografos')}>Ver todos los ecógrafos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -109,13 +107,13 @@ const num = () => String(++n).padStart(2, '0');
         </li>
         <li class="mm__li" style="--i:1">
           <button class="mm__link mm__acc" type="button" aria-expanded="false" aria-controls="mm-dia" data-mm-acc>
-            <span class="mm__n">{num()}</span><span class="mm__t">Diatermias</span><span class="mm__chev" aria-hidden="true"></span>
+            <span class="mm__n" aria-hidden="true"></span><span class="mm__t">Diatermias</span><span class="mm__chev" aria-hidden="true"></span>
           </button>
           <div class="mm__sub" id="mm-dia" data-mm-sub inert>
             <div class="mm__sub-in">
               <ul class="mm__rows">
                 {diatermias.map((p, i) => (
-                  <li style={`--j:${i}`}><a class="mm__row" href={urlFicha(p)} aria-current={actual(urlFicha(p)!)}><span class="mm__thumb"><Thumb name={p.imagenes[0]} alt={altProducto(p)} size={48} /></span><span class="mm__row-t">{p.nombre}<small>{p.marca}</small></span></a></li>
+                  <li style={`--j:${i}`}><a class="mm__row" href={urlFicha(p)} aria-current={actual(urlFicha(p)!)}><span class="mm__thumb"><Thumb name={p.imagenes[0]} alt={altProducto(p)} size={48} /></span><span class="mm__row-t">{p.nombre} <small>{p.marca}</small></span></a></li>
                 ))}
               </ul>
               <a class="mm__all" href="/diatermias" aria-current={actual('/diatermias')}>Ver todas las diatermias<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -124,13 +122,13 @@ const num = () => String(++n).padStart(2, '0');
         </li>
         <li class="mm__li" style="--i:2">
           <button class="mm__link mm__acc" type="button" aria-expanded="false" aria-controls="mm-equipos" data-mm-acc>
-            <span class="mm__n">{num()}</span><span class="mm__t">Equipos</span><span class="mm__chev" aria-hidden="true"></span>
+            <span class="mm__n" aria-hidden="true"></span><span class="mm__t">Equipos</span><span class="mm__chev" aria-hidden="true"></span>
           </button>
           <div class="mm__sub" id="mm-equipos" data-mm-sub inert>
             <div class="mm__sub-in">
               <ul class="mm__rows mm__rows--2">
                 {CATEGORIAS.filter((c) => !c.pilar).map((c, i) => (
-                  <li style={`--j:${i}`}><a class="mm__row" href={c.ruta} aria-current={actual(c.ruta)}><span class="mm__thumb"><Thumb name={c.imagen} alt={`Equipo de ${c.corto.toLowerCase()}`} size={48} /></span><span class="mm__row-t">{c.nombre}<small>{cuenta(deCategoria(c.id).length)}</small></span></a></li>
+                  <li style={`--j:${i}`}><a class="mm__row" href={c.ruta} aria-current={actual(c.ruta)}><span class="mm__thumb"><Thumb name={c.imagen} alt={`Equipo de ${c.corto.toLowerCase()}`} size={48} /></span><span class="mm__row-t">{c.nombre} <small>{cuenta(deCategoria(c.id).length)}</small></span></a></li>
                 ))}
               </ul>
               <a class="mm__all" href="/equipos" aria-current={actual('/equipos')}>Ver todas las categorías<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -143,7 +141,7 @@ const num = () => String(++n).padStart(2, '0');
           { label: 'Sobre nosotros', href: '/sobre-nosotros' },
           { label: 'Contacto', href: '/contacto' },
         ].map((l, i) => (
-          <li class="mm__li" style={`--i:${i + 3}`}><a class="mm__link" href={l.href} aria-current={actual(l.href)}><span class="mm__n">{num()}</span><span class="mm__t">{l.label}</span><svg class="icon mm__arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li class="mm__li" style={`--i:${i + 3}`}><a class="mm__link" href={l.href} aria-current={actual(l.href)}><span class="mm__n" aria-hidden="true"></span><span class="mm__t">{l.label}</span><svg class="icon mm__arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
         ))}
       </ul>
     </nav>

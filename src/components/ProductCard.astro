@@ -18,11 +18,13 @@ interface Props {
   vt?: boolean;
   linea?: 'resumen' | 'ideal';
   sizes?: string;
+  /** Anchos del srcset, si la rejilla pinta la tarjeta más grande que de costumbre */
+  widths?: number[];
   priority?: boolean;
   /** Sufijo para ids únicos si el mismo equipo aparece dos veces en una página */
   sufijo?: string;
 }
-const { p, nivel = 'h3', vt = false, linea = 'resumen', sizes = '(min-width: 1200px) 370px, (min-width: 900px) 30vw, (min-width: 640px) 46vw, 82vw', priority = false, sufijo = '' } = Astro.props;
+const { p, nivel = 'h3', vt = false, linea = 'resumen', sizes = '(min-width: 1200px) 370px, (min-width: 900px) 30vw, (min-width: 640px) 46vw, 82vw', priority = false, sufijo = '', widths } = Astro.props;
 const url = urlFicha(p)!;
 const c = CAT[p.categoria];
 const H = nivel;
@@ -31,7 +33,7 @@ const texto = linea === 'ideal' && p.idealPara ? `Para ${p.idealPara}.` : p.resu
 ---
 <article class="pc lift" data-tilt>
   <div class="pc__media stage" style={escena(p.imagenes[0])} data-rvi>
-    <Img name={p.imagenes[0]} alt={altProducto(p)} sizes={sizes} vt={vt ? `p-${p.slug}` : undefined} priority={priority} />
+    <Img name={p.imagenes[0]} alt={altProducto(p)} sizes={sizes} widths={widths} vt={vt ? `p-${p.slug}` : undefined} priority={priority} />
   </div>
   <p class="pc__meta"><span>{p.marca}</span><span>{c.corto}</span></p>
   <H class="pc__name" id={id}>{p.nombre}</H>

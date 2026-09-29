@@ -5,7 +5,7 @@ export interface Spec { clave: string; valor: string }
 export interface Bloque { titulo: string; texto: string }
 export interface Modelo { nombre: string; detalle: string }
 
-/** Iconos disponibles para "Para quién es" (símbolos del sprite: i-uso-*) */
+/** Tipo de uso de "Para quién es" (hoy no se pinta como icono; el sprite ya no lleva i-uso-*) */
 export type IconoUso =
   | 'consulta' | 'domicilio' | 'campo' | 'deporte' | 'dolor' | 'ecoguiado' | 'msk' | 'urgencias'
   | 'mujer' | 'cardio' | 'vascular' | 'rehab' | 'estetica' | 'movilidad' | 'radiologia' | 'cabina';
@@ -55,5 +55,7 @@ export interface Producto {
   /** Nota del catálogo que acompaña al equipo */
   nota?: string;
   seoTitle?: string;
+  /** Qué es, delante del nombre en el H1 de la ficha, cuando `tipo` es demasiado largo ("Láser de diodo") */
+  prefijoH1?: string;
   seoDescription?: string;
 }

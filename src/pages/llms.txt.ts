@@ -12,7 +12,7 @@ export const GET: APIRoute = async () => {
   const guias = (await getCollection('guias')).sort((a, b) => a.data.orden - b.data.orden);
   const l: string[] = [];
   l.push(`# ${EMPRESA.nombre}`, '');
-  l.push(`> Equipos médicos de alta calidad para fisioterapeutas, clínicas y médicos. Ecógrafos y diatermias como especialidad, y el resto del equipamiento de fisioterapia y rehabilitación en un solo sitio. De fisio a fisio.`, '');
+  l.push(`> Equipos médicos de alta calidad para fisioterapeutas, clínicas y médicos. Ecógrafos y diatermias como especialidad, y el resto del equipamiento de fisioterapia y rehabilitación en un solo sitio.`, '');
   l.push(
     `${EMPRESA.nombre} la fundó ${EMPRESA.fundador}, fisioterapeuta, para que a otros profesionales no les engañen con los equipos, el mantenimiento ni los productos. Trabaja junto a ${EMPRESA.socio}, con quien comparte el ${EMPRESA.catalogoNombre}, y tiene marca propia, ${EMPRESA.marcaPropia}, con equipos desarrollados bajo el Reglamento Europeo de Productos Sanitarios MDR (UE) 2017/745 y soporte técnico local en España.`,
     '',
@@ -25,7 +25,7 @@ export const GET: APIRoute = async () => {
     `- Marcas: ${MARCAS.join(', ')}.`,
     '- Servicios: asesoramiento en la selección y configuración del equipo, coordinación de importación y entrega internacional, instalación, formación y soporte según el proyecto.',
     '- La web no publica precios: cada propuesta se prepara según el equipo, la configuración y el país.',
-    `- Contacto: teléfono y WhatsApp ${EMPRESA.telefono}, email ${EMPRESA.email}. Instagram @${EMPRESA.instagramMarca.usuario} y @${EMPRESA.instagramJavier.usuario}.`,
+    `- Contacto: teléfono y WhatsApp ${EMPRESA.telefono}, email ${EMPRESA.email}. Instagram de Javier Ruiz: @${EMPRESA.instagramJavier.usuario}.`,
     '',
   );
   l.push('## Páginas principales', '');

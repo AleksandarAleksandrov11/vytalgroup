@@ -11,7 +11,6 @@ const { caption = 'Lo habitual en otras marcas frente a VytalGroup' } = Astro.pr
     {COMPARADOR.map(([no, si], i) => (
       <li class="vsx__row" style={`--r:${i}`}>
         <p class="vsx__no"><span class="sr-only">Lo habitual: </span><span class="vsx__strike">{no}</span></p>
-        <span class="vsx__arrow" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
         <p class="vsx__si"><svg class="vsx__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="sr-only">Con VytalGroup: </span>{si}</span></p>
       </li>
     ))}
@@ -21,37 +20,29 @@ const { caption = 'Lo habitual en otras marcas frente a VytalGroup' } = Astro.pr
   .vsx { max-width: 1000px; margin: 0 auto; }
   .vsx__head { display: none; }
   .vsx__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-  .vsx__row { position: relative; display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 8px 12px; padding: 16px 18px 18px; border-radius: 22px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
-  .vsx__no { grid-column: 2; }
-  .vsx__arrow { grid-column: 1; grid-row: 1; }
-  .vsx__si { grid-column: 1 / -1; }
+  .vsx__row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 10px; padding: 16px 18px 18px; border-radius: 22px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
   .vsx__no { font-size: .9375rem; line-height: 1.4; color: var(--ink-3); }
   /* Tachado dibujado: una línea que cruza el texto de izquierda a derecha */
   .vsx__strike { background: linear-gradient(currentColor, currentColor) no-repeat 0 55% / var(--st, 100%) 1.5px; padding: 0 2px; }
-  .vsx__arrow { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-ink); transform: rotate(90deg); }
-  .vsx__arrow .icon { width: 16px; height: 16px; }
   .vsx__si { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 12px; font-size: 1.0625rem; font-weight: 560; line-height: 1.35; letter-spacing: -.015em; color: var(--ink); }
   .vsx__check { flex: none; width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--teal); fill: none; stroke: #FFF; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 0; justify-self: center; }
   @media (min-width: 720px) {
-    .vsx__head { display: grid; grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1.15fr); margin: 0 0 12px; padding: 0 26px; font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-    .vsx__head span:last-child { grid-column: 3; color: var(--teal-ink); }
-    .vsx__row { grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1.15fr); align-items: stretch; gap: 0; padding: 0; overflow: hidden; }
+    .vsx__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); margin: 0 0 12px; padding: 0 26px; font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+    .vsx__head span:last-child { grid-column: 2; color: #1F6B73; }
+    .vsx__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: stretch; gap: 0; padding: 0; overflow: hidden; }
     .vsx__no { grid-column: 1; grid-row: 1; align-self: center; padding: 22px 26px; font-size: 1.0625rem; }
-    .vsx__arrow { grid-column: 2; grid-row: 1; align-self: center; justify-self: center; transform: none; width: 40px; height: 40px; background: #FFF; box-shadow: inset 0 0 0 1px var(--line-2); }
-    .vsx__si { grid-column: 3; grid-row: 1; grid-template-columns: 30px minmax(0, 1fr); padding: 20px 26px; background: linear-gradient(90deg, rgba(72, 160, 168, .1), rgba(72, 160, 168, .16)); font-size: 1.1875rem; }
+    .vsx__si { grid-column: 2; grid-row: 1; grid-template-columns: 30px minmax(0, 1fr); padding: 20px 26px; background: linear-gradient(90deg, rgba(72, 160, 168, .1), rgba(72, 160, 168, .16)); font-size: 1.1875rem; }
   }
   @media (hover: hover) and (pointer: fine) {
     .vsx__row:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
-    .vsx__row:hover .vsx__arrow { background: var(--ink); color: #FFF; box-shadow: none; }
   }
   /* Entrada: fila a fila; el tachado cruza el texto y el check se dibuja después */
   .vsx.is-armed .vsx__row { opacity: 0; transform: translateY(18px); }
   .vsx.is-armed .vsx__strike { --st: 0%; }
-  .vsx.is-armed .vsx__si > span, .vsx.is-armed .vsx__arrow { opacity: 0; }
+  .vsx.is-armed .vsx__si > span { opacity: 0; }
   .vsx.is-armed .vsx__check { stroke-dashoffset: 24; }
   .vsx.is-armed.is-in .vsx__row { opacity: 1; transform: none; transition: opacity .6s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--r, 0) * 140ms); }
   .vsx.is-armed.is-in .vsx__strike { --st: 100%; transition: --st .7s var(--ease); transition-delay: calc(var(--r, 0) * 140ms + 320ms); }
-  .vsx.is-armed.is-in .vsx__arrow { opacity: 1; transition: opacity .4s ease; transition-delay: calc(var(--r, 0) * 140ms + 700ms); }
   .vsx.is-armed.is-in .vsx__si > span { opacity: 1; transition: opacity .5s ease; transition-delay: calc(var(--r, 0) * 140ms + 800ms); }
   .vsx.is-armed.is-in .vsx__check { stroke-dashoffset: 0; transition: stroke-dashoffset .7s var(--ease); transition-delay: calc(var(--r, 0) * 140ms + 850ms); }
   @property --st { syntax: "<percentage>"; inherits: true; initial-value: 100%; }

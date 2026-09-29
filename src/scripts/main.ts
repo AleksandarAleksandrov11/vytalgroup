@@ -1,6 +1,6 @@
 // VytalGroup · JS común de la web (vanilla, sin librerías).
 // Cabecera, desplegable, menú móvil, entradas al hacer scroll, titulares por líneas, parallax, halo,
-// botones magnéticos, marquesina, acordeón, segmentados, carruseles, comparador, conteos, sección
+// botones magnéticos, marquesina, acordeón, segmentados, carruseles, comparador, sección
 // sticky de ecografía, línea temporal, mapa, maqueta del catálogo, galería, especificaciones,
 // barra móvil, formulario (carga diferida), filtro del catálogo (carga diferida) y eventos del píxel.
 // Solo se animan transform, opacity y variables CSS. Con prefers-reduced-motion quedan los fundidos.
@@ -210,7 +210,7 @@ const reveal = hasIO ? new IntersectionObserver((entries) => {
 }, { rootMargin: '0px 0px -8% 0px' }) : null;
 
 // Titulares de sección: se parten en palabras y cada línea sube dentro de su máscara
-function splitLines(el: HTMLElement) {
+function splitWords(el: HTMLElement) {
   const walk = (node: Node) => {
     [...node.childNodes].forEach((n) => {
       if (n.nodeType === 1) { walk(n); return; }
@@ -231,19 +231,32 @@ function splitLines(el: HTMLElement) {
   };
   walk(el);
   el.classList.add('is-split');
-  let line = -1;
-  let top: number | null = null;
-  $$('.w', el).forEach((w) => {
-    const t = w.getBoundingClientRect().top;
-    if (top === null || Math.abs(t - top) > 6) { line++; top = t; }
-    w.style.setProperty('--i', String(line));
+}
+// Número de línea de cada palabra: se miden todas las palabras de todos los titulares de una vez y
+// después se escribe, para forzar un solo cálculo de layout
+function numberLines(els: HTMLElement[]) {
+  const words = els.map((el) => $$('.w', el));
+  const tops = words.map((ws) => ws.map((w) => w.getBoundingClientRect().top));
+  words.forEach((ws, k) => {
+    let line = -1;
+    let top: number | null = null;
+    ws.forEach((w, j) => {
+      const t = tops[k][j];
+      if (top === null || Math.abs(t - top) > 6) { line++; top = t; }
+      w.style.setProperty('--i', String(line));
+    });
   });
 }
 
 if (reveal && !reduced) {
+  // Primero se lee dónde está cada elemento y después se escribe (clases y variables)
+  const rv = $$('[data-rv]');
+  const lines = $$<HTMLElement>('[data-lines]');
+  const rvi = $$('[data-rvi]');
+  const bajo = new Set([...rv, ...lines, ...rvi].filter(belowFold));
   const groups = new Map<Element, number>();
-  $$('[data-rv]').forEach((el) => {
-    if (!belowFold(el)) return;
+  rv.forEach((el) => {
+    if (!bajo.has(el)) return;
     const parent = el.closest('section') || document.body;
     const i = groups.get(parent) || 0;
     groups.set(parent, i + 1);
@@ -251,14 +264,13 @@ if (reveal && !reduced) {
     el.classList.add('rv');
     reveal.observe(el);
   });
-  $$('[data-lines]').forEach((el) => {
-    if (!belowFold(el)) return;
-    splitLines(el);
-    reveal.observe(el);
-  });
+  const partir = lines.filter((el) => bajo.has(el));
+  partir.forEach(splitWords);
+  numberLines(partir);
+  partir.forEach((el) => reveal.observe(el));
   // Imágenes de tarjeta: fundido y escala de 0,96 a 1, escalonadas dentro de su rejilla
-  $$('[data-rvi]').forEach((el) => {
-    if (!belowFold(el)) return;
+  rvi.forEach((el) => {
+    if (!bajo.has(el)) return;
     const li = el.closest('li');
     const i = li ? [...li.parentElement!.children].indexOf(li) : 0;
     el.style.setProperty('--rd', `${(i % 3) * 90 + 100}ms`);
@@ -325,12 +337,12 @@ if (fine && !reduced) {
   });
 }
 
-// ------------------------------------------------------------------ marquesina: en pausa fuera de pantalla
+// ------------------------------------------------------------------ marquesinas y escena 3D del inicio: en pausa fuera de pantalla
 if (hasIO) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => e.target.classList.toggle('is-paused', !e.isIntersecting));
   });
-  $$('[data-marquee]').forEach((el) => io.observe(el));
+  $$('[data-marquee], [data-hx3d]').forEach((el) => io.observe(el));
 }
 
 // ------------------------------------------------------------------ acordeones (FLIP: solo transform)
@@ -467,45 +479,6 @@ $$('[data-cmp]').forEach((cmp) => {
   io.observe(cmp);
 });
 
-// ------------------------------------------------------------------ números grandes con conteo animado
-// "15,6″" cuenta hasta 15,6 y conserva el resto del texto; lo que no es un número sencillo no se anima.
-if (hasIO && !reduced) {
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (!e.isIntersecting) return;
-      io.unobserve(e.target);
-      const el = e.target as HTMLElement;
-      const final = el.dataset.final!;
-      const m = final.match(/^(\D*?)(\d{1,3}(?:\.\d{3})*|\d+)(?:,(\d+))?(.*)$/)!;
-      const [, pre, ent, dec = '', post] = m;
-      const target = Number(ent.replace(/\./g, '')) + (dec ? Number(`0.${dec}`) : 0);
-      const fmt = (v: number) => {
-        const [i, d] = v.toFixed(dec.length).split('.');
-        const miles = ent.includes('.') ? i.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : i;
-        return `${pre}${miles}${d ? `,${d}` : ''}${post}`;
-      };
-      const t0 = performance.now();
-      const dur = 900;
-      const step = (t: number) => {
-        const k = Math.min(1, (t - t0) / dur);
-        const ease = 1 - Math.pow(1 - k, 3);
-        el.textContent = fmt(target * ease);
-        if (k < 1) requestAnimationFrame(step); else el.textContent = final;
-      };
-      requestAnimationFrame(step);
-    });
-  }, { threshold: 0.6 });
-  $$('[data-count]').forEach((el) => {
-    const v = el.textContent!.trim();
-    if (!/^\D{0,2}(\d{1,3}(?:\.\d{3})*|\d+)(,\d+)?\D{0,12}$/.test(v) || !belowFold(el)) return;
-    el.dataset.final = v;
-    // Se reserva el ancho del número final para que el conteo no mueva nada
-    el.style.minWidth = `${el.getBoundingClientRect().width}px`;
-    el.textContent = v.replace(/\d/g, '0').replace(/^0+(?=\d)/, '');
-    io.observe(el);
-  });
-}
-
 // ------------------------------------------------------------------ ecografía en profundidad (sticky)
 // El producto queda fijo mientras cambian los tres mensajes; la imagen cambia con un fundido.
 const sticky = $('[data-sticky-eco]');
@@ -543,6 +516,28 @@ $$('[data-map]').forEach((map) => {
   if (!hasIO || reduced) { map.classList.add('is-on'); return; }
   const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); map.classList.add('is-on'); } }, { threshold: 0.3 });
   io.observe(map);
+});
+
+// ------------------------------------------------------------------ escena 3D del hero (inicio)
+// Con ratón, el mundo gira unos grados hacia el cursor (cada capa está a su profundidad, así se nota
+// el 3D). Solo transform; con movimiento reducido o en pantallas táctiles no se toca.
+$$('[data-hx3d]').forEach((scene) => {
+  if (reduced || !fine) return;
+  const world = $<HTMLElement>('.hx__world', scene);
+  const zone = scene.closest('section');
+  if (!world || !zone) return;
+  let raf = 0;
+  zone.addEventListener('pointermove', (e) => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const r = zone.getBoundingClientRect();
+      const x = ((e as PointerEvent).clientX - (r.left + r.width / 2)) / r.width;
+      const y = ((e as PointerEvent).clientY - (r.top + r.height / 2)) / r.height;
+      world.style.setProperty('--rx', `${(-y * 6).toFixed(2)}deg`);
+      world.style.setProperty('--ry', `${(x * 14).toFixed(2)}deg`);
+    });
+  }, { passive: true });
+  zone.addEventListener('pointerleave', () => { world.style.removeProperty('--rx'); world.style.removeProperty('--ry'); });
 });
 
 // ------------------------------------------------------------------ maqueta 3D del catálogo: abanico e inclinación
@@ -742,4 +737,4 @@ document.addEventListener('click', (e) => {
 });
 
 html.classList.add('js');
-onScroll();
+requestAnimationFrame(onScroll);

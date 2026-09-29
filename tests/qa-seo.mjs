@@ -14,7 +14,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
 const DIST = 'dist';
-const SITE = 'https://vytalgroup.org';
+const SITE = 'https://vytalgroup.com';
 const results = [];
 const ok = (cond, name, extra = '') => { results.push({ cond, name, extra }); };
 
@@ -48,7 +48,9 @@ for (const [r, s] of pages) {
   ok(h1.length === 1 && /<em>/.test(h1[0]), `${r}: el H1 lleva el acento en cursiva`);
   ok(/<html lang="es"/.test(s), `${r}: lang="es"`);
   const canon = (s.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
-  ok(canon === SITE + (r === '/' ? '/' : r), `${r}: canonical`, canon);
+  // La 404 se sirve en cualquier URL rota: sin canonical ni og:url
+  if (r === '/404') ok(!canon && !/property="og:url"/.test(s), `${r}: sin canonical`, canon);
+  else ok(canon === SITE + (r === '/' ? '/' : r), `${r}: canonical`, canon);
   ok(meta(s, 'property', 'og:locale') === 'es_ES', `${r}: og:locale es_ES`);
   const og = meta(s, 'property', 'og:image') || '';
   ok(og.startsWith(SITE + '/og/') && existsSync(join(DIST, og.slice(SITE.length))), `${r}: og:image propia y existente`, og);
@@ -129,7 +131,7 @@ const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].sl
 const indexables = [...pages.keys()].filter((r) => !NOINDEX.has(r));
 ok(indexables.every((r) => locs.has(r)), 'sitemap: todas las páginas indexables', indexables.filter((r) => !locs.has(r)).join(' '));
 ok([...locs].every((r) => pages.has(r) && !NOINDEX.has(r)), 'sitemap: solo páginas indexables existentes', [...locs].filter((r) => !pages.has(r) || NOINDEX.has(r)).join(' '));
-ok(/Sitemap: https:\/\/vytalgroup\.org\/sitemap\.xml/.test(readFileSync(join(DIST, 'robots.txt'), 'utf8')), 'robots.txt apunta al sitemap');
+ok(readFileSync(join(DIST, 'robots.txt'), 'utf8').includes(`Sitemap: ${SITE}/sitemap.xml`), 'robots.txt apunta al sitemap');
 const llms = readFileSync(join(DIST, 'llms.txt'), 'utf8');
 ok(llms.startsWith('# VytalGroup') && /## Productos/.test(llms) && /## Guías/.test(llms), 'llms.txt con empresa, productos y guías');
 

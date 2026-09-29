@@ -4,6 +4,7 @@ import '../../styles/cards.css';
 import '../../styles/pilar.css';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
+import Img from '../../components/Img.astro';
 import CategoryCard from '../../components/CategoryCard.astro';
 import Reasons from '../../components/Reasons.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
@@ -30,31 +31,32 @@ const lista = {
   migas={migas}
   jsonld={[collectionPage('/equipos', 'Equipos por categorías'), lista]}
 >
-  <PageHero migas={migas} titulo="Todo lo que tu clínica *necesita.*" lead="Del ecógrafo a la camilla: el equipamiento de fisioterapia y rehabilitación del catálogo 2026, en un solo sitio." kicker={`${CATEGORIAS.length} categorías y ${total} equipos`} imagen="fotos/superinductiva-clinica-vytamed-en-consulta" alt="Magnetoterapia superinductiva Clínica de VytaMeD junto a una camilla en una consulta de fisioterapia" />
+  <PageHero migas={migas} titulo="Equipos de fisioterapia *por categoría.*" lead="Del ecógrafo a la camilla: el equipamiento de fisioterapia y rehabilitación del catálogo 2026, en un solo sitio." imagen="fotos/superinductiva-clinica-vytamed-en-consulta" alt="Magnetoterapia superinductiva Clínica de VytaMeD junto a una camilla en una consulta de fisioterapia" />
 
-  <section class="sec sec--tight eq-top" aria-label="Ecografía y diatermia">
+  <section class="sec sec--tight sec--white eq-top" aria-label="Ecografía y diatermia">
     <div class="wrap">
       <ul class="grid eq-big">
-        {pilares.map((c) => <li><CategoryCard c={c} big sizes="(min-width: 768px) 580px, 92vw" nivel="h2" /></li>)}
+        {pilares.map((c) => <li><CategoryCard c={c} big sizes="(min-width: 1280px) 580px, (min-width: 768px) 45vw, 92vw" nivel="h2" /></li>)}
       </ul>
     </div>
   </section>
 
-  <section class="sec more-cats" aria-labelledby="resto-title">
+  <section class="sec sec--photo on-dark more-cats" aria-labelledby="resto-title">
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-sala-rehabilitacion" alt="Sala de rehabilitación con máquinas de ejercicio terapéutico" sizes="(max-width: 767px) 280vw, (max-width: 1023px) 190vw, 100vw" widths={[640, 1080, 1600]} quality={32} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="resto-title" data-lines>Y el resto de <em>tu consulta.</em></h2>
       </div>
       <ul class="grid eq-grid">
-        {resto.map((c) => <li><CategoryCard c={c} /></li>)}
+        {resto.map((c) => <li><CategoryCard c={c} sizes="(min-width: 1200px) 230px, (min-width: 1024px) 19vw, 46vw" /></li>)}
       </ul>
       <div class="sec__cta" data-rv>
-        <a class="btn btn--dark" href="/catalogo">Ver catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn--light" href="/catalogo">Ver catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
 
-  <section class="sec sec--white" aria-labelledby="porque-title">
+  <section class="sec sec--grid" aria-labelledby="porque-title">
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="porque-title" data-lines>Un solo proveedor. <em>Sin sorpresas.</em></h2>
@@ -66,12 +68,10 @@ const lista = {
   <CtaFinal />
 </Base>
 <style is:global>
-  .eq-top { padding-top: 0; }
   .eq-big { gap: 16px; }
   @media (min-width: 768px) { .eq-big { grid-template-columns: 1fr 1fr; gap: 20px; } }
   .eq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   @media (min-width: 640px) { .eq-grid { gap: 16px; } }
   /* 10 categorías: 2 columnas y, desde 1024, 5 (sin filas incompletas) */
   @media (min-width: 1024px) { .eq-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; } }
-  .more-cats { background: var(--mist); }
 </style>

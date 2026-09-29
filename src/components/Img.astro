@@ -14,8 +14,10 @@ interface Props {
   pictureClass?: string;
   vt?: string;
   parallax?: boolean;
+  /** Calidad AVIF/WebP (por defecto la de Astro). Las fotos de fondo bajo capa marina bajan a 32. */
+  quality?: number;
 }
-const { name, alt, sizes, widths = [240, 320, 480, 640], priority = false, class: cls, pictureClass, vt, parallax = false } = Astro.props;
+const { name, alt, sizes, widths = [240, 320, 480, 640], priority = false, class: cls, pictureClass, vt, parallax = false, quality } = Astro.props;
 const meta = imagen(name);
 const w = anchos(meta, widths);
 ---
@@ -29,7 +31,8 @@ const w = anchos(meta, widths);
   width={meta.width}
   height={meta.height}
   loading={priority ? 'eager' : 'lazy'}
-  decoding={priority ? 'sync' : 'async'}
+  decoding="async"
+  quality={quality}
   fetchpriority={priority ? 'high' : undefined}
   class={cls}
   style={vt ? `view-transition-name: ${vt}` : undefined}

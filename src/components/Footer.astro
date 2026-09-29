@@ -1,6 +1,6 @@
 ---
 // Pie como el de la landing, ampliado: marca, contacto, Equipos (categorías), Empresa, Legal y
-// Síguenos (@vytalgroup y @fisioruiz_). Al final, "VytalGroup" a todo el ancho con las letras que suben.
+// Síguenos (@fisioruiz_, el Instagram de Javier). Al final, "VytalGroup" a todo el ancho con las letras que suben.
 import '../styles/footer.css';
 import { CATEGORIAS } from '../data/categorias';
 import { EMPRESA, wa } from '../data/empresa';
@@ -14,7 +14,7 @@ const letras = 'VytalGroup'.split('');
     <div class="ft__top">
       <div class="ft__brand">
         <a class="ft__logo" href="/" aria-label="VytalGroup, ir al inicio"><svg class="logo logo--dark" viewBox="0 0 1117 171" aria-hidden="true"><use href="#logo"/></svg></a>
-        <p class="ft__claim">Equipos médicos de alta calidad. <em>Sin letra pequeña.</em></p>
+        <p class="ft__claim">Equipos médicos de alta calidad.</p>
         <ul class="ft__list ft__contact">
           <li><a href={EMPRESA.telefonoHref} data-contact="telefono" data-origen="pie"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>{EMPRESA.telefonoTexto}</a></li>
           <li><a href={wa()} target="_blank" rel="noopener" data-contact="whatsapp" data-origen="pie" data-ft-wa><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a></li>
@@ -51,7 +51,6 @@ const letras = 'VytalGroup'.split('');
         <div class="ft__col">
           <p class="ft__h">Síguenos</p>
           <ul class="ft__list">
-            <li><a href={EMPRESA.instagramMarca.url} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-insta"/></svg>@{EMPRESA.instagramMarca.usuario}</a></li>
             <li><a href={EMPRESA.instagramJavier.url} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-insta"/></svg>@{EMPRESA.instagramJavier.usuario}</a></li>
           </ul>
         </div>

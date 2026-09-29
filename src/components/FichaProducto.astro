@@ -6,7 +6,6 @@ import '../styles/ficha.css';
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
-import Sweep from './Sweep.astro';
 import Img from './Img.astro';
 import ProductCard from './ProductCard.astro';
 import Reasons from './Reasons.astro';
@@ -31,16 +30,21 @@ const migas = c.pilar
   : [{ name: 'Inicio', href: '/' }, { name: 'Equipos', href: '/equipos' }, { name: c.nombre, href: c.ruta }, { name: p.nombre, href: url }];
 const alt = (i: number) => (i === 0 ? altProducto(p) : altProducto(p, p.imagenes[i].includes('consulta') ? 'en una consulta' : p.imagenes[i].includes('estuche') ? 'en su estuche de aluminio' : 'detalle de la pantalla'));
 const zoom = await getImage({ src: imagen(p.imagenes[0]), format: 'webp', quality: 86 });
-const ogImg = await getImage({ src: imagen(p.imagenes[0]), format: 'webp', width: 640 });
+// JSON-LD: todas las fotos del equipo, a 1280 px
+const ldImgs = await Promise.all(p.imagenes.map((n) => getImage({ src: imagen(n), format: 'webp', width: Math.min(1280, imagen(n).width) })));
 const specsLargas = p.especificaciones.length > 8;
 const rel = relacionados(p);
 const waTexto = `Hola, vengo de la web y me interesa ${sujeto(p)} de ${p.marca}. ¿Me asesoráis?`;
 const preset = { equipo: c.formEquipo, otro: c.formOtro, modelo: etiquetaModelo(p) };
-// H1: el nombre del modelo con su última palabra como acento en cursiva (patrón de marca)
+// H1: qué es y el modelo, con el modelo como acento en cursiva ("Ecógrafo *Acclarix AX8*"). Si el nombre
+// ya dice qué es ("Camilla Eléctrica Estándar", "Láser terapéutico"), su última palabra es el acento.
 const faqs = faqsFicha(p);
 const esFoto = (n: string) => n.startsWith('fotos/');
+const PREFIJO: Record<string, string> = { ecografia: 'Ecógrafo', diatermia: 'Diatermia', 'ondas-de-choque': 'Ondas de choque', magnetoterapia: 'Magnetoterapia', laser: 'Láser', 'electrolisis-percutanea': 'Electrólisis', electroterapia: 'Electroterapia', ultrasonidos: 'Ultrasonidos', presoterapia: 'Presoterapia', 'diatermia-microondas': 'Diatermia por microondas' };
+const pre = p.prefijoH1 ?? PREFIJO[p.categoria] ?? (p.tipo.length <= 28 ? p.tipo.charAt(0).toUpperCase() + p.tipo.slice(1) : '');
+const yaLoDice = !pre || p.nombre.toLowerCase().startsWith(pre.split(' ')[0].toLowerCase());
 const corte = p.nombre.lastIndexOf(' ');
-const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(corte + 1)}*` : `*${p.nombre}*`;
+const tituloH1 = !yaLoDice ? `${pre} *${p.nombre}*` : corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(corte + 1)}*` : `*${p.nombre}*`;
 ---
 <Base
   title={seoTitle(p)}
@@ -51,20 +55,19 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
   ogType="product"
   seccion={c.id === 'ecografia' ? 'ecografos' : c.id === 'diatermia' ? 'diatermias' : 'equipos'}
   migas={migas}
-  jsonld={[product(p, [`${SITE_URL}${ogImg.src}`]), faqPage(faqs)]}
+  jsonld={[product(p, ldImgs.map((i) => `${SITE_URL}${i.src}`)), faqPage(faqs)]}
   viewContent={{ ids: [p.slug], type: 'product', category: c.nombre, name: `${p.nombre} (${p.marca})` }}
 >
   <section class="phero fp on-dark" data-hero aria-labelledby="page-title">
-    <div class="phero__sweep" aria-hidden="true"><Sweep /></div>
     <div class="wrap">
       <Breadcrumbs migas={migas} oscuro />
       <div class="phero__grid fp__grid">
         <div class="phero__copy fp__info">
-          <p class="fp__brand">{p.marca}<span aria-hidden="true"> · </span><a href={c.ruta}>{c.nombre}</a></p>
           <h1 class="h1 fp__title" id="page-title" set:html={h1Html(tituloH1)} />
+          <p class="fp__brand">{p.marca}<span aria-hidden="true"> · </span><a href={c.ruta}>{c.nombre}</a></p>
           <p class="fp__ideal">Ideal para {p.idealPara}.</p>
           <dl class:list={['fp__data', `fp__data--${p.datosClave.length}`]}>
-            {p.datosClave.map((d) => <div><dt>{d.etiqueta}</dt><dd data-count>{unidades(d.valor)}</dd></div>)}
+            {p.datosClave.map((d) => <div><dt>{d.etiqueta}</dt><dd>{unidades(d.valor)}</dd></div>)}
           </dl>
           {p.modelos && (
             <ul class="fp__models">
@@ -81,7 +84,7 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
           <div class="gal__main">
             {p.imagenes.map((n, i) => (
               <div class:list={['gal__slide', { 'is-active': i === 0, 'gal__slide--foto': esFoto(n), stage: !esFoto(n) }]} style={escena(n)} data-slide inert={i !== 0}>
-                <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 960]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
+                <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 720, 960]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
               </div>
             ))}
             <button class="gal__zoom" type="button" data-zoom-open aria-label="Ampliar la imagen"><svg class="icon" aria-hidden="true"><use href="#i-zoom"/></svg></button>
@@ -102,27 +105,11 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
     </div>
   </section>
 
-  <section class="sec sec--white fp-sec" aria-labelledby="quien-title">
-    <div class="wrap">
-      <div class="sec__head">
-        <h2 class="h2" id="quien-title" data-lines>Para quién <em>es.</em></h2>
-        <p class="lead" data-rv>{p.descripcion}</p>
-      </div>
-      <ul class="uses">
-        {p.paraQuien.map((u, i) => (
-          <li class="uses__item" data-rv style={`--rd:${i * 80}ms`}>
-            <span class="uses__ico" aria-hidden="true"><svg class="icon"><use href={`#i-uso-${u.icono}`}/></svg></span>
-            <span class="uses__t">{u.texto}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section class="sec fp-sec" aria-labelledby="car-title">
+  <section class="sec sec--white fp-sec" aria-labelledby="car-title">
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="car-title" data-lines>Lo que <em>importa.</em></h2>
+        <p class="lead" data-rv>{p.descripcion}</p>
       </div>
       <ul class="feat">
         {p.caracteristicas.map((f, i) => (
@@ -133,13 +120,10 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
           </li>
         ))}
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--line" href="#especificaciones">Ver especificaciones</a>
-      </div>
     </div>
   </section>
 
-  <section class="sec sec--white fp-sec" id="especificaciones" aria-labelledby="spec-title">
+  <section class="sec sec--mist fp-sec" id="especificaciones" aria-labelledby="spec-title">
     <div class="wrap fp-specs">
       <div class="fp-specs__main">
         <h2 class="h2" id="spec-title" data-lines>Especificaciones <em>completas.</em></h2>
@@ -179,17 +163,17 @@ const tituloH1 = corte > 0 ? `${p.nombre.slice(0, corte)} *${p.nombre.slice(cort
     </div>
   </section>
 
-  <section class="sec sec--tight fp-sec" aria-labelledby="gar-title">
+  <section class="sec sec--tight sec--dark on-dark fp-sec" aria-labelledby="gar-title">
     <div class="wrap">
       <h2 class="fp-gar__title" id="gar-title">Garantía y servicio</h2>
       <Reasons fila />
     </div>
   </section>
 
-  <Faq faqs={faqs} titulo={`Dudas sobre *${p.nombre}.*`} id="preguntas" cta={false} fondo="blanco" />
+  <Faq faqs={faqs} titulo={`Dudas sobre *${p.nombre}.*`} id="preguntas" cta={false} />
 
   {rel.length > 0 && (
-    <section class="sec" aria-labelledby="rel-title">
+    <section class="sec sec--teal" aria-labelledby="rel-title">
       <div class="wrap">
         <div class="sec__head">
           <h2 class="h2" id="rel-title" data-lines>También te puede <em>interesar.</em></h2>

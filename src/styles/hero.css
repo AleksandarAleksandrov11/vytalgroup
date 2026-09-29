@@ -4,10 +4,7 @@
 .phero { position: relative; isolation: isolate; overflow: clip; padding: calc(var(--hd) + 20px) 0 clamp(48px, 6vw, 88px); background: var(--navy); }
 .phero::before { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(60% 70% at 80% 40%, rgba(72, 160, 168, .24), transparent 70%), radial-gradient(40% 60% at 5% 100%, rgba(47, 123, 208, .14), transparent 70%); }
 .phero::after { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; background-image: radial-gradient(rgba(255, 255, 255, .08) 1px, transparent 1.4px); background-size: 22px 22px; -webkit-mask-image: radial-gradient(ellipse 60% 70% at 15% 60%, #000, transparent 75%); mask-image: radial-gradient(ellipse 60% 70% at 15% 60%, #000, transparent 75%); }
-.phero__sweep { position: absolute; z-index: -1; right: -18%; top: 0; width: min(110vw, 620px); opacity: .3; pointer-events: none; }
 .phero__grid { display: grid; gap: 32px; align-items: center; margin-top: clamp(24px, 4vw, 48px); }
-.phero__kicker { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: .8125rem; font-weight: 560; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-on-dark); }
-.phero__kicker::before { content: ""; width: 28px; height: 1px; background: currentColor; }
 .phero__title { font-size: clamp(2.375rem, 1.7rem + 3.1vw, 4.5rem); color: #FFF; }
 .phero__title em { color: var(--teal-light); }
 .phero__lead { max-width: 44ch; margin-top: 18px; color: var(--on-dark); }
@@ -20,12 +17,15 @@
 .phero__frame picture { display: block; width: 100%; height: 100%; }
 .phero__photo { width: 100%; height: 100%; object-fit: cover; object-position: var(--foco, 50% 50%); }
 .phero__frame--custom { display: grid; place-items: center; }
+/* Retrato (Javier): el marco toma la proporción de la foto para que se vea entera */
+.phero__frame--retrato { width: min(100%, 420px); aspect-ratio: 768 / 880; }
 @media (min-width: 900px) {
   .phero__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); }
-  .phero__sweep { right: -4%; top: 0; opacity: .7; }
   .phero__frame { margin-right: 0; }
 }
 @media (max-width: 479px) { .phero__actions { flex-direction: column; align-items: stretch; } .phero__actions .link { justify-content: center; } }
 /* Equipo sin fondo: el marco toma el escenario claro */
 .phero__frame.stage { background: radial-gradient(120% 95% at 50% 28%, #FFF 0%, #F5F8FA 52%, #EAF0F3 100%); }
 .phero__frame.stage img { object-fit: contain; }
+/* Sin visual en móvil (Contacto): el formulario sube al primer pantallazo */
+@media (max-width: 899px) { .phero--novis-m .phero__visual { display: none; } }

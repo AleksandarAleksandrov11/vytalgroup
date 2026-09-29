@@ -12,11 +12,11 @@ export const getStaticPaths = (async () => {
     ['inicio', { kicker: 'VytalGroup', titulo: 'Ecógrafos, diatermias y equipos de *fisioterapia.*', sub: 'Ecógrafos, diatermias y equipamiento de fisioterapia. Te asesoran fisioterapeutas.', imagen: 'ecografo-portatil-acclarix-ax8-edan' }],
     ['ecografos', { kicker: 'Ecografía', titulo: eco.h1, sub: 'Inalámbricos, portátiles y de carro. 2 años de garantía.', imagen: eco.imagen }],
     ['diatermias', { kicker: 'Diatermia y tecarterapia', titulo: dia.h1, sub: 'Capacitiva, resistiva y bipolar. 2 años de garantía.', imagen: dia.imagen }],
-    ['equipos', { kicker: 'Equipos', titulo: 'Todo lo que tu clínica *necesita.*', sub: `${CATEGORIAS.length} categorías y ${PRODUCTOS.length} equipos del catálogo 2026, en un solo sitio.` }],
-    ['catalogo', { kicker: 'Catálogo 2026', titulo: 'El catálogo completo. *Sin dejar tus datos.*', sub: 'En la web y en PDF, con descarga directa.', imagen: 'fotos/catalogo-portada', foto: true }],
-    ['sobre-nosotros', { kicker: 'Sobre nosotros', titulo: 'De fisio *a fisio.*', sub: 'Javier Ruiz, fisioterapeuta y fundador de VytalGroup.', imagen: 'fotos/javier-ruiz-fisioterapeuta', foto: true }],
-    ['contacto', { kicker: 'Contacto', titulo: 'Cuéntanos qué *necesitas.*', sub: 'WhatsApp y teléfono +34 616 372 644 · vytalkinetech@gmail.com' }],
-    ['guias', { kicker: 'Guías', titulo: 'Antes de comprar, *lee esto.*', sub: 'Guías de Javier Ruiz, fisioterapeuta, para elegir equipo con criterio.' }],
+    ['equipos', { kicker: 'Equipos', titulo: 'Equipos de fisioterapia *por categoría.*', sub: `${CATEGORIAS.length} categorías y ${PRODUCTOS.length} equipos del catálogo 2026, en un solo sitio.` }],
+    ['catalogo', { kicker: 'Catálogo 2026', titulo: 'Catálogo de equipos *de fisioterapia.*', sub: 'En la web y en PDF, con descarga directa.', imagen: 'fotos/catalogo-portada', foto: true }],
+    ['sobre-nosotros', { kicker: 'Sobre nosotros', titulo: 'Sobre *VytalGroup.*', sub: 'Javier Ruiz, fisioterapeuta y fundador de VytalGroup.', imagen: 'fotos/javier-ruiz-fisioterapeuta', foto: true }],
+    ['contacto', { kicker: 'Contacto', titulo: 'Contacto y *asesoramiento.*', sub: 'WhatsApp y teléfono +34 616 372 644 · vytalkinetech@gmail.com' }],
+    ['guias', { kicker: 'Guías', titulo: 'Guías para elegir *equipo de fisioterapia.*', sub: 'Guías de Javier Ruiz, fisioterapeuta, para elegir equipo con criterio.' }],
   ];
   const categorias: [string, OgDatos][] = CATEGORIAS.map((c) => [c.id, { kicker: 'Equipos', titulo: c.h1, sub: c.descripcion, imagen: c.imagen }]);
   const fichas: [string, OgDatos][] = PRODUCTOS.filter((p) => p.ficha && p.imagenes.length).map((p) => {

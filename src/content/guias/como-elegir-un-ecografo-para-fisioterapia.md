@@ -3,7 +3,7 @@ titulo: "Cómo elegir un ecógrafo *para fisioterapia.*"
 corto: "Cómo elegir un ecógrafo para fisioterapia"
 seoTitle: "Cómo elegir un ecógrafo para fisioterapia: guía práctica"
 seoDescription: "Inalámbrico, portátil o de carro, qué sondas necesitas, peso, batería, garantía y mantenimiento: lo que conviene revisar antes de elegir tu ecógrafo."
-resumen: "Inalámbrico, portátil o de carro, qué sondas necesitas y en qué fijarte antes de comprar, contado de fisio a fisio."
+resumen: "Inalámbrico, portátil o de carro, qué sondas necesitas y en qué fijarte antes de comprar, contado por un fisioterapeuta."
 fecha: "2026-09-26"
 imagen: "fotos/eco-wireless-vytamed-estuche"
 imagenAlt: "Sonda inalámbrica Eco Wireless de VytaMeD en su estuche de aluminio con cargador y guía rápida"
@@ -13,7 +13,7 @@ orden: 1
 
 El ecógrafo es una de las compras que más dudas genera entre compañeros. No es barato, hay mucha jerga técnica y es fácil acabar con un equipo que no encaja con tu forma de trabajar: demasiado grande para moverlo, o demasiado limitado para lo que querías hacer con él.
 
-En esta guía te cuento, de fisio a fisio, cómo lo plantearía yo. No hay un ecógrafo mejor que otro en abstracto: hay uno que encaja con cómo y dónde trabajas.
+En esta guía te cuento cómo lo plantearía yo. No hay un ecógrafo mejor que otro en abstracto: hay uno que encaja con cómo y dónde trabajas.
 
 ## Empieza por cómo vas a usarlo
 
@@ -77,7 +77,7 @@ La calidad de imagen importa, pero en el día a día pesan igual otros detalles:
 
 Esto es lo que más problemas da después de comprar, y por eso monté VytalGroup. Antes de decidir, pregunta:
 
-- **Qué garantía tiene y qué cubre.** Con nosotros son 2 años en piezas y mano de obra, sin letra pequeña.
+- **Qué garantía tiene y qué cubre.** Con nosotros son 2 años en piezas y mano de obra.
 - **Qué incluye el mantenimiento.** Tienes que saberlo desde el primer día, no cuando algo falla.
 - **Qué documentación recibes.** El Eco Wireless lleva marcado CE conforme al MDR (UE) 2017/745. Con los EDAN Acclarix recibes la documentación técnica y regulatoria aplicable a tu operación, facilitada por ADC Global Tech.
 - **Quién te forma y te da soporte.** Instalación, formación y soporte según el proyecto.

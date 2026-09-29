@@ -51,8 +51,12 @@ export const etiquetaModelo = (p: Producto) => `${p.nombre} (${p.marca})`;
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Alt descriptivo con modelo y tipo de equipo, sin relleno */
-export const altProducto = (p: Producto, extra = '') =>
-  `${cap(p.tipo)} ${p.nombre} de ${p.marca}${extra ? `, ${extra}` : ''}`;
+export const altProducto = (p: Producto, extra = '') => {
+  // Si el nombre ya empieza por el tipo ("Camilla Eléctrica Estándar"), no se repite
+  const nucleo = p.tipo.split(' ')[0].toLowerCase();
+  const base = p.nombre.toLowerCase().startsWith(nucleo) ? `${p.nombre} de ${p.marca}` : `${cap(p.tipo)} ${p.nombre} de ${p.marca}`;
+  return `${base}${extra ? `, ${extra}` : ''}`;
+};
 
 /** Título SEO (50 a 60 caracteres): el del dato o una plantilla cuidada */
 export function seoTitle(p: Producto): string {
@@ -70,13 +74,14 @@ export function seoTitle(p: Producto): string {
 export function seoDescription(p: Producto): string {
   if (p.seoDescription) return p.seoDescription;
   const resumen = p.resumen.replace(/\.$/, '');
-  const base = `${p.nombre} de ${p.marca}: ${resumen.charAt(0).toLowerCase()}${resumen.slice(1)}.`;
+  // Minúscula inicial salvo nombres propios y siglas (Doppler, EDAN, TENS...)
+  const r0 = /^([A-ZÁÉÍÓÚ]{2,}|Doppler)\b/.test(resumen) ? resumen : resumen.charAt(0).toLowerCase() + resumen.slice(1);
+  const base = `${p.nombre} de ${p.marca}: ${r0}.`;
   const dato = p.datosClave[0] ? ` ${p.datosClave[0].valor} de ${p.datosClave[0].etiqueta.toLowerCase()}.` : '';
   const opciones = [
     `${base} Te asesoran fisioterapeutas, con 2 años de garantía.`,
-    `${base} Te asesoran fisioterapeutas y 2 años de garantía.`,
     `${base} 2 años de garantía y te asesoran fisioterapeutas.`,
-    `${base} Te asesoran fisioterapeutas, de fisio a fisio.`,
+    `${base} Te asesoran fisioterapeutas, sin compromiso.`,
     `${base} Te asesoran fisioterapeutas.`,
     `${base}${dato} Te asesoran fisioterapeutas.`,
     `${base} Con 2 años de garantía.`,

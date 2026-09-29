@@ -505,7 +505,7 @@ export const FISIOTERAPIA: Producto[] = [
     codigos: ['ADC-FIS-005'],
     relacionados: ['crystal-yag-bipower-lux', 'intelect', 'pr999'],
     ficha: true,
-    seoTitle: 'Láser terapéutico de alta potencia 808 y 980 nm | VytalGroup',
+    seoTitle: 'Láser de diodo 808 y 980 nm de ADC Global Tech | VytalGroup',
     seoDescription: 'Láser terapéutico de alta potencia de ADC Global Tech: diodo con doble longitud de onda, 808 y 980 nm, en emisión continua o pulsada. 2 años de garantía.',
   },
   {
@@ -732,7 +732,7 @@ export const FISIOTERAPIA: Producto[] = [
     relacionados: ['eco-wireless', 'acclarix-ax8', 'acclarix-ax3'],
     ficha: true,
     seoTitle: 'Physio Invasiva 2.0 de EasyTech: electrólisis ecoguiada',
-    seoDescription: 'Physio Invasiva 2.0 de EasyTech: electrólisis percutánea ecoguiada, PES, microcorrientes y TENS en un equipo compacto de 1,05 kg. Te asesoran fisios.',
+    seoDescription: 'Physio Invasiva 2.0 de EasyTech: electrólisis percutánea ecoguiada, PES, microcorrientes y TENS en un equipo compacto de 1,05 kg. Te asesoran fisioterapeutas.',
   },
 
   // ------------------------------------------------------------------ Electroterapia y terapia combinada
@@ -1065,7 +1065,7 @@ export const FISIOTERAPIA: Producto[] = [
     codigos: ['ADC-EME-012', 'ADC-EME-013'],
     relacionados: ['ut2', 'combimed', 'therapic'],
     ficha: true,
-    seoDescription: 'Ultrasonic 1300 y 1500 de EME: ultrasonidos terapéuticos de 1 y 3 MHz, con uno o dos canales y 200 protocolos. Te asesoran fisioterapeutas y sin sorpresas.',
+    seoDescription: 'Ultrasonic 1300 y 1500 de EME: ultrasonidos terapéuticos de 1 y 3 MHz, uno o dos canales y 200 protocolos. Te asesoran fisioterapeutas, sin compromiso.',
     seoTitle: 'Ultrasonic 1300 y 1500 de EME: ultrasonidos terapéuticos',
   },
 

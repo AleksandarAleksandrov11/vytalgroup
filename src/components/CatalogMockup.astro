@@ -2,12 +2,19 @@
 // Maqueta 3D del catálogo PDF: tres páginas (portada y dos interiores) que se abren en abanico al
 // llegar y se inclinan con el cursor en escritorio. Solo transform y variables CSS.
 import Img from './Img.astro';
+
+interface Props {
+  sizes?: string;
+  /** En la cabecera de /catalogo las tres páginas están en la primera pantalla: se cargan con prioridad */
+  priority?: boolean;
+}
+const { sizes = '(min-width: 1500px) 300px, (min-width: 1000px) 20vw, (min-width: 900px) 200px, (min-width: 542px) 260px, 48vw', priority = false } = Astro.props;
 ---
 <div class="mk" data-mockup aria-hidden="true">
   <div class="mk__stage">
-    <div class="mk__page mk__page--3"><Img name="fotos/catalogo-interior-diatermia" alt="Página de diatermia del catálogo de equipamiento médico" sizes="(min-width: 900px) 280px, 56vw" widths={[280, 420, 560]} /></div>
-    <div class="mk__page mk__page--2"><Img name="fotos/catalogo-interior-ecografia" alt="Página de ecografía del catálogo de equipamiento médico" sizes="(min-width: 900px) 280px, 56vw" widths={[280, 420, 560]} /></div>
-    <div class="mk__page mk__page--1"><Img name="fotos/catalogo-portada" alt="Portada del catálogo internacional de equipamiento médico 2026" sizes="(min-width: 900px) 280px, 56vw" widths={[280, 420, 560]} /></div>
+    <div class="mk__page mk__page--3"><Img name="fotos/catalogo-interior-diatermia" alt="Página de diatermia del catálogo de equipamiento médico" sizes={sizes} widths={[280, 420, 560]} priority={priority} /></div>
+    <div class="mk__page mk__page--2"><Img name="fotos/catalogo-interior-ecografia" alt="Página de ecografía del catálogo de equipamiento médico" sizes={sizes} widths={[280, 420, 560]} priority={priority} /></div>
+    <div class="mk__page mk__page--1"><Img name="fotos/catalogo-portada" alt="Portada del catálogo internacional de equipamiento médico 2026" sizes={sizes} widths={[280, 420, 560]} priority={priority} /></div>
   </div>
 </div>
 <style is:global>

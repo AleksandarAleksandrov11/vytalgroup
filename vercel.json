@@ -36,11 +36,37 @@
       ]
     },
     {
-      "source": "/((?!_astro/|assets/).*)",
+      "source": "/((?!_astro/|assets/|og/|favicon|apple-touch-icon|icon-|site\\.webmanifest|speculation-rules\\.json).*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Speculation-Rules",
+          "value": "\"/speculation-rules.json\""
+        }
+      ]
+    },
+    {
+      "source": "/(favicon\\.svg|favicon-32\\.png|favicon\\.ico|apple-touch-icon\\.png|icon-192\\.png|icon-512\\.png|site\\.webmanifest|og/.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/speculation-rules.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/speculationrules+json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     },
@@ -72,6 +98,25 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=604800"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "vytalgroup.vercel.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
         }
       ]
     }

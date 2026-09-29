@@ -4,6 +4,16 @@ import type { Producto } from '../tipos';
 // Camillas: el catálogo da nombre, descripción, tres rasgos, certificación CE y garantía mínima de 2 años.
 // Su ficha solo usa eso (y el tipo de accionamiento que indica el propio nombre del modelo).
 
+// "Ideal para ..." de cada camilla, en frase (no la lista de usos con comas)
+const IDEAL: Record<string, string> = {
+  'camilla-electrica-premium': 'tratamientos de fisioterapia y exploración',
+  'camilla-hidraulica-pro': 'tratamientos de larga duración en fisioterapia y rehabilitación',
+  'camilla-hidraulica-clinica': 'consultas de fisioterapia de alto tráfico',
+  'camilla-hidraulica-compacta': 'fisioterapia, exploración y rehabilitación',
+  'camilla-electrica-multiposicion': 'masaje y exploración',
+  'camilla-electrica-estandar': 'el uso diario en consulta de fisioterapia',
+};
+
 const camilla = (
   slug: string,
   nombre: string,
@@ -26,7 +36,7 @@ const camilla = (
   destacado: false,
   orden,
   resumen: descripcion,
-  idealPara: usos.join(', ').toLowerCase(),
+  idealPara: IDEAL[slug] ?? usos.join(' y ').toLowerCase(),
   descripcion,
   datosClave: [dato, { valor: '2+ años', etiqueta: 'Garantía mínima' }, { valor: 'CE', etiqueta: 'Certificación' }],
   caracteristicas: rasgos.map(([titulo, texto]) => ({ titulo, texto })),
@@ -110,6 +120,7 @@ export const ESTETICA: Producto[] = [
     marca: 'ADC Global Tech',
     categoria: 'estetica-medica',
     tipo: 'equipo de estética facial y corporal',
+    prefijoH1: 'Equipo de estética',
     destacado: false,
     orden: 110,
     resumen: 'Sistema combinado para tratamientos faciales y corporales.',
@@ -153,6 +164,7 @@ export const ESTETICA: Producto[] = [
     marca: 'ADC Global Tech',
     categoria: 'estetica-medica',
     tipo: 'láser de diodo para depilación',
+    prefijoH1: 'Láser de diodo',
     destacado: false,
     orden: 111,
     resumen: 'Láser de diodo de 808 nm para depilación profesional.',
@@ -287,6 +299,7 @@ export const ESTETICA: Producto[] = [
     marca: 'ADC Global Tech',
     categoria: 'estetica-medica',
     tipo: 'sistema electrocéutico multicanal',
+    prefijoH1: 'Sistema electrocéutico',
     destacado: false,
     orden: 114,
     resumen: 'Sistema electrocéutico multicanal con cuatro salidas y doce protocolos.',
@@ -373,6 +386,7 @@ export const ESTETICA: Producto[] = [
     marca: 'ADC Global Tech',
     categoria: 'estetica-medica',
     tipo: 'equipo de oxigenoterapia estética',
+    prefijoH1: 'Oxigenoterapia',
     destacado: false,
     orden: 115,
     resumen: 'Equipo profesional y compacto para tratamientos estéticos con oxígeno.',

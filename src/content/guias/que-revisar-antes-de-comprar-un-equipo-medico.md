@@ -3,7 +3,7 @@ titulo: "Qué revisar antes de comprar *un equipo médico.*"
 corto: "Qué revisar antes de comprar un equipo médico"
 seoTitle: "Qué revisar antes de comprar un equipo médico: CE y MDR"
 seoDescription: "Garantía, mantenimiento, marcado CE y MDR (UE) 2017/745: lo que conviene revisar antes de comprar un equipo de fisioterapia o de equipamiento médico."
-resumen: "Garantía, mantenimiento y certificación CE / MDR: lo que conviene revisar antes de comprar, contado de fisio a fisio."
+resumen: "Garantía, mantenimiento y certificación CE / MDR: lo que conviene revisar antes de comprar un equipo, contado por un fisioterapeuta."
 fecha: "2026-09-26"
 imagen: "fotos/superinductiva-clinica-vytamed-en-consulta"
 imagenAlt: "Superinductiva Clínica de VytaMeD con su doble cabezal articulado en una sala de fisioterapia"
@@ -13,7 +13,7 @@ orden: 3
 
 Monté VytalGroup porque veía mucho aprovechamiento en la venta de equipos. Es fácil comprar un aparato y descubrir después que el mantenimiento cuesta más de lo que pensabas, que la garantía tiene letra pequeña o que nadie te da soporte cuando algo falla.
 
-Esta es la lista de lo que yo revisaría antes de comprar cualquier equipo, sea un ecógrafo, una diatermia o una camilla. Vale para nosotros y para cualquier proveedor.
+Esta es la lista de lo que yo revisaría antes de comprar cualquier equipo, sea un [ecógrafo](/ecografos), una [diatermia](/diatermias) o una [camilla](/equipos/camillas). Vale para nosotros y para cualquier proveedor.
 
 ## 1. Que sea un producto sanitario con marcado CE
 
@@ -47,7 +47,7 @@ Si un proveedor pone pegas para enseñarte esto, ya sabes lo que tienes que hace
 
 Pide que todo esto quede por escrito, en la propuesta o en el contrato, y guarda la factura: es lo que te protege si hay un problema.
 
-Con nosotros son 2 años en piezas y mano de obra, sin letra pequeña. Y si algo no te queda claro, te lo explicamos antes de comprar, no después.
+Con nosotros son 2 años en piezas y mano de obra. Y si algo no te queda claro, te lo explicamos antes de comprar, no después.
 
 <div class="g-cta">
 <p class="g-cta__t">¿Quieres que lo revisemos juntos?</p>
@@ -86,7 +86,7 @@ Por último, fíjate en quién te está recomendando el equipo. Un comercial con
 
 Una buena señal: que te pregunte cómo trabajas antes de hablarte de modelos, y que te diga con claridad cuándo un equipo no te conviene.
 
-Por eso en VytalGroup te asesoran fisioterapeutas: de fisio a fisio.
+Por eso en VytalGroup te asesoran fisioterapeutas.
 
 ## La lista, en corto
 

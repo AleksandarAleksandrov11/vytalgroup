@@ -11,10 +11,28 @@ import { escena } from '../../../lib/imagenes';
 import ProductCard from '../../../components/ProductCard.astro';
 import Faq from '../../../components/Faq.astro';
 import CtaFinal from '../../../components/CtaFinal.astro';
-import { CATEGORIAS, type Categoria } from '../../../data/categorias';
+import { CATEGORIAS, nombresCat, type Categoria } from '../../../data/categorias';
 import { deCategoria, PRODUCTOS, altProducto } from '../../../data/productos';
-import { acento } from '../../../lib/texto';
+import { acento, enlaces } from '../../../lib/texto';
 import { faqsCategoria } from '../../../data/faqs';
+import CompareTable from '../../../components/CompareTable.astro';
+import { COMPARATIVA_CAMILLAS } from '../../../data/comparativas';
+
+// H2 de "qué es", con la palabra clave de cada categoría
+// "El equipo de *diatermia por microondas.*", "Los 15 equipos de *ecografía.*", "Las 6 *camillas.*"
+const conAcento = (s: string, tema: string) => (s.endsWith(tema) ? `${s.slice(0, s.length - tema.length)}*${tema}.*` : `*${s}.*`);
+const QUE: Record<string, string> = {
+  'ondas-de-choque': 'Qué son las ondas de choque *y para qué se usan.*',
+  magnetoterapia: 'Qué es la magnetoterapia *y para qué se usa.*',
+  laser: 'Qué es el láser terapéutico *y para qué se usa.*',
+  'electrolisis-percutanea': 'Qué es la electrólisis percutánea *y para qué se usa.*',
+  electroterapia: 'Qué es la electroterapia *y para qué se usa.*',
+  ultrasonidos: 'Qué son los ultrasonidos terapéuticos *y para qué se usan.*',
+  presoterapia: 'Qué es la presoterapia *y para qué se usa.*',
+  'diatermia-microondas': 'Qué es la diatermia por microondas *y para qué se usa.*',
+  camillas: 'Cómo elegir camilla *de fisioterapia.*',
+  'estetica-medica': 'Qué tecnologías incluye *la línea de estética.*',
+};
 import { collectionPage, faqPage, itemList } from '../../../lib/seo';
 
 export function getStaticPaths() {
@@ -28,6 +46,8 @@ const jsonld: object[] = [collectionPage(c.ruta, c.nombre), itemList(c.nombre, p
 const faqs = faqsCategoria(c, productos);
 jsonld.push(faqPage(faqs));
 const n = productos.length;
+const nom = nombresCat(c);
+const tituloLista = n === 1 ? `${nom.f ? 'La' : 'El'} ${conAcento(nom.uno, nom.tema)}` : `${nom.f ? 'Las' : 'Los'} ${n} ${conAcento(nom.varios, nom.tema)}`;
 const repr = PRODUCTOS.find((p) => p.imagenes[0] === c.imagen);
 const altHero = repr ? altProducto(repr) : c.nombre;
 ---
@@ -40,7 +60,7 @@ const altHero = repr ? altProducto(repr) : c.nombre;
   migas={migas}
   jsonld={jsonld}
 >
-  <PageHero migas={migas} titulo={c.h1} lead={c.apoyo} kicker={`${n} ${n === 1 ? 'equipo' : 'equipos'} de ${c.corto.toLowerCase()}`} imagen={c.imagen} alt={altHero}>
+  <PageHero migas={migas} titulo={c.h1} lead={c.apoyo} imagen={c.imagen} alt={altHero}>
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#equipos-categoria">Ver {n === 1 ? 'el equipo' : `los ${n} equipos`}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -50,7 +70,7 @@ const altHero = repr ? altProducto(repr) : c.nombre;
   <section class="sec sec--white" id="equipos-categoria" aria-labelledby="eq-title">
     <div class="wrap">
       <div class="sec__head">
-        <h2 class="h2" id="eq-title" data-lines set:html={acento(n === 1 ? 'El *equipo.*' : `Los ${n} *equipos.*`)} />
+        <h2 class="h2" id="eq-title" data-lines set:html={acento(tituloLista)} />
       </div>
       <ul class:list={['grid cat-grid', { 'cat-grid--1': n === 1, 'cat-grid--2': n === 2, 'cat-grid--4': n === 4 }]}>
         {productos.map((p) => <li><ProductCard p={p} vt /></li>)}
@@ -58,19 +78,30 @@ const altHero = repr ? altProducto(repr) : c.nombre;
     </div>
   </section>
 
-  <section class="sec" aria-labelledby="que-title">
+  {c.id === 'camillas' && (
+    <section class="sec sec--mist" id="comparativa" aria-labelledby="cmp-title">
+      <div class="wrap">
+        <div class="sec__head">
+          <h2 class="h2" id="cmp-title" data-lines>Camilla eléctrica <em>o hidráulica.</em></h2>
+        </div>
+        <CompareTable columnas={COMPARATIVA_CAMILLAS.columnas} filas={COMPARATIVA_CAMILLAS.filas} caption="Comparativa de las camillas de fisioterapia" />
+      </div>
+    </section>
+  )}
+
+  <section class="sec sec--dark on-dark" aria-labelledby="que-title">
     <div class="wrap">
       <div class="what">
-        <h2 class="h2" id="que-title" data-lines>Qué es y para <em>qué se usa.</em></h2>
+        <h2 class="h2" id="que-title" data-lines set:html={acento(QUE[c.id] ?? 'Qué es y para *qué se usa.*')} />
         <div class="what__txt" data-rv>
-          {c.queEs.map((t) => <p>{t}</p>)}
-          <p><a class="link" href="/catalogo">Ver el catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+          {c.queEs.map((t) => <p set:html={enlaces(t)} />)}
+          <p class="what__links"><a class="link" href="/catalogo">Ver el catálogo completo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="link" href="/guias/que-revisar-antes-de-comprar-un-equipo-medico">Qué revisar antes de comprar<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
         </div>
       </div>
     </div>
   </section>
 
-  <Faq faqs={faqs} titulo={`Dudas sobre *${c.corto.toLowerCase()}.*`} id={`dudas-${c.id}`} fondo="blanco" />
+  <Faq faqs={faqs} titulo={`Dudas sobre *${nom.tema}.*`} id={`dudas-${c.id}`} />
 
   <CtaFinal preset={{ equipo: c.formEquipo, otro: c.formOtro }} />
 </Base>

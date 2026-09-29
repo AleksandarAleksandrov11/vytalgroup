@@ -105,7 +105,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     const az = await visibles(p);
     const sorted = [...az].sort((a, b2) => a.localeCompare(b2, 'es', { sensitivity: 'base' }));
     ok(JSON.stringify(az) === JSON.stringify(sorted) && p.url().includes('orden=az'), 'catálogo: orden A a Z (y en la URL)');
-    ok(await p.$eval('link[rel="canonical"]', (l) => l.href) === 'https://vytalgroup.org/catalogo', 'catálogo: canonical sin parámetros');
+    ok(await p.$eval('link[rel="canonical"]', (l) => l.href) === 'https://vytalgroup.com/catalogo', 'catálogo: canonical sin parámetros');
     await ctx.close();
     const r = await open(b, '/catalogo?categoria=ecografia&q=acclarix');
     const eco = await visibles(r.p);
@@ -155,10 +155,10 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await p.mouse.move(900, 380, { steps: 5 });
     await p.waitForTimeout(200);
     ok(await p.$eval('[data-mockup]', (e) => e.style.getPropertyValue('--ry') !== ''), 'maqueta 3D: se inclina con el cursor');
-    await ir('.duo__media', 0.15);
+    await ir('.more .cc__media', 0.15);
     await p.mouse.wheel(0, 120);
     await p.waitForTimeout(400);
-    const py = await p.$eval('.duo__media [data-parallax]', (x) => x.style.getPropertyValue('--py'));
+    const py = await p.$eval('.more .cc__media [data-parallax]', (x) => x.style.getPropertyValue('--py'));
     ok(py && py !== '0.0px' && Math.abs(parseFloat(py)) <= 16, 'parallax: la foto del destacado se desplaza levemente (16 px como máximo)', py);
     await ir('[data-cmp]', 0.2);
     await p.waitForTimeout(1600);
@@ -172,13 +172,21 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await nos.ctx.close();
   });
 
-  await block('Inicio: hero con foto y marcas', async () => {
+  await block('Inicio: hero 3D y cinta de confianza', async () => {
     const { ctx, p } = await open(b, '/');
-    ok(await p.$eval('.hx__photo', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager'), 'hero: la foto de fondo es la prioritaria (LCP)');
-    ok(await p.$eval('.hx', (h) => !h.querySelector('.badge, [class*="badge"], [data-showcase]')), 'hero: sin escaparate ni etiquetas');
-    ok(await p.evaluate(() => { const h = document.querySelector('.hx'); const m = document.querySelector('.bm'); return !!m && h.nextElementSibling === m; }), 'marcas: justo debajo del hero');
-    ok(await p.$$eval('.bm__list:first-child .bm__logo', (xs) => xs.length >= 5), 'marcas: los logos reales en la cinta');
+    ok(await p.$eval('.hx__item--front img', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager'), 'hero: el ecógrafo del hero es la imagen prioritaria (LCP)');
+    ok(await p.$eval('.hx__scene', (e) => getComputedStyle(e).perspective !== 'none' && getComputedStyle(e.querySelector('.hx__world')).transformStyle === 'preserve-3d'), 'hero: escena 3D con perspectiva');
+    ok(await p.$eval('.hx', (h) => !h.querySelector('.sweep, [class*="kicker"], [class*="badge"]')), 'hero: sin radar, antetítulo ni etiquetas');
+    await p.mouse.move(1100, 400);
+    await p.mouse.move(1250, 300, { steps: 6 });
+    await p.waitForTimeout(300);
+    ok(await p.$eval('.hx__world', (w) => w.style.getPropertyValue('--ry') !== ''), 'hero: la escena gira con el cursor');
+    ok(await p.evaluate(() => document.querySelector('.hx').nextElementSibling?.classList.contains('stats')), 'cinta de confianza justo debajo del hero');
+    ok(await p.evaluate(() => !document.querySelector('.bm')), 'inicio: sin cinta de marcas (solo en Sobre nosotros)');
     await ctx.close();
+    const nos = await open(b, '/sobre-nosotros');
+    ok(await nos.p.evaluate(() => { const h = document.querySelector('.phero'); const m = document.querySelector('.bm'); return !!m && h.nextElementSibling === m && !m.querySelector('.bm__title'); }), 'marcas: en Sobre nosotros, bajo el hero y sin título');
+    await nos.ctx.close();
   });
 
   await block('Ficha: galería', async () => {
@@ -235,7 +243,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     const { ctx, p } = await open(b, '/', { reduced: true });
     const hidden = await p.$$eval('[data-rv], .rv', (els) => els.filter((e) => e.checkVisibility() && parseFloat(getComputedStyle(e).opacity) < 0.99).length);
     ok(hidden === 0, 'movimiento reducido: todo el contenido visible sin animaciones de entrada', `${hidden}`);
-    const marquee = await p.$eval('.bm__track', (e) => getComputedStyle(e).animationName);
+    const marquee = await p.$eval('.ticker__track', (e) => getComputedStyle(e).animationName);
     ok(marquee === 'none', 'movimiento reducido: la cinta no se mueve', marquee);
     ok(await p.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior !== 'smooth'), 'movimiento reducido: sin scroll suave');
     await ctx.close();

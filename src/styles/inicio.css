@@ -2,65 +2,57 @@
    Inicio
    ========================================================================== */
 
-/* ---------- 1 · Hero: foto de consulta a sangre, capa marina y barrido de ecografía ---------- */
-.hx { position: relative; isolation: isolate; display: flex; align-items: flex-end; min-height: min(calc(100svh - 96px), 860px); padding: calc(var(--hd) + 48px) 0 clamp(48px, 7vw, 96px); overflow: clip; background: var(--navy); }
-.hx__media { position: absolute; inset: 0; z-index: -3; }
-.hx__media picture { display: block; height: 100%; }
-.hx__photo { width: 100%; height: 100%; object-fit: cover; object-position: 62% 40%; }
-/* Capa marina: fuerte a la izquierda y abajo para leer el texto; deja respirar la foto a la derecha */
-.hx::before { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
-  background:
-    linear-gradient(0deg, rgba(11, 25, 41, .96) 0%, rgba(11, 25, 41, .72) 42%, rgba(11, 25, 41, .28) 100%),
-    radial-gradient(70% 60% at 85% 20%, rgba(72, 160, 168, .28), transparent 70%); }
-.hx::after { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; background-image: radial-gradient(rgba(255, 255, 255, .12) 1px, transparent 1.4px); background-size: 22px 22px; -webkit-mask-image: linear-gradient(180deg, transparent 20%, #000 100%); mask-image: linear-gradient(180deg, transparent 20%, #000 100%); opacity: .5; }
-.hx__fx { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-.hx__sweep { position: absolute; left: 50%; top: calc(var(--hd) - 10px); width: min(150vw, 760px); translate: -50% 0; opacity: .85; }
-.hx__scan { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--teal-light) 30%, #FFF 50%, var(--teal-light) 70%, transparent); box-shadow: 0 0 24px 4px rgba(143, 220, 220, .45); opacity: 0; }
-.hx__wrap { width: 100%; }
-.hx__copy { max-width: 760px; }
-.hx__kicker { display: inline-flex; align-items: center; gap: 12px; font-size: .8125rem; font-weight: 560; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-on-dark); }
-.hx__kicker::before { content: ""; width: 28px; height: 1px; background: currentColor; }
-.hx__title { margin-top: 18px; color: #FFF; font-size: min(clamp(2.75rem, 1.8rem + 4.2vw, 6rem), calc(12vw - 2px)); }
+/* ---------- 1 · Hero: titular y escena 3D mínima (equipos sobre un suelo de rejilla en perspectiva) ---------- */
+.hx { position: relative; isolation: isolate; display: flex; align-items: center; min-height: min(calc(100svh - var(--band, 78px)), 900px); padding: calc(var(--hd) + 32px) 0 40px; overflow: clip; background-color: var(--navy); background-image: radial-gradient(90% 70% at 78% 55%, #15334C 0%, var(--navy-2) 42%, var(--navy) 78%); }
+.hx::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(40% 40% at 8% 12%, rgba(47, 123, 208, .12), transparent 70%); }
+.hx__wrap { display: grid; gap: 12px; width: 100%; }
+.hx__copy { position: relative; z-index: 1; }
+.hx__title { color: #FFF; font-size: min(clamp(2.75rem, 1.7rem + 4vw, 5.75rem), calc(12vw - 2px)); }
 .hx__title em { color: var(--teal-light); }
-.hx__lead { max-width: 40ch; margin-top: 20px; font-size: var(--fs-lead); line-height: 1.45; color: var(--on-dark); text-wrap: pretty; }
+.hx__lead { max-width: 38ch; margin-top: 20px; font-size: var(--fs-lead); line-height: 1.45; color: var(--on-dark); text-wrap: pretty; }
 .hx__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 32px; }
-.hx .btn--line { background: rgba(255, 255, 255, .06); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 @media (max-width: 479px) { .hx__actions .btn { width: 100%; } }
+@media (max-width: 899px) { .hx { padding-top: calc(var(--hd) + 20px); padding-bottom: 24px; } .hx__actions { margin-top: 24px; } }
+/* Escena: perspectiva real; cada capa a su profundidad (translateZ) y el mundo gira con --rx y --ry */
+.hx__scene { position: relative; width: min(100%, 640px); margin: 0 auto; aspect-ratio: 1.12; perspective: 1300px; perspective-origin: 50% 35%; }
+/* En móvil, después de la regla base para que gane: escena más baja y más cerca de los botones */
+@media (max-width: 899px) { .hx__scene { width: min(100%, 420px); aspect-ratio: 1.35; margin-top: -12px; } }
+.hx__world { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .9s var(--ease); }
+/* La rejilla va en ::before y avanza con transform (se compone en GPU, sin repintar cada fotograma) */
+.hx__floor { position: absolute; left: -35%; right: -35%; bottom: 8%; height: 90%; overflow: hidden; transform-origin: 50% 100%; transform: rotateX(80deg); -webkit-mask-image: radial-gradient(ellipse 46% 62% at 50% 100%, #000 10%, transparent 72%); mask-image: radial-gradient(ellipse 46% 62% at 50% 100%, #000 10%, transparent 72%); opacity: .8; }
+.hx__floor::before { content: ""; position: absolute; left: 0; right: 0; top: -56px; bottom: 0; background-image: linear-gradient(rgba(127, 211, 214, .5) 1px, transparent 1px), linear-gradient(90deg, rgba(127, 211, 214, .5) 1px, transparent 1px); background-size: 56px 56px; background-position: 50% 0; }
+/* Envoltorio del balanceo en táctil: así la entrada y el balanceo no compiten por el transform del mundo */
+.hx__sway { position: absolute; inset: 0; transform-style: preserve-3d; }
+/* Plataforma: una elipse de luz en el suelo, bajo el ecógrafo */
+.hx__pad { position: absolute; left: 14%; width: 72%; bottom: 9%; aspect-ratio: 4.2; border-radius: 50%; background: radial-gradient(closest-side, rgba(127, 211, 214, .32), rgba(127, 211, 214, .08) 70%, transparent); box-shadow: inset 0 0 0 1px rgba(127, 211, 214, .35); transform: translateZ(40px); }
+/* El resplandor va en su propia capa: como ::after del pad, Chrome lo recortaba al rectángulo del pad */
+.hx__glow { position: absolute; left: 0; width: 100%; bottom: 1%; aspect-ratio: 3.4; border-radius: 50%; background: radial-gradient(closest-side, rgba(72, 160, 168, .3), transparent); transform: translateZ(38px); pointer-events: none; }
+.hx__halo { position: absolute; left: 12%; right: 12%; top: 12%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(72, 160, 168, .34) 0%, rgba(72, 160, 168, .08) 45%, transparent 68%); transform: translateZ(-240px) scale(1.25); }
+.hx__item { position: absolute; display: block; container-type: inline-size; transform-style: preserve-3d; }
+.hx__item picture { display: block; }
+.hx__img { display: block; width: 100%; height: auto; }
+/* Reflejo solo en el equipo delantero, que apoya en la plataforma (-webkit-box-reflect no admite none) */
+.hx__item--front .hx__img { -webkit-box-reflect: below -18cqw linear-gradient(transparent 62%, rgba(255, 255, 255, .22)); }
+.hx__item--front { left: 0; width: 92%; bottom: 5%; transform: translateZ(90px); filter: drop-shadow(0 40px 40px rgba(0, 0, 0, .45)); }
+.hx__item--back { right: -6%; width: 50%; bottom: 36%; transform: translateZ(-150px); filter: brightness(.82) saturate(.9) drop-shadow(0 20px 24px rgba(0, 0, 0, .35)); }
+/* La diatermia del fondo no está sobre la rejilla: sin reflejo, con una sombra de contacto suave */
+.hx__item--back::after { content: ""; position: absolute; left: 14%; right: 14%; bottom: 8%; height: 8%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .45), transparent); z-index: -1; }
 @media (min-width: 900px) {
-  .hx { align-items: center; padding-bottom: 64px; }
-  .hx::before { background:
-    linear-gradient(90deg, rgba(11, 25, 41, .95) 0%, rgba(11, 25, 41, .82) 38%, rgba(11, 25, 41, .25) 72%, rgba(11, 25, 41, .1) 100%),
-    linear-gradient(0deg, rgba(11, 25, 41, .7) 0%, transparent 35%),
-    radial-gradient(50% 60% at 80% 30%, rgba(72, 160, 168, .25), transparent 70%); }
-  .hx__photo { object-position: 70% 45%; }
-  .hx__sweep { left: auto; right: -8%; top: 4%; width: min(52vw, 780px); translate: none; opacity: .9; }
+  .hx { padding-bottom: 56px; }
+  .hx__wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .hx__scene { width: 100%; margin-right: -4%; }
 }
-/* Entrada: la foto se asienta con un zoom lento, un haz de luz recorre la imagen y el barrido se enciende */
+/* Entrada: el mundo llega girado desde la profundidad y la rejilla avanza despacio hacia ti */
 @media (prefers-reduced-motion: no-preference) {
-  .hx__photo { animation: hx-zoom 2.4s var(--ease) both; }
-  .hx__sweep { animation: hx-fade 1.4s ease .5s both; }
-  .hx__scan { animation: hx-scan 2.6s cubic-bezier(.5, 0, .3, 1) .35s both; }
+  .hx__world { animation: hx-in 1.6s var(--ease) .15s backwards; }
+  .hx__floor::before { animation: hx-floor 7s linear infinite; }
+  @media (hover: none) { .hx__sway { animation: hx-sway 12s ease-in-out 1.8s infinite; } }
+  /* Fuera de pantalla, en pausa */
+  .hx__scene.is-paused .hx__sway, .hx__scene.is-paused .hx__floor::before { animation-play-state: paused; }
 }
-@keyframes hx-zoom { from { transform: scale(1.12); } to { transform: scale(1.02); } }
-@keyframes hx-scan { 0% { opacity: 0; transform: translateY(0); } 12% { opacity: 1; } 85% { opacity: .8; } 100% { opacity: 0; transform: translateY(min(100svh, 860px)); } }
-@keyframes hx-fade { from { opacity: 0; } }
-
-/* ---------- 3 · Dos protagonistas ---------- */
-.duo__grid { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
-@media (min-width: 768px) { .duo__grid { grid-template-columns: 1fr 1fr; gap: 20px; } }
-.duo__card { position: relative; display: flex; flex-direction: column; height: 100%; padding: 12px; border-radius: var(--r-xl); background: #FFF; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
-.duo__media { display: block; aspect-ratio: 4 / 3; border-radius: 20px; overflow: hidden; }
-.duo__media img { translate: 0 var(--py, 0px); transition: scale .8s var(--ease), transform .7s var(--ease); }
-.duo__body { display: grid; gap: 6px; padding: 18px 12px 10px; }
-.duo__kicker { font-size: .75rem; font-weight: 560; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-ink); }
-.duo__title { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem); font-weight: 560; line-height: 1.1; letter-spacing: -.03em; }
-.duo__link { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font-weight: 500; }
-.duo__link .icon { width: 18px; height: 18px; transition: transform .4s var(--ease); }
-@media (hover: hover) and (pointer: fine) {
-  .duo__card:hover { box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hover); }
-  .duo__card:hover .duo__media img { scale: 1.05; }
-  .duo__card:hover .duo__link .icon { transform: translateX(5px); }
-}
+@keyframes hx-in { from { opacity: 0; transform: translateZ(-160px) rotateX(10deg) rotateY(-24deg); } }
+@keyframes hx-floor { to { transform: translateY(56px); } }
+@keyframes hx-sway { 50% { transform: rotateX(2deg) rotateY(7deg); } }
 
 /* ---------- 4 · Ecografía en profundidad (sticky) ---------- */
 .eco__grid { display: grid; gap: 24px; }
@@ -110,8 +102,6 @@
 @media (max-width: 899px) { .dia__body { justify-items: center; text-align: center; } .dia__txt { margin-inline: auto; } .dia__data { justify-content: center; } }
 
 /* ---------- 6 · Todo tu equipamiento (fondo gris azulado con rejilla fina, como la landing) ---------- */
-.more { isolation: isolate; background: var(--mist); }
-.more::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgba(11, 25, 41, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(11, 25, 41, .05) 1px, transparent 1px); background-size: 44px 44px; background-position: center top; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 20%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 20%, transparent 80%); }
 .more .more__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 640px) { .more .more__grid { gap: 16px; } }
 @media (min-width: 1024px) { .more .more__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }

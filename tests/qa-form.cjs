@@ -20,11 +20,13 @@ async function open(b, path, { width = 1280, height = 900, mobile = false, endpo
     // Simula un bot que envía en menos de 3 s
     if (rapido) { const real = performance.now.bind(performance); performance.now = () => Math.min(real(), 1000); }
   }, { consent, rapido });
+  await ctx.route(/script\.google(usercontent)?\.com/, (r) => r.abort());
   await ctx.route((u) => u.origin === new URL(BASE).origin && !/\.[a-z0-9]+$/i.test(u.pathname.replace(/\/$/, '')) , async (r) => {
     if (r.request().resourceType() !== 'document') return r.continue();
     const res = await r.fetch();
     let body = await res.text();
-    body = body.replace('data-sheets data-pixel', `data-sheets="${endpoint}" data-pixel="${pixel}"`);
+    // Siempre el Apps Script simulado (nunca el real de config.ts)
+    body = body.replace(/data-sheets(="[^"]*")? data-pixel(="[^"]*")?/, `data-sheets="${endpoint}" data-pixel="${pixel}"`);
     r.fulfill({ response: res, body });
   });
   const fbReq = [];

@@ -65,3 +65,4 @@
 @media (min-width: 768px) { .who { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
 /* Nombre y texto a la misma altura en las tres tarjetas aunque un nombre ocupe dos líneas */
 @supports (grid-template-rows: subgrid) { @media (min-width: 768px) { .who { row-gap: 10px; } .who__item { grid-row: span 2; grid-template-rows: subgrid; } } }
+.who__more { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px; margin-top: 32px; }

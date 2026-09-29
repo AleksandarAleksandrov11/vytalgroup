@@ -1,0 +1,16 @@
+{
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          { "href_matches": "/*" },
+          { "not": { "href_matches": "/assets/*" } },
+          { "not": { "href_matches": "/og/*" } },
+          { "not": { "selector_matches": "[download], [data-catalog], [target=_blank]" } }
+        ]
+      },
+      "eagerness": "moderate"
+    }
+  ]
+}

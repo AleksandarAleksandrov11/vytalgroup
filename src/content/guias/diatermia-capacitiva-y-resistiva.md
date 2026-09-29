@@ -1,7 +1,7 @@
 ---
-titulo: "Diatermia capacitiva y resistiva: *cómo elegir equipo.*"
-corto: "Diatermia capacitiva y resistiva: diferencias y cómo elegir"
-seoTitle: "Diatermia capacitiva y resistiva: diferencias y cómo elegir"
+titulo: "Capacitiva o resistiva: *diferencias y cómo elegir.*"
+corto: "Capacitiva o resistiva: diferencias y cómo elegir"
+seoTitle: "Capacitiva o resistiva: diferencias y cómo elegir diatermia"
 seoDescription: "Qué es la diatermia capacitiva y resistiva, en qué se diferencian sus dos modos y qué mirar al elegir equipo: potencia, frecuencias, manípulos y programas."
 resumen: "Qué es la tecarterapia, en qué se diferencian el modo capacitivo y el resistivo y qué mirar al comparar equipos."
 fecha: "2026-09-26"
@@ -93,4 +93,4 @@ Como con cualquier equipo, antes de decidir pregunta por la garantía, por lo qu
 
 En cuanto a la normativa: la Diatermia Multifunción es un dispositivo médico Clase IIb con marcado CE conforme al MDR (UE) 2017/745; Reatherm y Reacare son dispositivos médicos Clase IIb con marcado CE0068; y el HR Tek figura en su ficha como Clase IIb según la Directiva 93/42/CEE, con la norma EN 60601-1.
 
-Puedes ver y comparar todos los modelos en la página de [diatermia para fisioterapia](/diatermias). Y si prefieres que lo hablemos, cuéntame cómo trabajas y te recomiendo uno, sin venderte lo que no necesitas.
+Puedes ver y comparar todos los modelos en la página de [equipos de diatermia capacitiva y resistiva](/diatermias). Y si prefieres que lo hablemos, cuéntame cómo trabajas y te recomiendo uno, sin venderte lo que no necesitas.

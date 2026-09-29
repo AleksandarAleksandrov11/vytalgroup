@@ -684,7 +684,7 @@ export const ECOGRAFIA_EDAN: Producto[] = [
     codigos: [],
     relacionados: ['edan-u60', 'edan-dus60', 'acclarix-ax2'],
     ficha: true,
-    seoTitle: 'EDAN U50, ecógrafo Doppler color de sobremesa | VytalGroup',
+    seoTitle: 'EDAN U50, ecógrafo portátil Doppler color | VytalGroup',
   },
   {
     slug: 'edan-dus60',

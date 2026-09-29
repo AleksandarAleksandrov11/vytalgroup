@@ -10,7 +10,7 @@ const { titulo, seo, description, path, lead } = Astro.props;
 const migas = [{ name: 'Inicio', href: '/' }, { name: titulo.replace(/\*/g, '').replace(/\.$/, ''), href: path }];
 ---
 <Base title={seo} description={description} path={path} noindex conFormulario={false} seccion="legal" migas={migas}>
-  <PageHero migas={migas} titulo={titulo} lead={lead} kicker="Información legal" imagen="fotos/diatermia-multifuncion-vytamed-pantalla" alt="Diatermia Multifunción de VytaMeD con sus electrodos y accesorios" />
+  <PageHero migas={migas} titulo={titulo} lead={lead} imagen="fotos/recepcion-clinica-fisioterapia" alt="Recepción de una clínica de fisioterapia" />
   <section class="legal" aria-label="Texto legal">
     <div class="wrap wrap--legal">
       <article class="legal__body">

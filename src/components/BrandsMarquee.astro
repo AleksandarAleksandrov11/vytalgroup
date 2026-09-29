@@ -28,7 +28,6 @@ const LOGOS = [
   <svg class="sprite" aria-hidden="true" focusable="false">
     {LOGOS.map((l) => <symbol id={l.id} viewBox={l.vb} set:html={l.cuerpo} />)}
   </svg>
-  <p class="bm__title">{titulo}</p>
   <div class="bm__ticker" data-marquee>
     <div class="bm__track">
       {[0, 1, 2, 3].map((k) => (

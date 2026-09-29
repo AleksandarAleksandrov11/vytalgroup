@@ -38,6 +38,17 @@ export interface Categoria {
   seoTitle: string;
   seoDescription: string;
   faqs?: Faq[];
+  /** Tema en minúsculas para "Dudas sobre …" y las preguntas, si `corto` no basta ("Microondas" suelto) */
+  tema?: string;
+  /** Cómo se nombran sus equipos cuando "equipo(s) de …" suena raro (camillas) */
+  nombres?: { uno: string; varios: string; f?: boolean };
+}
+
+/** Tema y nombres de los equipos de una categoría para titulares y preguntas:
+ *  "Los 15 equipos de *ecografía.*", "Las 6 *camillas.*", "¿Qué equipo de diatermia por microondas tenéis?" */
+export function nombresCat(c: Pick<Categoria, 'corto' | 'tema' | 'nombres'>) {
+  const tema = c.tema ?? c.corto.toLowerCase();
+  return { tema, uno: c.nombres?.uno ?? `equipo de ${tema}`, varios: c.nombres?.varios ?? `equipos de ${tema}`, f: !!c.nombres?.f };
 }
 
 export const CATEGORIAS: Categoria[] = [
@@ -74,8 +85,8 @@ export const CATEGORIAS: Categoria[] = [
     ],
     imagen: 'diatermia-multifuncion-vytamed',
     formEquipo: 'Diatermia',
-    seoTitle: 'Diatermia para fisioterapia y tecarterapia | VytalGroup',
-    seoDescription: 'Equipos de diatermia capacitiva y resistiva para fisioterapia: VytaMeD, Reatherm, Reacare y HR Tek. Te asesoran fisioterapeutas, de fisio a fisio.',
+    seoTitle: 'Diatermia capacitiva y resistiva (tecarterapia) | VytalGroup',
+    seoDescription: 'Equipos de diatermia capacitiva y resistiva para fisioterapia: VytaMeD, Reatherm, Reacare y HR Tek. Te asesoran fisioterapeutas, con 2 años de garantía.',
   },
   {
     id: 'ondas-de-choque',
@@ -130,7 +141,7 @@ export const CATEGORIAS: Categoria[] = [
     ruta: '/equipos/laser',
     pilar: false,
     orden: 5,
-    h1: 'Láser de alta potencia para *fisioterapia.*',
+    h1: 'Láser terapéutico para *fisioterapia.*',
     apoyo: 'Láser de diodo y Nd:YAG, de contacto y de barrido, con longitudes de onda de 808 a 1064 nm.',
     descripcion: 'Láser de alta potencia, de barrido y de baja potencia para consulta.',
     queEs: [
@@ -140,8 +151,13 @@ export const CATEGORIAS: Categoria[] = [
     imagen: 'laser-terapeutico-alta-potencia',
     formEquipo: 'Otro equipo',
     formOtro: 'Láser terapéutico',
-    seoTitle: 'Láser de alta potencia para fisioterapia | VytalGroup',
+    seoTitle: 'Láser terapéutico y de alta potencia para fisioterapia',
     seoDescription: 'Láser terapéutico para fisioterapia: alta potencia 808 y 980 nm, Crystal YAG y Bipower Lux de EME, láser de barrido PR999 y Lasermed de baja potencia.',
+    faqs: [
+      { q: '¿Qué diferencia hay entre el láser de alta y el de baja potencia?', a: 'El Lasermed 2200 de EME es de baja potencia, 905 nm, para fotobioestimulación. El Láser terapéutico (808 y 980 nm, hasta 10 W en continua) y el Crystal YAG / Bipower Lux (de 9 a 18 W según modelo) son de alta potencia.' },
+      { q: '¿Qué longitud de onda necesito?', a: 'Según el fabricante, 808 nm para bioestimulación, 980 nm con efecto térmico y 1064 nm para mayor profundidad.' },
+      { q: '¿Qué es un láser de barrido?', a: 'El PR999 de EME barre la zona de forma automática, con una amplitud de 1 a 20 cm, para tratar superficies amplias sin intervención manual.' },
+    ],
   },
   {
     id: 'electrolisis-percutanea',
@@ -154,16 +170,16 @@ export const CATEGORIAS: Categoria[] = [
     apoyo: 'Physio Invasiva 2.0 de EasyTech: electrólisis, PES, microcorrientes y TENS en un equipo compacto.',
     descripcion: 'Physio Invasiva 2.0: electrólisis ecoguiada, PES y TENS en un equipo.',
     queEs: [
-      'La electrólisis percutánea ecoguiada (USGET) aplica corriente galvánica a través de una aguja, con la ecografía como guía.',
+      'La electrólisis percutánea ecoguiada (USGET) aplica corriente galvánica a través de una aguja, con la [ecografía](/ecografos) como guía.',
       'El fabricante la indica para tendinopatías, epicondilitis, fascitis plantar, bursitis y síndrome miofascial.',
     ],
     imagen: 'electrolisis-percutanea-physio-invasiva-easytech',
     formEquipo: 'Otro equipo',
     formOtro: 'Electrólisis percutánea',
-    seoTitle: 'Electrólisis percutánea ecoguiada: Physio Invasiva 2.0',
+    seoTitle: 'Equipos de electrólisis percutánea ecoguiada | VytalGroup',
     seoDescription: 'Equipo de electrólisis percutánea ecoguiada para fisioterapia: Physio Invasiva 2.0 de EasyTech, con PES, microcorrientes y TENS. Te asesoran fisioterapeutas.',
     faqs: [
-      { q: '¿Necesito un ecógrafo para la electrólisis percutánea?', a: 'La técnica USGET se hace con guía ecográfica. Por eso solemos plantear Physio Invasiva 2.0 junto a un ecógrafo portátil o inalámbrico.' },
+      { q: '¿Necesito un ecógrafo para la electrólisis percutánea?', a: 'La técnica USGET se hace con guía ecográfica. Por eso solemos plantear Physio Invasiva 2.0 junto a un [ecógrafo portátil o inalámbrico](/ecografos).' },
     ],
   },
   {
@@ -178,13 +194,17 @@ export const CATEGORIAS: Categoria[] = [
     descripcion: 'TENS, EMS e interferenciales, y equipos combinados de EME e I-Tech.',
     queEs: [
       'La electroterapia aplica corrientes eléctricas a través de electrodos: TENS, estimulación neuromuscular (EMS o NEMS), interferenciales o diadinámicas, según el equipo.',
-      'Los equipos combinados suman en una sola plataforma ultrasonidos, láser o magnetoterapia.',
+      'Los equipos combinados suman en una sola plataforma [ultrasonidos](/equipos/ultrasonidos), [láser](/equipos/laser) o [magnetoterapia](/equipos/magnetoterapia).',
     ],
     imagen: 'electroterapia-therapic-eme',
     formEquipo: 'Otro equipo',
     formOtro: 'Electroterapia',
     seoTitle: 'Electroterapia profesional y terapia combinada | VytalGroup',
     seoDescription: 'Electroterapia para fisioterapia: T-One Coach de I-Tech, Therapic, Combimed y Polyter Evo de EME. Canales, corrientes y programas, explicados con claridad.',
+    faqs: [
+      { q: '¿Qué corrientes tienen los equipos de electroterapia?', a: 'Según el equipo, TENS, EMS, diadinámicas, Kotz o interferenciales. El Therapic de EME llega a 25 formas de onda, en 2 o 4 canales.' },
+      { q: '¿Qué es un equipo de terapia combinada?', a: 'Una sola plataforma con varias terapias: Combimed suma electroterapia y ultrasonidos (el 4000, también láser de baja potencia de 905 nm) y Polyter Evo combina hasta cuatro tecnologías en un equipo con batería.' },
+    ],
   },
   {
     id: 'ultrasonidos',
@@ -198,13 +218,17 @@ export const CATEGORIAS: Categoria[] = [
     descripcion: 'Ultrasonidos de 1 y 3 MHz con uno o dos cabezales.',
     queEs: [
       'Los ultrasonidos terapéuticos aplican ondas sonoras de alta frecuencia, de 1 o 3 MHz, con un cabezal en contacto con la piel.',
-      'No son ecografía: tratan, no dan imagen.',
+      'No son [ecografía](/ecografos): tratan, no dan imagen.',
     ],
     imagen: 'ultrasonidos-ut2-i-tech',
     formEquipo: 'Otro equipo',
     formOtro: 'Ultrasonidos terapéuticos',
     seoTitle: 'Ultrasonidos terapéuticos para fisioterapia | VytalGroup',
     seoDescription: 'Equipos de ultrasonidos terapéuticos para fisioterapia: I-Tech UT2 con doble manípulo y Ultrasonic 1300 y 1500 de EME, de 1 y 3 MHz. Asesoramiento honesto.',
+    faqs: [
+      { q: '¿Los ultrasonidos terapéuticos son lo mismo que la ecografía?', a: 'No. Los ultrasonidos terapéuticos tratan con un cabezal de 1 o 3 MHz y no dan imagen. Para ver músculos y tendones necesitas un [ecógrafo](/ecografos).' },
+      { q: '¿Qué diferencia hay entre UT2 y Ultrasonic?', a: 'UT2 de I-Tech tiene doble manípulo, de 5 y 1 cm², y sirve para uso externo e inmersión. Ultrasonic de EME tiene dos versiones: 1300, con un canal, y 1500, con dos canales independientes.' },
+    ],
   },
   {
     id: 'presoterapia',
@@ -223,7 +247,11 @@ export const CATEGORIAS: Categoria[] = [
     imagen: 'presoterapia-beauty-press',
     formEquipo: 'Presoterapia',
     seoTitle: 'Presoterapia profesional para clínicas | VytalGroup',
-    seoDescription: 'Equipos de presoterapia profesional: I-Press de I-Tech y Beauty Press, con compresión neumática secuencial. Datos claros del catálogo y te asesoran fisios.',
+    seoDescription: 'Equipos de presoterapia profesional: I-Press de I-Tech y Beauty Press, con compresión neumática secuencial. Te asesoran fisioterapeutas, sin compromiso.',
+    faqs: [
+      { q: '¿Para qué se usa la presoterapia?', a: 'El fabricante de I-Press la indica para edemas y linfedemas, úlceras venosas e insuficiencia venosa, y recuperación muscular postesfuerzo.' },
+      { q: '¿Qué diferencia hay entre I-Press y Beauty Press?', a: 'I-Press de I-Tech está pensado para patologías circulatorias y puede usarlo el propio paciente de forma autónoma. Beauty Press tiene nueve salidas y programas de masaje peristáltico y drenaje linfático.' },
+    ],
   },
   {
     id: 'camillas',
@@ -242,8 +270,12 @@ export const CATEGORIAS: Categoria[] = [
     imagen: 'camilla-electrica-estandar',
     formEquipo: 'Otro equipo',
     formOtro: 'Camillas de fisioterapia',
+    nombres: { uno: 'camilla', varios: 'camillas', f: true },
     seoTitle: 'Camillas de fisioterapia, eléctricas o hidráulicas',
     seoDescription: 'Camillas de fisioterapia y exploración: 6 modelos eléctricos e hidráulicos con certificación CE y garantía mínima de 2 años. Te ayudamos a elegir la tuya.',
+    faqs: [
+      { q: '¿Camilla eléctrica o hidráulica?', a: 'Las eléctricas (Estándar, Multiposición y Premium) ajustan la altura con motor; la Premium, también la posición, con mando a pedal. Las hidráulicas (Compacta, Clínica y Pro) se regulan por sistema hidráulico; la Pro es silenciosa y pensada para sesiones largas.' },
+    ],
   },
   {
     id: 'diatermia-microondas',
@@ -257,13 +289,17 @@ export const CATEGORIAS: Categoria[] = [
     descripcion: 'Radarmed 2500 CP de EME, a 2450 MHz con brazo articulado.',
     queEs: [
       'La diatermia por microondas induce calor en el interior de los tejidos mediante una antena montada en un brazo articulado.',
-      'Es una tecnología distinta de la tecarterapia: trabaja a una frecuencia de 2450 MHz.',
+      'Es una tecnología distinta de la [tecarterapia](/diatermias): trabaja a una frecuencia de 2450 MHz.',
     ],
     imagen: 'diatermia-microondas-radarmed-2500-cp-eme',
     formEquipo: 'Otro equipo',
     formOtro: 'Diatermia por microondas',
+    tema: 'diatermia por microondas',
     seoTitle: 'Diatermia por microondas para fisioterapia | VytalGroup',
     seoDescription: 'Diatermia por microondas para fisioterapia: Radarmed 2500 CP de EME, 250 W en continuo a 2450 MHz y brazo de 3 articulaciones. Pide asesoramiento.',
+    faqs: [
+      { q: '¿En qué se diferencia de la tecarterapia?', a: 'El Radarmed 2500 CP trabaja a 2450 MHz con una antena en brazo articulado. Las diatermias de [tecarterapia](/diatermias) (Reatherm, Reacare y HR Tek) trabajan en radiofrecuencia, entre 300 y 1200 kHz.' },
+    ],
   },
   {
     id: 'estetica-medica',
@@ -284,6 +320,9 @@ export const CATEGORIAS: Categoria[] = [
     formOtro: 'Estética médica',
     seoTitle: 'Equipos de estética médica profesional | VytalGroup',
     seoDescription: 'Equipos de estética médica para clínicas: radiofrecuencia, láser de diodo 808 nm, ondas acústicas, electroporación y presoterapia. Propuesta clara.',
+    faqs: [
+      { q: '¿Qué tecnologías incluye la línea de estética?', a: 'Radiofrecuencia multipolar (Rigenera 3 Pro Age), láser de diodo de 808 nm (Epil Evo Smart), ondas acústicas de 1 a 5 bar (Reshape Plus), electroporación (BioRev-Tech), un sistema electrocéutico multicanal (Echos) y oxígeno (Ageless).' },
+    ],
   },
 ];
 

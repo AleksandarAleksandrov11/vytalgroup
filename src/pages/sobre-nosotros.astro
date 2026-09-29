@@ -1,17 +1,16 @@
 ---
-// Sobre nosotros: "De fisio a fisio." La historia en la voz de Javier, la forma de trabajar,
+// Sobre nosotros: La historia en la voz de Javier, la forma de trabajar,
 // quiénes están detrás, las marcas, el alcance internacional, el comparador y el formulario.
 import '../styles/nosotros.css';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Img from '../components/Img.astro';
 import WorldMap from '../components/WorldMap.astro';
-import Comparator from '../components/Comparator.astro';
 import BrandsMarquee from '../components/BrandsMarquee.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { EMPRESA } from '../data/empresa';
 import { EUROPA, IBERIA } from '../data/mapa';
-import { aboutPage, organization } from '../lib/seo';
+import { aboutPage, organization, persona } from '../lib/seo';
 
 const migas = [{ name: 'Inicio', href: '/' }, { name: 'Sobre nosotros', href: '/sobre-nosotros' }];
 const curva = ([x1, y1]: [number, number], [x2, y2]: [number, number], k = 0.25) => {
@@ -24,18 +23,18 @@ const PRINCIPIOS = [
   { icono: 'i-users', t: 'Te asesoran fisioterapeutas', d: 'Hablas con gente de tu profesión, que entiende cómo trabajas y qué necesitas de verdad.' },
   { icono: 'i-tool', t: 'Te acompañamos después', d: 'Instalación, formación y soporte según el proyecto, 2 años de garantía y un mantenimiento claro desde el día uno.' },
 ];
-const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioterapeuta', worksFor: { '@type': 'Organization', name: EMPRESA.nombre }, sameAs: [EMPRESA.instagramJavier.url] };
+
 ---
 <Base
   title="Sobre VytalGroup: Javier Ruiz, fisioterapeuta y fundador"
-  description="VytalGroup nace de Javier Ruiz, fisioterapeuta, para que a otros profesionales no les engañen con los equipos ni el mantenimiento. De fisio a fisio."
+  description="VytalGroup nace de Javier Ruiz, fisioterapeuta, para que a otros profesionales no les engañen con los equipos ni el mantenimiento. Conoce su historia."
   path="/sobre-nosotros"
   og="/og/sobre-nosotros.jpg"
   seccion="sobre-nosotros"
   migas={migas}
-  jsonld={[aboutPage('/sobre-nosotros'), organization(), persona]}
+  jsonld={[aboutPage('/sobre-nosotros'), organization(), persona()]}
 >
-  <PageHero migas={migas} titulo="De fisio *a fisio.*" lead="Soy Javier Ruiz, fisioterapeuta. Monté VytalGroup para que a profesionales como tú no les engañen con los equipos, el mantenimiento ni los productos." kicker="Sobre nosotros" imagen="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" foco="50% 22%">
+  <PageHero migas={migas} titulo="Sobre *VytalGroup.*" lead="Soy Javier Ruiz, fisioterapeuta y fundador de VytalGroup. Te cuento por qué la monté y cómo trabajamos." imagen="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz, fisioterapeuta y fundador de VytalGroup" retrato>
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
       <a class="link" href="#historia">Leer la historia<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -43,7 +42,6 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
   </PageHero>
 
   <BrandsMarquee />
-
 
   <section class="sec sec--white story" id="historia" aria-labelledby="historia-title">
     <div class="wrap">
@@ -103,7 +101,7 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
           <div class="story__txt">
             <p class="story__n">04</p>
             <h3 class="story__t">VytalGroup</h3>
-            <p>Allí fundé VytalGroup para ofrecer equipos de fisioterapia, rehabilitación y medicina a otros profesionales. Veía mucho aprovechamiento en las ventas y quería acabar con eso.</p>
+            <p>Allí fundé VytalGroup para ofrecer <a class="link" href="/equipos">equipos de fisioterapia, rehabilitación y medicina</a> a otros profesionales. Veía mucho aprovechamiento en las ventas y quería acabar con eso.</p>
             <p>Lo importante para mí no es lo que facturamos. Es que a profesionales como yo no les engañen con el mantenimiento, los equipos ni los productos.</p>
           </div>
         </li>
@@ -128,10 +126,10 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
     </div>
   </section>
 
-  <section class="sec sec--white" aria-labelledby="detras-title">
+  <section class="sec sec--grid" aria-labelledby="detras-title">
     <div class="wrap">
       <div class="sec__head">
-        <h2 class="h2" id="detras-title" data-lines>Quiénes estamos <em>detrás.</em></h2>
+        <h2 class="h2" id="detras-title" data-lines>Quiénes <em>somos.</em></h2>
       </div>
       <ul class="who">
         <li class="who__item" data-rv data-tilt>
@@ -147,28 +145,18 @@ const persona = { '@type': 'Person', name: EMPRESA.fundador, jobTitle: 'Fisioter
           <p class="who__d">Nuestra marca propia: equipos desarrollados bajo el Reglamento Europeo de Productos Sanitarios MDR (UE) 2017/745, con soporte técnico local en España.</p>
         </li>
       </ul>
-      <div class="sec__cta" data-rv>
-        <a class="btn btn--dark" href="/catalogo">Ver el catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      </div>
+      <p class="who__more" data-rv><a class="link" href="/catalogo">Ver el catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="link" href="/guias">Leer las guías<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
     </div>
   </section>
 
-  <section class="sec sec--white" aria-labelledby="alcance-title">
+  <section class="sec sec--photo on-dark" aria-labelledby="alcance-title">
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-consulta-fisioterapia-calida" alt="Sala de tratamiento de una consulta de fisioterapia" sizes="(max-width: 767px) 280vw, (max-width: 1023px) 190vw, 100vw" widths={[640, 1080, 1600]} quality={32} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="alcance-title" data-lines>Alcance <em>internacional.</em></h2>
-        <p class="lead" data-rv>Envíos a la UE, USA y LATAM, con la aduana gestionada.</p>
+        <p class="lead" data-rv>Coordinamos la importación y la entrega internacional de cada equipo en la UE, USA y LATAM.</p>
       </div>
       <WorldMap />
-    </div>
-  </section>
-
-  <section class="sec vs" aria-labelledby="vs-title">
-    <div class="wrap">
-      <div class="sec__head">
-        <h2 class="h2" id="vs-title" data-lines>¿Por qué elegir <em>VytalGroup?</em></h2>
-      </div>
-      <Comparator />
     </div>
   </section>
 

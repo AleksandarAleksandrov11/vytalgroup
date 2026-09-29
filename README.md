@@ -1,6 +1,6 @@
 # VytalGroup · Web corporativa
 
-Web multipágina de VytalGroup: **equipos médicos de alta calidad, sin letra pequeña**. Astro con salida 100 % estática, JavaScript vanilla solo donde hace falta (formulario, filtros, menús, cookies y animaciones), mismo sistema de diseño que la landing de campañas (https://vsl-vytalgroup.vercel.app/) y preparada para publicarse en **https://vytalgroup.org**.
+Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con salida 100 % estática, JavaScript vanilla solo donde hace falta (formulario, filtros, menús, cookies y animaciones), mismo sistema de diseño que la landing de venta (https://vsl.vytalgroup.com, hoy también en https://vsl-vytalgroup.vercel.app/) y preparada para publicarse en **https://vytalgroup.com**.
 
 - 78 páginas HTML: inicio, 2 páginas pilar (ecógrafos y diatermias), índice de equipos, 10 páginas de categoría, 53 fichas de producto, catálogo navegable, sobre nosotros, contacto, índice de guías y 3 guías, 3 legales y 404.
 - 53 productos en un único origen de datos (`src/data/productos/`): los 48 del catálogo 2026 y 5 modelos EDAN (Nano, U60, U50, DUS60 y U2) con los datos de la web oficial de EDAN. Todos tienen ficha propia con la misma estructura y sus preguntas frecuentes.
@@ -127,11 +127,11 @@ El índice, el tiempo de lectura, la fecha, el autor, el CTA final, el JSON-LD `
 
 ## 5. Google Sheets (leads del formulario)
 
-La web usa **la misma hoja que la landing**. El script `integrations/google-sheets.gs` sustituye al de la landing y sirve para las dos: la web envía `origen: "web"` y la página exacta; la landing no envía origen y se guarda como `landing`, con su URL de entrada como página.
+**Ya está conectado.** `SHEETS_ENDPOINT` en `src/config.ts` apunta a la misma aplicación web de Apps Script que usa la landing (`vsl.vytalgroup.com`), así que los leads de la web y de la landing caen en la misma hoja. Se comprobó con un envío de prueba desde la web ("PRUEBA WEB (borrar esta fila)", respuesta `{"ok":true}`): bórralo de la hoja.
 
-Columnas (en una hoja nueva se crean en este orden; en la hoja de la landing, **Origen** y **Página** se añaden al final sin tocar las filas anteriores, y cada dato va a la columna que tiene su título):
+Para que la hoja distinga de dónde viene cada lead (columnas **Origen** y **Página**), sustituye el script de la hoja por `integrations/google-sheets.gs` (pasos 2 a 4) usando **Gestionar implementaciones > editar > Versión: nueva**: la URL `/exec` no cambia y la landing sigue funcionando igual. Con el script antiguo los leads de la web también se guardan, solo sin esas dos columnas.
 
-Fecha · Origen · Página · Nombre · Teléfono · Email · Contactar por · WhatsApp · Equipo · Modelo · Perfil · Consentimiento · utm_source · utm_medium · utm_campaign · utm_content · utm_term · fbclid · fbc · fbp · Referrer · URL de entrada · Dispositivo · Idioma · event_id · Estado
+La web envía `origen: "web"` y la página exacta; la landing no envía origen y se guarda como `landing`, con su URL de entrada como página.
 
 ### Pasos
 
@@ -185,13 +185,14 @@ La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`).
 
 1. Sube el repositorio a GitHub e impórtalo en Vercel (**Add New > Project**). Vercel detecta Astro; `vercel.json` ya fija `npm run build` y la carpeta `dist`.
 2. Antes del primer despliegue, rellena `src/config.ts` (endpoint y píxel) o déjalos vacíos para una versión de prueba.
-3. **Dominio vytalgroup.org:** en el proyecto de Vercel, **Settings > Domains > Add** `vytalgroup.org` y `www.vytalgroup.org` (redirige `www` al dominio principal). En el proveedor del dominio:
-   - `vytalgroup.org`: registro **A** a `76.76.21.21`
+3. **Dominio vytalgroup.com:** en el proyecto de Vercel, **Settings > Domains > Add** `vytalgroup.com` y `www.vytalgroup.com` (redirige `www` al dominio principal). En el proveedor del dominio:
+   - `vytalgroup.com`: registro **A** a `76.76.21.21`
    - `www`: registro **CNAME** a `cname.vercel-dns.com`
 
    (o cambia los DNS a los de Vercel). El certificado HTTPS se emite solo.
-4. **Canonical y dominio:** `SITE_URL` (en `src/config.ts`) toma solo el dominio de producción del proyecto de Vercel (`VERCEL_PROJECT_PRODUCTION_URL`). Mientras la web viva en `vytalgroup.vercel.app`, el canonical, Open Graph, JSON-LD, sitemap y `llms.txt` apuntan ahí; en cuanto `vytalgroup.org` sea el dominio de producción, apuntan a `vytalgroup.org` tras el siguiente despliegue. Para forzar otro dominio, define la variable de entorno `SITE_URL` en Vercel.
-5. En Google Search Console, añade la propiedad del dominio y envía `https://vytalgroup.org/sitemap.xml`.
+   - La landing de venta va en otro proyecto de Vercel con el subdominio `vsl.vytalgroup.com`: en ese proyecto, **Settings > Domains > Add** `vsl.vytalgroup.com` y en el DNS un **CNAME** `vsl` a `cname.vercel-dns.com`.
+4. **Canonical y dominio:** `SITE_URL` (en `src/config.ts`) es `https://vytalgroup.com`: de ahí salen canonical, Open Graph, JSON-LD, sitemap y `llms.txt`. Mientras la web se vea también en `vytalgroup.vercel.app`, `vercel.json` le pone `X-Robots-Tag: noindex` a ese host para que Google solo indexe `vytalgroup.com`. Cuando el dominio esté conectado, puedes redirigir `vytalgroup.vercel.app` a `vytalgroup.com` desde **Settings > Domains** (Redirect to). Para usar otro dominio, define la variable de entorno `SITE_URL` en Vercel.
+5. En Google Search Console, añade la propiedad del dominio y envía `https://vytalgroup.com/sitemap.xml`.
 
 `vercel.json` incluye la CSP (solo scripts propios y el de Meta; conexión a Apps Script y Meta), cabeceras de seguridad, caché inmutable para `/_astro` y `/assets`, el PDF como descarga y redirecciones de rutas antiguas o probables (`/nosotros`, `/tecarterapia`, `/equipos/ecografia`...).
 
@@ -235,9 +236,9 @@ Se puede lanzar una sola: `node tests/run.mjs qa-form`.
 
 - **Material de referencia.** No había carpeta `referencias/`: se usó el código fuente de la landing (repositorio `vsl-vytalgroup`) como `referencias/landing/`, con su catálogo PDF de 53 páginas, su foto de Javier y sus imágenes. El catálogo EDAN en inglés no estaba disponible, así que los datos de ecografía salen del catálogo ADC Global Tech | VytalGroup 2026 y del brief.
 - **Color de acento.** El brief proponía `#00C9A7` "a confirmar"; el CSS de la landing usa el turquesa **`#48A0A8`** (y `#7FD3D6` sobre fondo oscuro), así que se mantiene el de la landing para ser coherentes al 100 %. Todo está en `docs/design-system.md` y `src/styles/tokens.css`.
-- **Fuentes.** Geist (el mismo archivo de la landing) e Instrument Serif cursiva recortada a los caracteres del español y cifras (`scripts/fuentes/subset_fonts.sh`), autoalojadas en woff2; solo se precarga la del H1.
+- **Fuentes.** Geist (el archivo de la landing recortado a las letras de Latin-1 y los signos que usa la web) e Instrument Serif cursiva recortada a los caracteres del español y cifras, sin hinting (`scripts/fuentes/subset_fonts.sh`), autoalojadas en woff2; solo se precarga la del H1.
 - **Imágenes.** Cada foto de producto parte del original de más calidad disponible (catálogo, web de EDAN o landing), se escala ×4 con Real-ESRGAN x4plus, se recorta con BiRefNet y se coloca en un lienzo transparente común de 1280 × 960 con el mismo encuadre para todas. Para no inventar nada: nunca se publica el ×4 tal cual (se reduce al tamaño final) y se mezcla un 25 % del original ampliado sin IA, así textos, pantallas y logotipos no cambian; en las fotos de contexto y de Javier se usa el modelo general, más conservador, sin restauración facial. El fondo suave y la sombra de contacto de cada equipo los pone el CSS (`.stage`), con el ancho real del equipo medido en `src/assets/productos/encuadre.json`. Astro genera AVIF y WebP en varios anchos.
-- **Fichas.** Los 53 productos tienen ficha con la misma estructura y orden: galería y datos clave, para quién es, lo que importa, especificaciones con aplicaciones, qué incluye y normativa, garantía y servicio, preguntas frecuentes (4 a 7 por equipo, generadas desde sus datos y las condiciones de la empresa, con su FAQPage), relacionados y formulario. Las camillas solo usan lo que da el catálogo; los EDAN de la web oficial lo indican en su nota de fuente.
+- **Fichas.** Los 53 productos tienen ficha con la misma estructura y orden: galería y datos clave, lo que importa (con la descripción de para quién es como entradilla), especificaciones con aplicaciones, qué incluye y normativa, garantía y servicio, preguntas frecuentes (4 a 7 por equipo, generadas desde sus datos y las condiciones de la empresa, con su FAQPage), relacionados y formulario. Las camillas solo usan lo que da el catálogo; los EDAN de la web oficial lo indican en su nota de fuente.
 - **Tarjetas.** Una única tarjeta de producto en toda la web (categorías, catálogo, gama, guías y fichas). En rejillas y carruseles sus filas son las de la rejilla (CSS subgrid), así nombres, textos, datos y botones quedan alineados aunque cada equipo tenga un texto distinto; los textos están acotados a 2 y 3 líneas. En escritorio se inclinan en 3D hacia el cursor.
 - **Marcas.** Logotipos oficiales de cada web (EDAN, I-Tech, EME y LiKAMED) y de la página de empresa de EasyTech, vectorizados en un solo color (`scripts/imagenes/logos.py`); VytaMeD, sin logotipo publicado, va en texto.
 - **Precio.** Las fichas dicen "Precio según configuración. Pídenos una propuesta sin compromiso." y nunca muestran precios ni `offers` en JSON-LD.
@@ -250,4 +251,8 @@ Se puede lanzar una sola: `node tests/run.mjs qa-form`.
 - **Rendimiento.** CSS en línea por página (sin peticiones de estilos), JS dividido (el formulario y los filtros se cargan solo cuando hacen falta), imágenes con dimensiones fijas y una integración de Astro que borra del build las imágenes originales que no se usan.
 - **Imágenes OG.** Se generan en el build con satori y resvg (marca, titular con acento y producto o foto) y se guardan en caché en `node_modules/.cache/vg-og` para que los siguientes builds sean rápidos.
 - **Mapas.** Los mapas de puntos (mundo, península y Europa) se generan con Natural Earth (paquete `world-atlas`) en `scripts/mapa/generar-mapa.mjs`.
-- **Instagram.** No se publica el número de seguidores de @fisioruiz_ porque cambia con el tiempo; se enlaza el perfil.
+- **Instagram.** Solo se enlaza el perfil de Javier (@fisioruiz_), sin su número de seguidores porque cambia con el tiempo. La marca no tiene cuenta propia, así que no se enlaza ninguna.
+- **Hero del inicio.** Escena 3D en CSS, sin librerías ni WebGL: el ecógrafo Acclarix AX8 delante con su reflejo y la diatermia detrás, sobre un suelo de rejilla en perspectiva. En escritorio la escena gira un poco siguiendo al ratón; en móvil oscila despacio; con movimiento reducido queda quieta. La imagen del ecógrafo es el LCP y se carga con prioridad.
+- **Fondos de sección.** Cada sección tiene un fondo distinto del de sus vecinas: blanco, niebla (`sec--mist`), rejilla (`sec--grid`), puntos (`sec--dots`), turquesa (`sec--teal`), marino (`sec--dark`) o foto con capa marina (`sec--photo`). Las utilidades están en `src/styles/base.css`.
+- **Fotos de fondo.** Seis fotos de clínicas y salas de fisioterapia de Unsplash y Pexels, con licencia libre para uso comercial y sin atribución obligatoria (fuentes y licencias en `docs/fotos-licencias.md`). Van bajo una capa marina, con un alt genérico que no nombra marcas ni modelos.
+- **Catálogo PDF.** Reescrito con Ghostscript para limpiar sus metadatos (el asunto tenía una nota interna sobre códigos CRM y el autor ponía "Vytal Group"). Las páginas son idénticas. La copia de la landing (`assets/docs/`) conserva los metadatos antiguos hasta que se sustituya por esta.

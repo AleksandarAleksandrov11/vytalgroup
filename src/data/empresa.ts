@@ -10,7 +10,6 @@ export const EMPRESA = {
   telefonoTexto: '+34\u00A0616\u00A0372\u00A0644',
   whatsapp: '34616372644',
   email: 'vytalkinetech@gmail.com',
-  instagramMarca: { usuario: 'vytalgroup', url: 'https://www.instagram.com/vytalgroup/' },
   instagramJavier: { usuario: 'fisioruiz_', url: 'https://www.instagram.com/fisioruiz_/' },
   fundador: 'Javier Ruiz',
   catalogoPdf: '/assets/docs/catalogo-vytalgroup-2026.pdf',

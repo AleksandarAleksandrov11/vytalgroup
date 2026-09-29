@@ -36,9 +36,10 @@
 
 /* Información */
 .fp__info { display: grid; gap: 14px; align-content: start; }
-.fp__brand { font-size: .8125rem; font-weight: 560; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-on-dark); }
-.fp__brand::before { content: ""; display: inline-block; vertical-align: middle; width: 28px; height: 1px; margin: -2px 12px 0 0; background: currentColor; }
-.fp__brand a { color: inherit; text-decoration: none; }
+/* Marca y categoría, discretas bajo el nombre */
+.fp__brand { margin-top: -4px; font-size: .9375rem; color: var(--on-dark-2); }
+.fp__brand a { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .3); text-underline-offset: 4px; }
+.fp__brand a { color: inherit; }
 .fp__brand a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .fp__title { font-size: clamp(2.375rem, 1.7rem + 2.8vw, 4.25rem); color: #FFF; }
 .fp__title em { color: var(--teal-light); }

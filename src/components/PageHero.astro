@@ -1,10 +1,9 @@
 ---
-// Cabecera de TODAS las páginas internas, con la misma estructura: fondo marino con brillo turquesa y
-// barrido de ecografía, migas de pan, antetítulo, H1 con el acento en cursiva, una línea de apoyo y
+// Cabecera de TODAS las páginas internas, con la misma estructura: fondo marino con brillo turquesa,
+// migas de pan, H1 con el acento en cursiva, una línea de apoyo y
 // acciones a la izquierda, y a la derecha siempre un visual en el mismo marco 4:3 (foto de contexto a
 // sangre, equipo sin fondo sobre su escenario o, con el slot "visual", un visual propio).
 import Breadcrumbs from './Breadcrumbs.astro';
-import Sweep from './Sweep.astro';
 import Img from './Img.astro';
 import { h1Html } from '../lib/texto';
 import { escena } from '../lib/imagenes';
@@ -14,33 +13,35 @@ interface Props {
   migas: Miga[];
   titulo: string;
   lead?: string;
-  kicker?: string;
   imagen?: string;
   alt?: string;
   /** Posición de la foto dentro del marco (object-position) */
   foco?: string;
+  /** Foto vertical (retrato): el marco toma su proporción para que se vea entera */
+  retrato?: boolean;
+  /** Sin visual en móvil (Contacto: así el formulario asoma en el primer pantallazo). La imagen no
+   *  lleva prioridad para que el móvil, que no la muestra, no la descargue. */
+  sinVisualMovil?: boolean;
 }
-const { migas, titulo, lead, kicker, imagen, alt = '', foco } = Astro.props;
+const { migas, titulo, lead, imagen, alt = '', foco, retrato = false, sinVisualMovil = false } = Astro.props;
 const esFoto = !!imagen && imagen.startsWith('fotos/');
 ---
-<section class="phero on-dark" data-hero aria-labelledby="page-title">
-  <div class="phero__sweep" aria-hidden="true"><Sweep /></div>
+<section class:list={['phero on-dark', { 'phero--novis-m': sinVisualMovil }]} data-hero aria-labelledby="page-title">
   <div class="wrap">
     <Breadcrumbs migas={migas} oscuro />
     <div class="phero__grid">
       <div class="phero__copy">
-        {kicker && <p class="phero__kicker" data-enter style="--ed:.05s">{kicker}</p>}
         <h1 class="h1 phero__title" id="page-title" set:html={h1Html(titulo)} />
         {lead && <p class="lead phero__lead" data-enter style="--ed:.38s">{lead}</p>}
         {Astro.slots.has('extra') && <div class="phero__extra" data-enter style="--ed:.44s"><slot name="extra" /></div>}
         {Astro.slots.has('acciones') && <div class="phero__actions" data-enter style="--ed:.48s"><slot name="acciones" /></div>}
       </div>
-      <div class="phero__visual" data-enter style="--ed:.25s">
+      <div class="phero__visual" data-enter-move style="--ed:.25s">
         {Astro.slots.has('visual') ? (
           <div class="phero__frame phero__frame--custom"><slot name="visual" /></div>
         ) : imagen && (
-          <div class:list={['phero__frame', { stage: !esFoto }]} style={esFoto ? (foco ? `--foco:${foco}` : undefined) : escena(imagen)}>
-            <Img name={imagen} alt={alt} sizes="(min-width: 900px) 540px, 92vw" widths={[360, 540, 720, 1080]} priority class={esFoto ? 'phero__photo' : undefined} />
+          <div class:list={['phero__frame', { stage: !esFoto, 'phero__frame--retrato': retrato }]} style={esFoto ? (foco ? `--foco:${foco}` : undefined) : escena(imagen)}>
+            <Img name={imagen} alt={alt} sizes="(min-width: 900px) 540px, 92vw" widths={[360, 540, 720, 1080]} priority={!sinVisualMovil} class={esFoto ? 'phero__photo' : undefined} />
           </div>
         )}
       </div>

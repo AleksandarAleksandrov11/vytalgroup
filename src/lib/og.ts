@@ -94,7 +94,7 @@ async function generar(d: OgDatos) {
     ].filter(Boolean)),
     h('div', { display: 'flex', alignItems: 'center', gap: 14, fontFamily: 'Geist', fontWeight: 500, fontSize: 20, color: 'rgba(255,255,255,0.6)' }, [
       h('div', { display: 'flex', width: 10, height: 10, borderRadius: 10, backgroundColor: '#48A0A8' }),
-      h('div', { display: 'flex' }, 'vytalgroup.org · Te asesoran fisioterapeutas'),
+      h('div', { display: 'flex' }, 'vytalgroup.com · Te asesoran fisioterapeutas'),
     ]),
   ]);
   const hijos: Nodo[] = [izq];

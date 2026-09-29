@@ -27,15 +27,15 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
   migas={migas}
   jsonld={[collectionPage('/catalogo', 'Catálogo de equipos de fisioterapia y equipamiento médico'), itemList('Catálogo VytalGroup 2026', PRODUCTOS)]}
 >
-  <PageHero migas={migas} titulo="El catálogo *completo.*" lead={`Todos los equipos del catálogo internacional 2026, aquí mismo. Y sus ${EMPRESA.catalogoPaginas} páginas en PDF, con descarga directa y sin dejar tus datos.`} kicker={`${PRODUCTOS.length} equipos`}>
+  <PageHero migas={migas} titulo="Catálogo de equipos *de fisioterapia.*" lead={`Todos los equipos del catálogo internacional 2026, aquí mismo. Y sus ${EMPRESA.catalogoPaginas} páginas en PDF, con descarga directa y sin dejar tus datos.`}>
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href={EMPRESA.catalogoPdf} download data-catalog data-origen="catalogo" data-magnetic><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Descargar catálogo (PDF)</a>
       <a class="link" href="#productos">Ver los equipos<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </Fragment>
-    <div slot="visual" class="catv"><CatalogMockup /></div>
+    <div slot="visual" class="catv"><CatalogMockup sizes="(min-width: 1280px) 186px, (min-width: 900px) 15vw, (min-width: 600px) 190px, 32vw" priority /></div>
   </PageHero>
 
-  <section class="sec sec--white cat-sec" id="productos" aria-labelledby="productos-title" data-catalogo>
+  <section class="sec sec--mist cat-sec" id="productos" aria-labelledby="productos-title" data-catalogo>
     <h2 class="sr-only" id="productos-title">Equipos del catálogo</h2>
     <div class="cf" data-js-only>
       <div class="wrap cf__in">
@@ -62,7 +62,7 @@ const texto = (p: (typeof PRODUCTOS)[number]) => norm([p.nombre, p.marca, CAT[p.
       <ul class="grid cat-list" data-list>
         {PRODUCTOS.map((p) => (
           <li data-item data-cat={p.categoria} data-tambien={(p.tambienEn || []).join(' ')} data-nombre={p.nombre} data-marca={p.marca} data-orden={p.orden} data-texto={texto(p)}>
-            <ProductCard p={p} vt sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 120px" />
+            <ProductCard p={p} sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 44vw" />
           </li>
         ))}
       </ul>

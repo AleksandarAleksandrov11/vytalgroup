@@ -35,3 +35,11 @@ export const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').to
 
 /** Espacio de no separación entre un número y su unidad ("2 h", "9,25 kg", "12 MHz") para que no se partan */
 export const unidades = (s: string) => s.replace(/(\d) (?=(?:h|min|s|ms|kg|g|W|kW|mW|J|kHz|MHz|Hz|mA|V|GB|TB|mm|cm|m|nm|bar)\b)/g, '$1\u00A0');
+
+/** Sin tildes ni diacríticos (ids de encabezados) */
+export const sinTildes = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+/** Enlaces internos en textos de datos con la sintaxis [texto](/ruta): HTML escapado con sus <a> */
+export const enlaces = (t: string) => esc(t).replace(/\[([^\]]+)\]\((\/[^)\s]*)\)/g, '<a href="$2">$1</a>');
+/** El mismo texto sin la marca de enlace (JSON-LD, meta, WhatsApp) */
+export const sinEnlaces = (t: string) => t.replace(/\[([^\]]+)\]\((\/[^)\s]*)\)/g, '$1');

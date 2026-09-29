@@ -1,5 +1,5 @@
 import { defineConfig, type AstroIntegration } from 'astro/config';
-import { readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE_URL } from './src/config';
@@ -24,6 +24,14 @@ const sinArchivosMuertos = (): AstroIntegration => ({
         if (!texto.includes(name)) { bytes += statSync(f).size; rmSync(f); n++; }
       }
       logger.info(`${n} archivos sin referencias eliminados (${(bytes / 1024).toFixed(0)} KB)`);
+      // Ids de los encabezados de las guías sin tildes (#inalambrico-portatil-o-de-carro): así los enlaces
+      // "Saltar a" y los compartidos no llevan %C3%B3. El índice de [slug].astro ya enlaza sin tildes.
+      const sinTildes = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      for (const f of files.filter((f) => f.includes(`${join(root, 'guias')}`) && f.endsWith('.html'))) {
+        const html = readFileSync(f, 'utf8');
+        const limpio = html.replace(/(<h[1-6][^>]*\sid=")([^"]+)"/g, (_m, a, id) => `${a}${sinTildes(id)}"`);
+        if (limpio !== html) writeFileSync(f, limpio);
+      }
     },
   },
 });

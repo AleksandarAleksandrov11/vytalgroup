@@ -42,7 +42,7 @@ const arco = ([x, y]: [number, number]) => {
   @media (prefers-reduced-motion: no-preference) {
     .map__dot { transform: scale(.4); }
     .map.is-on .map__dot { transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); transition-delay: calc(200ms + var(--i) * 110ms); }
-    .map.is-on .map__pulse { animation: map-pulse 2.8s var(--ease) infinite; animation-delay: calc(1.4s + var(--i) * 230ms); }
+    .map.is-on .map__pulse { animation: map-pulse 2.8s var(--ease) 3; animation-delay: calc(1.4s + var(--i) * 230ms); }
   }
   @keyframes map-pulse { 0% { opacity: .7; transform: scale(.35); } 70%, 100% { opacity: 0; transform: scale(1.5); } }
 </style>

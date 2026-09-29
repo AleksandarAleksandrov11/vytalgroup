@@ -6,7 +6,7 @@
    6 filas: imagen, marca y categoría, nombre, línea, datos y botón. Dentro de una rejilla o un carrusel
    las filas son las de la rejilla (subgrid): nombres, textos, datos y botones quedan alineados con las
    tarjetas vecinas aunque cada equipo tenga un texto distinto. Textos acotados a 2 y 3 líneas. */
-.pc { position: relative; display: grid; grid-template-rows: auto auto auto 1fr auto auto; height: 100%; padding: 10px 10px 14px; border-radius: var(--r-lg); background: var(--card); box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
+.pc { position: relative; display: grid; grid-template-rows: auto auto auto 1fr auto auto; height: 100%; padding: 10px 10px 14px; border-radius: var(--r-lg); background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
 .pc__media { border-radius: var(--r-sm); overflow: hidden; }
 .pc__media img { translate: 0 var(--py, 0px); }
 .pc__meta { display: flex; justify-content: space-between; gap: 10px; margin: 14px 8px 0; font-size: .6875rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--teal-ink); }
@@ -84,7 +84,8 @@
 .cc { position: relative; display: flex; flex-direction: column; height: 100%; padding: 8px 8px 14px; border-radius: var(--r-md); background: #FFF; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); transition: transform .5s var(--ease), box-shadow .35s ease; }
 .cc__media { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; }
 .cc__media img { translate: 0 var(--py, 0px); transition: scale .7s var(--ease), transform .7s var(--ease); }
-.cc__name { display: grid; gap: 2px; margin: 12px 6px 0; font-size: .9375rem; font-weight: 560; line-height: 1.25; letter-spacing: -.015em; text-wrap: balance; }
+.cc__head { display: grid; gap: 2px; margin: 12px 6px 0; }
+.cc__name { margin: 0; font-size: .9375rem; font-weight: 560; line-height: 1.25; letter-spacing: -.015em; text-wrap: balance; }
 .cc__count { flex: none; font-size: .8125rem; font-weight: 400; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .cc__desc { margin: 4px 6px 0; font-size: .8125rem; line-height: 1.4; color: var(--ink-2); }
 .cc__arrow { position: absolute; z-index: 2; top: 14px; right: 14px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--ink-2); background: rgba(255, 255, 255, .92); box-shadow: inset 0 0 0 1px var(--line-2), 0 2px 6px -2px rgba(11, 25, 41, .18); transition: transform .4s var(--ease), background-color .25s ease, color .25s ease; }
@@ -92,7 +93,8 @@
 @media (min-width: 900px) {
   .cc { padding: 10px 10px 18px; border-radius: var(--r-lg); }
   .cc__media { border-radius: var(--r-sm); }
-  .cc__name { margin: 14px 8px 0; font-size: 1.0625rem; }
+  .cc__head { margin: 14px 8px 0; }
+  .cc__name { font-size: 1.0625rem; }
   .cc__desc { margin: 4px 8px 0; font-size: .875rem; }
 }
 /* Con ratón, la descripción aparece sobre la imagen al pasar por encima */
@@ -104,3 +106,7 @@
   .cc:hover .cc__arrow { transform: rotate(-45deg); background: var(--ink); color: #FFF; }
 }
 .cc--big .cc__name { font-size: clamp(1.25rem, 1rem + .8vw, 1.625rem); letter-spacing: -.025em; }
+
+/* Tarjetas claras dentro de secciones oscuras: su botón de contorno vuelve a ser oscuro */
+.on-dark .pc .btn--line, :is(.sec--dark, .sec--photo) .pc .btn--line { --fill: var(--ink); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2); }
+@media (hover: hover) { .on-dark .pc .btn--line:hover, :is(.sec--dark, .sec--photo) .pc .btn--line:hover { color: #FFF; } }

@@ -23,6 +23,18 @@ export const COMPARATIVA_ECOGRAFOS = {
   ],
 };
 
+export const COMPARATIVA_CAMILLAS = {
+  columnas: ['Accionamiento', 'Lo que la distingue', 'Ideal para'],
+  filas: [
+    { slug: 'camilla-electrica-premium', valores: ['Eléctrico motorizado, altura y posición', 'Multisección, mando a pedal y tapizado antimicrobiano', 'Tratamientos de fisioterapia y exploración'] },
+    { slug: 'camilla-hidraulica-pro', valores: ['Hidráulico de precisión, silencioso', 'Respaldo articulado, laterales abatibles y superficie extra ancha', 'Tratamientos de larga duración'] },
+    { slug: 'camilla-hidraulica-clinica', valores: ['Hidráulico', 'Posapiés desmontable y tapizado antimicrobiano', 'Consultas de alto tráfico'] },
+    { slug: 'camilla-hidraulica-compacta', valores: ['Hidráulico', '3 secciones articuladas, respaldo muy elevado y ruedas bloqueables', 'Fisioterapia, exploración y rehabilitación'] },
+    { slug: 'camilla-electrica-multiposicion', valores: ['Eléctrico, ajuste de altura', 'Superficie plana con orificio facial y mando a pedal', 'Masaje y exploración'] },
+    { slug: 'camilla-electrica-estandar', valores: ['Eléctrico, ajuste motorizado de altura', 'Fiable y sólida para el uso diario', 'Uso diario en consulta'] },
+  ],
+};
+
 export const COMPARATIVA_DIATERMIAS = {
   columnas: ['Potencia', 'Frecuencias', 'Programas', 'Modos y cabezales', 'Para quién es'],
   filas: [

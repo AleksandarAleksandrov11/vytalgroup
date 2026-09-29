@@ -110,6 +110,21 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .sec--dark :focus-visible { outline-color: #FFF; }
 .sec--mist { background: var(--mist); }
 .sec--white { background: #FFF; }
+/* Fondos de sección: cada sección se distingue de las vecinas (blanco, niebla, rejilla, puntos,
+   turquesa, marino o foto con capa marina). Sobre marino y foto, textos claros. */
+.sec--grid { background-color: var(--mist); background-image: linear-gradient(rgba(11, 25, 41, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(11, 25, 41, .045) 1px, transparent 1px); background-size: 44px 44px; background-position: center top; }
+.sec--dots { background-color: #FFF; background-image: radial-gradient(rgba(11, 25, 41, .1) 1px, transparent 1.4px); background-size: 22px 22px; }
+.sec--teal { background: linear-gradient(170deg, var(--vs-a) 0%, var(--vs-b) 100%); }
+.sec--dark { isolation: isolate; background: radial-gradient(70% 80% at 85% 0%, rgba(72, 160, 168, .2), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(47, 123, 208, .12), transparent 70%), var(--navy); }
+.sec--photo { isolation: isolate; overflow: clip; background: var(--navy); color: #FFF; }
+.sec__photo { position: absolute; inset: 0; z-index: -2; }
+.sec__photo picture { display: block; height: 100%; }
+.sec__photo img { width: 100%; height: 100%; object-fit: cover; }
+.sec--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(11, 25, 41, .84) 0%, rgba(11, 25, 41, .66) 50%, rgba(11, 25, 41, .86) 100%); }
+:is(.sec--dark, .sec--photo) .h2 em { color: var(--teal-light); }
+:is(.sec--dark, .sec--photo) .lead { color: var(--on-dark); }
+:is(.sec--dark, .sec--photo) .link { color: #FFF; text-decoration-color: rgba(255, 255, 255, .4); }
+:is(.sec--dark, .sec--photo) :focus-visible { outline-color: #FFF; }
 .sec__head { display: flex; flex-direction: column; align-items: center; gap: 20px; max-width: 820px; margin: 0 auto 36px; text-align: center; }
 .sec__head .lead { max-width: 46ch; }
 @media (min-width: 900px) { .sec__head { margin-bottom: 56px; } }
@@ -152,9 +167,12 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .h1 .w > span { transform: translateY(110%); animation: word-up var(--t-in-long) var(--ease) forwards; animation-delay: calc(60ms + var(--i, 0) * 90ms); }
   [data-enter] { opacity: 0; animation: fade-up var(--t-in-long) var(--ease) forwards; animation-delay: var(--ed, .35s); }
+  /* El visual de las cabeceras solo se desplaza: con opacidad 0 Chrome no lo cuenta como LCP */
+  [data-enter-move] { animation: move-up var(--t-in-long) var(--ease) backwards; animation-delay: var(--ed, .25s); }
 }
 @keyframes word-up { to { transform: none; } }
 @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes move-up { from { transform: translateY(14px); } }
 
 /* ---------- Transiciones entre páginas (View Transitions entre documentos) ---------- */
 @view-transition { navigation: auto; }
@@ -170,3 +188,10 @@ ul[class], ol[class] { list-style: none; padding: 0; }
   .rv, .rvi { transform: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+/* Textos corridos y títulos pequeños dentro de secciones oscuras (marino o foto) */
+:is(.sec--dark, .sec--photo) :is(.what__txt, .combo__copy .lead, .cat__copy .lead) { color: var(--on-dark); }
+:is(.sec--dark, .sec--photo) .fp-gar__title { color: var(--on-dark-2); }
+:is(.sec--dark, .sec--photo) .combo__media { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(255, 255, 255, .1); }
+:is(.sec--dark, .sec--photo) .what__txt a:not(.link) { color: #FFF; text-decoration: underline; text-decoration-color: var(--teal-light); text-underline-offset: 3px; }
+.what__txt a:not(.link) { color: var(--ink); text-decoration: underline; text-decoration-color: var(--teal); text-underline-offset: 3px; }

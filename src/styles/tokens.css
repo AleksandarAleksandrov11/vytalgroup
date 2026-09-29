@@ -23,7 +23,7 @@
   --line: rgba(11, 25, 41, .09);
   --line-2: rgba(11, 25, 41, .16);
   --teal: #48A0A8;
-  --teal-ink: #2B7D86;
+  --teal-ink: #24707A;
   --teal-soft: rgba(72, 160, 168, .12);
   --teal-light: #8FDCDC;
   --teal-on-dark: #7FD3D6;
@@ -53,7 +53,7 @@
   --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-14: 56px; --s-16: 64px; --s-20: 80px; --s-24: 96px;
   --g: 16px;
   --hd: 64px;
-  --sec: clamp(70px, 3rem + 6vw - 10px, 142px);
+  --sec: clamp(50px, 3rem + 6vw - 30px, 122px);
   --max: 1200px;
   --max-narrow: 760px;
   --max-read: 68ch;

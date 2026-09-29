@@ -51,15 +51,15 @@ const base = { nombre: 'Ana López', perfil: 'Clínica', equipo: 'Ecógrafo', mo
 const ORDEN = ['Fecha', 'Origen', 'Página', 'Nombre', 'Teléfono', 'Email', 'Contactar por', 'WhatsApp', 'Equipo', 'Modelo', 'Perfil', 'Consentimiento', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'fbc', 'fbp', 'Referrer', 'URL de entrada', 'Dispositivo', 'Idioma', 'event_id', 'Estado'];
 
 // 1) Hoja nueva, lead de la web
-let r = run([], { ...base, origen: 'web', pagina: 'https://vytalgroup.org/ecografos/acclarix-ax8' });
+let r = run([], { ...base, origen: 'web', pagina: 'https://vytalgroup.com/ecografos/acclarix-ax8' });
 ok(r.out.ok === true, 'hoja nueva: responde ok');
 ok(JSON.stringify(r.head) === JSON.stringify(ORDEN), 'hoja nueva: columnas en el orden del brief', r.head.join(', '));
-ok(r.col('Origen') === 'web' && r.col('Página') === 'https://vytalgroup.org/ecografos/acclarix-ax8', 'hoja nueva: Origen y Página');
+ok(r.col('Origen') === 'web' && r.col('Página') === 'https://vytalgroup.com/ecografos/acclarix-ax8', 'hoja nueva: Origen y Página');
 ok(r.col('Modelo') === 'Acclarix AX8 (EDAN)' && r.col('Equipo') === 'Ecógrafo', 'hoja nueva: equipo y modelo');
 ok(r.col('WhatsApp') === 'https://wa.me/34612345678' && r.col('Contactar por') === 'WhatsApp', 'hoja nueva: enlace de WhatsApp');
 ok(r.col('Teléfono') === "'+34 612 345 678", 'hoja nueva: el teléfono no se interpreta como fórmula', r.col('Teléfono'));
 ok(r.col('Fecha') === '26/09/2026 10:00:00' && r.col('Estado') === 'Nuevo', 'hoja nueva: fecha y estado');
-ok(r.mails.length === 1 && /Página: https:\/\/vytalgroup\.org/.test(r.mails[0].body), 'hoja nueva: aviso por email con la página');
+ok(r.mails.length === 1 && /Página: https:\/\/vytalgroup\.com/.test(r.mails[0].body), 'hoja nueva: aviso por email con la página');
 
 // 2) Hoja de la landing (cabeceras antiguas y una columna propia), lead de la landing sin origen
 const LANDING = ['Fecha', 'Nombre', 'Contactar por', 'Teléfono', 'WhatsApp', 'Email', 'Perfil', 'Equipo', 'Modelo', 'Consentimiento', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'fbc', 'fbp', 'Referrer', 'URL de entrada', 'Dispositivo', 'Idioma', 'event_id', 'Estado', 'Notas'];

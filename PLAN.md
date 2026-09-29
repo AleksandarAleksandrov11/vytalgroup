@@ -138,3 +138,23 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - [x] Rendimiento: miniaturas de menú en un solo WebP pequeño, imágenes diferidas salvo la del hero, animaciones solo con transform y opacity
 
 - Pruebas de la ronda 3: SEO 1914/1914, HTML válido, Apps Script 18/18, formulario 60/60, interfaz 71/71, accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en las 9 plantillas, CLS 0 y LCP entre 1,28 y 1,72 s.
+
+## Ronda 4 (cambios pedidos tras la tercera entrega)
+- [x] Hero del inicio rediseñado: escena 3D minimalista en CSS (ecógrafo delante con reflejo, diatermia detrás, suelo de rejilla en perspectiva), sin radar ni "de fisio a fisio"
+- [x] Radar (barrido) fuera de todas las cabeceras y antetítulos de los H1 quitados ("4 equipos de diatermia", "15 ecógrafos", "53 equipos"...)
+- [x] Cinta de datos de nuevo bajo el hero del inicio; marcas solo en Sobre nosotros, bajo su cabecera y sin título
+- [x] Fuera "Quién está detrás" y las flechas del comparador "Lo habitual, y lo nuestro"
+- [x] Foto de Javier completa en Sobre nosotros (marco con la proporción de la foto)
+- [x] 20 px menos arriba y abajo en todas las secciones
+- [x] Sobre nosotros reordenado: marcas, historia, forma de trabajar, quiénes somos, alcance y formulario
+- [x] Cada sección con un fondo distinto del de sus vecinas (blanco, niebla, rejilla, puntos, turquesa, marino o foto) en todas las páginas, con 6 fotos de fondo de clínicas y salas de Unsplash y Pexels
+- [x] Auditoría exhaustiva (SEO técnico, SEO de contenido, sentido de cada sección, visual y rendimiento, con verificación de cada hallazgo) y correcciones
+- [x] Formulario conectado a la hoja de Google Sheets de la landing (mismo Apps Script) y probado con una fila de prueba
+- [x] Dominio vytalgroup.com (canonical, sitemap, robots, JSON-LD) y noindex en vytalgroup.vercel.app; la landing queda en vsl.vytalgroup.com
+- [x] Fuera el Instagram de la marca, que no existe (solo queda @fisioruiz_)
+
+## Registro de la ronda 4
+- Auditoría con cinco revisiones independientes (SEO técnico, SEO de contenido, sentido de las secciones, visual y rendimiento) y un verificador por revisión que intentó rebatir cada hallazgo antes de aplicarlo. Aplicado: H1 y títulos sin canibalizar (diatermia, láser, electrólisis), preguntas propias en todas las categorías con redacción natural ("¿Qué camillas tenéis?"), H1 de las fichas con qué es el equipo ("Ecógrafo U50", "Láser de diodo Epil Evo Smart"), JSON-LD con entidades enlazadas (organización, web, persona y autor de las guías), enlaces internos en el texto, anclas de las guías sin tildes, sitemap sin fechas falsas, 404 sin canonical, favicon.ico, alt descriptivos y metadatos del PDF sin notas internas.
+- Visual: elipse de luz del hero sin rectángulo, reflejo solo en el equipo delantero, escena más baja en móvil, línea de tiempo que acaba en el último paso y centrada en tableta, títulos y tarjetas legibles sobre fondos oscuros y `sizes` ajustados al ancho real de cada tarjeta.
+- Rendimiento: animaciones del hero solo con transform y en pausa fuera de pantalla, sin el pulso infinito de la cabecera, la foto de cada cabecera cuenta como LCP (entra solo con movimiento), prefetch de las páginas internas con reglas de especulación, fotos de fondo más ligeras, fuentes más pequeñas (sin hinting y con Latin-1), sprite sin 23 iconos sin uso y arranque del JS sin reflows encadenados.
+- Pruebas de la ronda 4: SEO 1916/1916, HTML válido, Apps Script 18/18, formulario 60/60, interfaz 74/74, accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en las 9 plantillas, CLS 0 y LCP entre 1,31 y 1,63 s.

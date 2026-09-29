@@ -71,3 +71,5 @@
 .what__txt { display: grid; gap: 14px; font-size: var(--fs-lead); line-height: 1.5; color: var(--ink-2); }
 @media (min-width: 900px) { .what { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 64px; align-items: start; } .what .h2 { text-align: left; } }
 
+
+.what__links { display: flex; flex-wrap: wrap; gap: 4px 28px; }

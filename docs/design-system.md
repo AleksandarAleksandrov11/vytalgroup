@@ -18,7 +18,7 @@ Capturas de referencia de la landing: `docs/referencia-landing/landing-375.webp`
 | `--line` | `rgba(11, 25, 41, .09)` | Bordes finos |
 | `--line-2` | `rgba(11, 25, 41, .16)` | Bordes de controles |
 | `--teal` | `#48A0A8` | Acento de marca (el turquesa del logo): CTA, indicadores, progreso |
-| `--teal-ink` | `#2B7D86` | Turquesa oscuro para iconos y texto sobre claro |
+| `--teal-ink` | `#24707A` | Turquesa oscuro para iconos y texto sobre claro |
 | `--teal-soft` | `rgba(72, 160, 168, .12)` | Fondos de iconos |
 | `--teal-light` | `#8FDCDC` | Acento en cursiva sobre fondo marino |
 | `--teal-on-dark` | `#7FD3D6` | Títulos e iconos del pie sobre marino |
@@ -55,7 +55,7 @@ Patrón de marca: todos los H1 y H2 terminan con una palabra o frase en cursiva:
 
 - Margen lateral `--g`: 16 px (móvil), 24 px (desde 640), 32 px (desde 1024).
 - Altura de cabecera `--hd`: 64 px, 72 px desde 1024.
-- Ritmo vertical de sección `--sec`: `clamp(70px, 3rem + 6vw - 10px, 142px)` (10 px menos arriba y abajo que la landing, a petición del cliente).
+- Ritmo vertical de sección `--sec`: `clamp(50px, 3rem + 6vw - 30px, 122px)` (30 px menos arriba y abajo que la landing: 10 px en la ronda 2 y 20 px más en la ronda 4).
 - Escala de espaciado (múltiplos de 4): 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, 80, 96.
 - Anchura máxima de contenido: 1200 px + márgenes (`.wrap`). Estrecha: 760 px (FAQ, legales). Formulario: 600 px. Lectura de guías: 68ch.
 - Radios: píldora 999 px (botones, segmentado, chips), 28 px (tarjeta del formulario), 24 px (tarjetas de producto y paneles), 20 px (categorías, aviso de cookies), 16 px (imágenes dentro de tarjetas, campos, opciones), 12 px y 8 px (detalles).
@@ -73,7 +73,7 @@ Patrón de marca: todos los H1 y H2 terminan con una palabra o frase en cursiva:
 - Easing: `--ease: cubic-bezier(.22, 1, .36, 1)`.
 - Duraciones: `--t-micro: 200ms` (microinteracciones, entre 150 y 250), `--t-in: 600ms` y `--t-in-long: 700ms` (entradas, entre 400 y 700).
 - Solo `transform`, `opacity` y variables CSS. Scroll y cursor con `requestAnimationFrame` y listeners pasivos.
-- `prefers-reduced-motion`: sin parallax, sticky animado, marquesina, inclinación ni conteos; solo fundidos.
+- `prefers-reduced-motion`: sin parallax, sticky animado, marquesina, ni inclinación; solo fundidos.
 
 ## 6. Componentes
 
@@ -84,12 +84,15 @@ Patrón de marca: todos los H1 y H2 terminan con una palabra o frase en cursiva:
 | Cabecera | Fija y con fondo blanco sólido en todas las páginas y anchos (también en móvil, sin ocultarse). Animaciones circulares: punto turquesa que viaja bajo el enlace activo o señalado, relleno que crece en círculo desde el cursor y desplegable de Equipos que se abre en círculo, con miniaturas redondas. En móvil, hamburguesa de 3 líneas en un círculo que se convierte en aspa y panel marino con brillos de color que se revela en círculo desde el botón: enlaces grandes numerados en cursiva, desplegables propios (Ecógrafos, Diatermias y Equipos) y contacto directo. |
 | Tarjeta de producto | La misma en toda la web: blanca, radio 24, escenario 4:3 con el equipo sin fondo, marca y categoría, nombre (2 líneas máx.), línea (3 máx.), 2 datos clave y "Ver ficha". En rejillas y carruseles las filas se alinean con subgrid. Inclinación 3D hacia el cursor, halo de luz, el equipo flota y su sombra se recoge. |
 | Tarjeta de categoría | Escenario 4:3 y nombre; al pasar, una línea de descripción. Inclinación 3D. |
+| Hero del inicio | Escena 3D en CSS (`perspective` y `preserve-3d`): suelo de rejilla en perspectiva, halo, pista de luz, el ecógrafo delante con reflejo y la diatermia detrás. Gira hasta 14° siguiendo al ratón, oscila en táctil y se queda quieta con movimiento reducido. |
+| Cabecera de página (`PageHero`) | La misma en todas las páginas internas: fondo marino, migas, H1 con acento, apoyo y acciones a la izquierda y un visual 4:3 a la derecha (foto a sangre, equipo sobre escenario o retrato completo). Sin antetítulos ni animaciones de radar. |
+| Fondos de sección | Dos secciones seguidas nunca comparten fondo: `sec--white`, `sec--mist`, `sec--grid` (rejilla fina), `sec--dots` (puntos), `sec--teal` (turquesa suave), `sec--dark` (marino con brillo) y `sec--photo` (foto a sangre con capa marina; la imagen va en `.sec__photo`). Con `on-dark`, títulos, textos y enlaces pasan a blanco. |
 | Rejillas de tarjetas | Las tarjetas de una misma fila alinean sus partes con subgrid (producto, características de la ficha, razones, "Cómo elegir", "Quiénes estamos" y "Nuestra forma de trabajar"), así títulos de una o dos líneas no descuadran textos ni botones. Una última fila incompleta va centrada (3, 5 o 7 tarjetas; y la tarjeta sola en rejillas de 2 columnas). |
 | Datos con unidades | Número y unidad nunca se separan ("2 h", "9,25 kg", "12 MHz"): `unidades()` de `src/lib/texto.ts` en tarjetas, fichas y comparativas. |
 | Escenario de producto (`.stage`) | Las fotos de equipo no tienen fondo: degradado radial suave y sombra de contacto del ancho real del equipo (`--sw`, de `encuadre.json`) en la línea del 88 %. |
 | Control segmentado | Píldora gris con indicador turquesa que se desliza. |
 | Acordeón | Filas con borde inferior, icono "+" en círculo que gira a "×" y se rellena de marino. |
-| Comparador | Filas "Lo habitual → Con VytalGroup": lo habitual se tacha solo al aparecer, una flecha en círculo y lo nuestro con su check que se dibuja. |
+| Comparador | Dos columnas, "Lo habitual" y "Con VytalGroup": lo habitual se tacha solo al aparecer y lo nuestro lleva su check que se dibuja. Sin flechas. |
 | Formulario | Tarjeta blanca radio 28, barra de progreso turquesa de 3 px, una pregunta por pantalla, opciones de 60 px con radio personalizado, desplegables propios (hoja inferior en móvil), consentimiento con casilla propia. |
 | Cookies | Aviso flotante con tres botones de igual peso y panel en diálogo con interruptores propios. |
 | Pie | Marino, logo, claim con acento, columnas con título pequeño en mayúsculas turquesa, y "VytalGroup" a todo el ancho con las letras que suben una a una. |

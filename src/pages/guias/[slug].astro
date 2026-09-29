@@ -13,7 +13,7 @@ import CtaFinal from '../../components/CtaFinal.astro';
 import { producto } from '../../data/productos';
 import { EMPRESA } from '../../data/empresa';
 import { article, absUrl } from '../../lib/seo';
-import { minutosLectura, fechaLarga, plano } from '../../lib/texto';
+import { minutosLectura, fechaLarga, plano, sinTildes } from '../../lib/texto';
 
 export async function getStaticPaths() {
   const guias = await getCollection('guias');
@@ -42,12 +42,14 @@ const og = `/og/${g.id}.jpg`;
   jsonld={[article({ titulo: plano(g.data.titulo), descripcion: g.data.seoDescription, url, imagen: absUrl(og), fecha: g.data.fecha, actualizada: g.data.actualizada })]}
 >
   <article class="gd">
-    <PageHero migas={migas} titulo={g.data.titulo} lead={g.data.resumen} kicker={`Guía · ${minutos} min de lectura`} imagen={g.data.imagen} alt={g.data.imagenAlt}>
+    <PageHero migas={migas} titulo={g.data.titulo} lead={g.data.resumen} imagen={g.data.imagen} alt={g.data.imagenAlt}>
       <div slot="extra" class="gd__byline">
         <a class="gd__author" href="/sobre-nosotros">
           <Img name="fotos/javier-ruiz-fisioterapeuta" alt="Javier Ruiz" sizes="44px" widths={[88, 132]} class="gd__avatar" />
           <span><strong>{EMPRESA.fundador}</strong>, fisioterapeuta</span>
         </a>
+        <span class="gd__dot" aria-hidden="true"></span>
+        <span>{minutos} min de lectura</span>
         <span class="gd__dot" aria-hidden="true"></span>
         <time datetime={g.data.actualizada || g.data.fecha}>{g.data.actualizada ? `Actualizada el ${fechaLarga(g.data.actualizada)}` : fechaLarga(g.data.fecha)}</time>
       </div>
@@ -58,7 +60,7 @@ const og = `/og/${g.id}.jpg`;
         <details class="toc" open>
           <summary class="toc__sum" id="toc-title">En esta guía<svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
           <ol class="toc__list">
-            {indice.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            {indice.map((h) => <li><a href={`#${sinTildes(h.slug)}`}>{h.text}</a></li>)}
           </ol>
         </details>
       </nav>
@@ -87,20 +89,20 @@ const og = `/og/${g.id}.jpg`;
   </article>
 
   {productos.length > 0 && (
-    <section class="sec sec--white" aria-labelledby="rel-title">
+    <section class="sec sec--dark on-dark" aria-labelledby="rel-title">
       <div class="wrap">
         <div class="sec__head">
           <h2 class="h2" id="rel-title" data-lines>Equipos de <em>esta guía.</em></h2>
         </div>
         <ul class="grid grid--4 gd-rel">
-          {productos.map((p) => <li><ProductCard p={p} sizes="(min-width: 1200px) 280px, (min-width: 900px) 23vw, (min-width: 640px) 46vw, 88vw" /></li>)}
+          {productos.map((p) => <li><ProductCard p={p} sizes="(min-width: 1200px) 280px, (min-width: 1100px) 23vw, (min-width: 640px) 46vw, 88vw" widths={[240, 320, 480, 640, 960]} /></li>)}
         </ul>
       </div>
     </section>
   )}
 
   {otras.length > 0 && (
-    <section class="sec" aria-labelledby="otras-title">
+    <section class="sec sec--mist" aria-labelledby="otras-title">
       <div class="wrap">
         <div class="sec__head">
           <h2 class="h2" id="otras-title" data-lines>Sigue <em>leyendo.</em></h2>

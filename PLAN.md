@@ -158,3 +158,8 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - Visual: elipse de luz del hero sin rectángulo, reflejo solo en el equipo delantero, escena más baja en móvil, línea de tiempo que acaba en el último paso y centrada en tableta, títulos y tarjetas legibles sobre fondos oscuros y `sizes` ajustados al ancho real de cada tarjeta.
 - Rendimiento: animaciones del hero solo con transform y en pausa fuera de pantalla, sin el pulso infinito de la cabecera, la foto de cada cabecera cuenta como LCP (entra solo con movimiento), prefetch de las páginas internas con reglas de especulación, fotos de fondo más ligeras, fuentes más pequeñas (sin hinting y con Latin-1), sprite sin 23 iconos sin uso y arranque del JS sin reflows encadenados.
 - Pruebas de la ronda 4: SEO 1916/1916, HTML válido, Apps Script 18/18, formulario 60/60, interfaz 74/74, accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en las 9 plantillas, CLS 0 y LCP entre 1,31 y 1,63 s.
+
+## Ronda 5 (hero del inicio)
+- [x] Hero del inicio rediseñado por completo, más limpio: fondo claro de estudio, titular centrado y tres equipos reales (Acclarix AX8 delante, Diatermia Multifunción y Shock Med detrás) sobre el mismo suelo con su sombra de contacto; sin rejilla, reflejos, brillos ni animaciones en bucle
+- [x] Probadas dos composiciones (centrada y a dos columnas) en 320 a 1920 px; la centrada gana porque los equipos se apoyan en el suelo en lugar de flotar
+- Pruebas de la ronda 5: SEO 1916/1916, HTML válido, Apps Script 18/18, formulario 60/60, interfaz 75/75 (con las del hero nuevo), accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil del inicio 100 · 100 · 100 · 100, LCP 1,40 s y CLS 0 (el resto de plantillas, de 99 a 100).

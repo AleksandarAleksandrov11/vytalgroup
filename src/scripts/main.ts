@@ -337,12 +337,12 @@ if (fine && !reduced) {
   });
 }
 
-// ------------------------------------------------------------------ marquesinas y escena 3D del inicio: en pausa fuera de pantalla
+// ------------------------------------------------------------------ marquesinas: en pausa fuera de pantalla
 if (hasIO) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => e.target.classList.toggle('is-paused', !e.isIntersecting));
   });
-  $$('[data-marquee], [data-hx3d]').forEach((el) => io.observe(el));
+  $$('[data-marquee]').forEach((el) => io.observe(el));
 }
 
 // ------------------------------------------------------------------ acordeones (FLIP: solo transform)
@@ -518,26 +518,25 @@ $$('[data-map]').forEach((map) => {
   io.observe(map);
 });
 
-// ------------------------------------------------------------------ escena 3D del hero (inicio)
-// Con ratón, el mundo gira unos grados hacia el cursor (cada capa está a su profundidad, así se nota
-// el 3D). Solo transform; con movimiento reducido o en pantallas táctiles no se toca.
-$$('[data-hx3d]').forEach((scene) => {
+// ------------------------------------------------------------------ hero del inicio: paralaje leve con el ratón
+// Los equipos se desplazan unos píxeles hacia el cursor según su profundidad (el ecógrafo, delante, más; los de
+// detrás, al revés). Solo la propiedad translate; con movimiento reducido o en pantallas táctiles no se toca.
+$$('[data-hx-stage]').forEach((stage) => {
   if (reduced || !fine) return;
-  const world = $<HTMLElement>('.hx__world', scene);
-  const zone = scene.closest('section');
-  if (!world || !zone) return;
+  const zone = stage.closest('section');
+  if (!zone) return;
   let raf = 0;
   zone.addEventListener('pointermove', (e) => {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
       const r = zone.getBoundingClientRect();
-      const x = ((e as PointerEvent).clientX - (r.left + r.width / 2)) / r.width;
-      const y = ((e as PointerEvent).clientY - (r.top + r.height / 2)) / r.height;
-      world.style.setProperty('--rx', `${(-y * 6).toFixed(2)}deg`);
-      world.style.setProperty('--ry', `${(x * 14).toFixed(2)}deg`);
+      const x = ((e as PointerEvent).clientX - (r.left + r.width / 2)) / (r.width / 2);
+      const y = ((e as PointerEvent).clientY - (r.top + r.height / 2)) / (r.height / 2);
+      stage.style.setProperty('--px', x.toFixed(3));
+      stage.style.setProperty('--py', y.toFixed(3));
     });
   }, { passive: true });
-  zone.addEventListener('pointerleave', () => { world.style.removeProperty('--rx'); world.style.removeProperty('--ry'); });
+  zone.addEventListener('pointerleave', () => { stage.style.removeProperty('--px'); stage.style.removeProperty('--py'); });
 });
 
 // ------------------------------------------------------------------ maqueta 3D del catálogo: abanico e inclinación

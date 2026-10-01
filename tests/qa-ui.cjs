@@ -172,15 +172,22 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await nos.ctx.close();
   });
 
-  await block('Inicio: hero 3D y cinta de confianza', async () => {
+  await block('Inicio: hero de estudio y cinta de confianza', async () => {
     const { ctx, p } = await open(b, '/');
-    ok(await p.$eval('.hx__item--front img', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager'), 'hero: el ecógrafo del hero es la imagen prioritaria (LCP)');
-    ok(await p.$eval('.hx__scene', (e) => getComputedStyle(e).perspective !== 'none' && getComputedStyle(e.querySelector('.hx__world')).transformStyle === 'preserve-3d'), 'hero: escena 3D con perspectiva');
-    ok(await p.$eval('.hx', (h) => !h.querySelector('.sweep, [class*="kicker"], [class*="badge"]')), 'hero: sin radar, antetítulo ni etiquetas');
-    await p.mouse.move(1100, 400);
-    await p.mouse.move(1250, 300, { steps: 6 });
+    ok(await p.$eval('.hx__item--c img', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager'), 'hero: el ecógrafo del centro es la imagen prioritaria (LCP)');
+    ok(await p.$eval('.hx', (h) => !h.querySelector('.sweep, [class*="kicker"], [class*="badge"], .hx__floor, .hx__world') && !h.classList.contains('on-dark')), 'hero: claro, sin radar, antetítulo, etiquetas ni escena 3D');
+    ok(await p.$$eval('.hx__item', (as) => as.length === 3 && as.every((a) => a.getAttribute('href') && a.querySelector('img')?.alt)), 'hero: tres equipos enlazados a su ficha, con alt');
+    await p.waitForTimeout(1600);
+    ok(await p.evaluate(() => {
+      const hx = document.querySelector('.hx').getBoundingClientRect();
+      const [l, c, r] = [...document.querySelectorAll('.hx__item')].map((a) => a.getBoundingClientRect());
+      const acts = document.querySelector('.hx__actions').getBoundingClientRect();
+      return l.right > c.left && c.right > r.left && l.bottom < c.bottom && Math.abs(l.bottom - r.bottom) < 2 && c.top > acts.bottom && c.bottom < hx.bottom && document.documentElement.scrollWidth <= innerWidth;
+    }), 'hero: el ecógrafo delante y la diatermia y las ondas de choque detrás, bajo los botones y sin desbordar');
+    await p.mouse.move(400, 400);
+    await p.mouse.move(1200, 300, { steps: 6 });
     await p.waitForTimeout(300);
-    ok(await p.$eval('.hx__world', (w) => w.style.getPropertyValue('--ry') !== ''), 'hero: la escena gira con el cursor');
+    ok(await p.$eval('[data-hx-stage]', (s) => s.style.getPropertyValue('--px') !== ''), 'hero: los equipos se desplazan un poco con el cursor');
     ok(await p.evaluate(() => document.querySelector('.hx').nextElementSibling?.classList.contains('stats')), 'cinta de confianza justo debajo del hero');
     ok(await p.evaluate(() => !document.querySelector('.bm')), 'inicio: sin cinta de marcas (solo en Sobre nosotros)');
     await ctx.close();

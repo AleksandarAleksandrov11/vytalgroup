@@ -1,6 +1,6 @@
 # VytalGroup · Web corporativa
 
-Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con salida 100 % estática, JavaScript vanilla solo donde hace falta (formulario, filtros, menús, cookies y animaciones), mismo sistema de diseño que la landing de venta (https://vsl.vytalgroup.com, hoy también en https://vsl-vytalgroup.vercel.app/) y preparada para publicarse en **https://vytalgroup.com**.
+Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con salida 100 % estática, JavaScript vanilla solo donde hace falta (formulario, filtros, menús, cookies y animaciones), mismo sistema de diseño que la landing de venta (https://vsl-vytalgroup.vercel.app/) y publicada en **https://www.vytalgroupem.com**.
 
 - 78 páginas HTML: inicio, 2 páginas pilar (ecógrafos y diatermias), índice de equipos, 10 páginas de categoría, 53 fichas de producto, catálogo navegable, sobre nosotros, contacto, índice de guías y 3 guías, 3 legales y 404.
 - 53 productos en un único origen de datos (`src/data/productos/`): los 48 del catálogo 2026 y 5 modelos EDAN (Nano, U60, U50, DUS60 y U2) con los datos de la web oficial de EDAN. Todos tienen ficha propia con la misma estructura y sus preguntas frecuentes.
@@ -8,6 +8,7 @@ Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con 
 - Formulario de 4 pasos idéntico al de la landing, conectado a la **misma hoja de Google Sheets**. Los leads de la web llegan con `utm_source = web` (si la visita no trae UTM propios).
 - Aviso de cookies con tres categorías (necesarias, analítica y marketing): Vercel Web Analytics y Meta Pixel solo se cargan con consentimiento.
 - Botón flotante de WhatsApp en todas las páginas, con el mensaje ya escrito según la página (general, categoría o equipo).
+- Intro de marca al abrir la web (una vez por sesión, sin bloquear nada) y hero con cortina de luz, zoom y brillo en movimiento.
 - Imágenes OG de 1200 × 630 generadas en el build para cada página, categoría, ficha y guía.
 
 ---
@@ -27,7 +28,7 @@ Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con 
   - `serve.mjs`: Servidor local que imita a Vercel (cabeceras, URLs limpias y 404 real)
   - `check-content.mjs`: Validador de los datos de producto y categorías
   - `imagenes/`: Fotos con IA (`mejorar_ia.py`: Real-ESRGAN y BiRefNet), medida de cada equipo para su sombra (`encuadre.py`) y logotipos de marcas en SVG (`logos.py`), en Python
-  - `mapa/`: Generador de los mapas de puntos (Natural Earth)
+  - `mapa/`: Generadores de los mapas (Natural Earth): `generar-alcance.mjs` (mapa de Alcance internacional: países y puntos de envío) y `generar-mapa.mjs` (mapas de puntos de "La historia")
   - `fuentes/`: Subconjunto de la fuente serif
 - `src/`
   - `config.ts`: SITE_URL, SHEETS_ENDPOINT, META_PIXEL_ID y VERCEL_ANALYTICS (lo único que hay que tocar para publicar)
@@ -128,9 +129,9 @@ El índice, el tiempo de lectura, la fecha, el autor, el CTA final, el JSON-LD `
 
 ## 5. Google Sheets (leads del formulario)
 
-**Ya está conectado.** `SHEETS_ENDPOINT` en `src/config.ts` apunta a la misma aplicación web de Apps Script que usa la landing (`vsl.vytalgroup.com`), así que los leads de la web y de la landing caen en la misma hoja, pestaña **Leads**: Fecha, Nombre, Teléfono, Email, Perfil, Equipo de interés, Modelo, utm_source, utm_medium, utm_campaign, utm_content, utm_term y event_id (oculta).
+**Ya está conectado y probado.** `SHEETS_ENDPOINT` (en `src/config.ts`) apunta a la misma aplicación web de Apps Script que usa la landing, así que los leads de la web y de la landing caen en la misma hoja, pestaña **Leads**: Fecha, Nombre, Teléfono, Email, Perfil, Equipo de interés, Modelo, utm_source, utm_medium, utm_campaign, utm_content, utm_term y event_id (oculta). La URL `/exec` abierta en el navegador responde `{"ok":true,"service":"VytalGroup leads",...}`.
 
-`integrations/google-sheets.gs` es una **copia exacta** del script de la landing (el que tiene la hoja hoy). No hace falta tocar nada en la hoja para la web. Si se cambia el script, se cambia en los dos repositorios a la vez.
+`integrations/google-sheets.gs` es el script de la landing (el que tiene la hoja) con una mejora: si el email de aviso falla (por ejemplo, por la cuota diaria de Gmail), el lead ya guardado no se responde como error. Para la web no hace falta, pero la landing sí muestra ese error; conviene pegarlo en la hoja (apartado 8, paso 6) y copiarlo también al repositorio de la landing.
 
 **Cómo se distinguen los leads de la web.** Si la visita trae UTM propios (por ejemplo, de un anuncio), se guardan tal cual. Si no, la web los rellena así:
 
@@ -143,32 +144,26 @@ El índice, el tiempo de lectura, la fecha, el autor, el CTA final, el JSON-LD `
 
 **Envío rápido y sin errores falsos.** El formulario manda el lead y muestra el agradecimiento en cuanto Google responde (normalmente en menos de 1,5 s). La respuesta de Apps Script es una redirección a `script.googleusercontent.com`: la web no la sigue (`redirect: "manual"`), porque esa redirección solo llega cuando el script ya ha terminado de ejecutarse. Así no depende de un segundo dominio que algunos bloqueadores o Safari cortan, que era lo que mostraba "No se ha podido enviar" aunque el lead llegaba. A cambio, la web no lee el `{ok:false}` de una validación del servidor; por eso el formulario comprueba lo mismo antes de enviar (nombre, perfil, equipo, consentimiento y teléfono o correo válidos). Si Google tarda más de 1 s, se da las gracias igualmente y el envío sigue en segundo plano (con `keepalive` y un reintento); solo si falla de verdad aparece el aviso con Reintentar y WhatsApp, con los datos intactos. Los reintentos no duplican filas: el script descarta el mismo `event_id`. Tras enviar, "Enviar otra consulta" deja el formulario vacío en la pregunta 1.
 
+El script valida en el servidor, usa `LockService`, descarta duplicados por `event_id`, guarda la fecha en hora de Madrid, evita fórmulas en las celdas y envía un email por lead a `NOTIFY_EMAIL` (hoy `aaswebmarketing@gmail.com`; `SEND_EMAIL_NOTIFICATION = false` lo apaga).
+
+### Cambiar el script de la hoja (sin cambiar la URL)
+
+1. Abre la hoja de leads: **Extensiones > Apps Script**.
+2. Borra todo el código y pega entero `integrations/google-sheets.gs` (cambia antes `NOTIFY_EMAIL` si los avisos deben ir a otro correo). Guarda.
+3. **Implementar > Gestionar implementaciones** > el lápiz de la implementación activa > **Versión: Nueva versión** > **Implementar**. La URL `/exec` no cambia: la web y la landing siguen funcionando sin tocar nada.
+
 ### Si algún día hay que montar la hoja de cero
 
-1. Crea una hoja (por ejemplo "Leads VytalGroup").
-2. En la hoja: **Extensiones > Apps Script**. Borra lo que haya y pega entero `integrations/google-sheets.gs`.
-3. Guarda. Elige la función **setup** y pulsa **Ejecutar**. Acepta los permisos (Revisar permisos > tu cuenta > Configuración avanzada > Ir a (proyecto) > Permitir). Se crea la pestaña "Leads".
-4. **Implementar > Nueva implementación**, tipo **Aplicación web**: Ejecutar como **Yo**; Quién tiene acceso **Cualquier usuario**. Copia la URL que termina en `/exec`.
-   - Si cambias el código de una implementación que ya existe, usa **Gestionar implementaciones > editar > Versión: nueva**: la URL no cambia y la landing sigue funcionando.
-5. Pega la URL en `src/config.ts` (y en `config.js` de la landing):
-   ```ts
-   export const SHEETS_ENDPOINT = 'https://script.google.com/macros/s/.../exec';
-   ```
-6. `npm run build` y publica. Para comprobarlo, abre la URL `/exec` en el navegador: responde `{"ok":true,...}`.
+1. Crea una hoja (por ejemplo "Leads VytalGroup") y pega el script como arriba.
+2. Elige la función **setup** y pulsa **Ejecutar**. Acepta los permisos (Revisar permisos > tu cuenta > Configuración avanzada > Ir a (proyecto) > Permitir). Se crea la pestaña "Leads".
+3. **Implementar > Nueva implementación**, tipo **Aplicación web**: Ejecutar como **Yo**; Quién tiene acceso **Cualquier usuario**. Copia la URL que termina en `/exec`.
+4. Ponla en la variable `SHEETS_ENDPOINT` de Vercel (apartado 7) o en `src/config.ts`, y en `config.js` de la landing. Vuelve a desplegar.
 
 Con `SHEETS_ENDPOINT` vacío, el formulario muestra un error amable (con WhatsApp como alternativa, sin perder los datos) y avisa en la consola del navegador.
 
-El script valida en el servidor, usa `LockService`, descarta duplicados por `event_id`, guarda la fecha en hora de Madrid, evita fórmulas en las celdas y envía un email por lead a la dirección de `NOTIFY_EMAIL` (`SEND_EMAIL_NOTIFICATION` para desactivarlo). Si el email de aviso falla después de guardar la fila, el script responde `{ok:false}` aunque el lead esté en la hoja; la web ya no lo muestra como error (ver arriba).
-
 ## 6. Meta Pixel
 
-El ID va en `src/config.ts`:
-
-```ts
-export const META_PIXEL_ID = '123456789012345';
-```
-
-Sin ID no se carga nada. Con ID, el píxel **no se descarga hasta que el usuario acepta las cookies de marketing**. Eventos (módulo `src/scripts/tracking.ts`):
+Sin ID no se carga nada. Con ID, el píxel **no se descarga hasta que el visitante acepta las cookies de marketing**. El ID se pone en la variable de entorno `META_PIXEL_ID` de Vercel (apartado 7; solo cifras, si no se ignora) o en `src/config.ts`. Eventos (`src/scripts/tracking.ts`):
 
 | Evento | Cuándo |
 | --- | --- |
@@ -179,49 +174,66 @@ Sin ID no se carga nada. Con ID, el píxel **no se descarga hasta que el usuario
 | `Contact` | Al pulsar WhatsApp, teléfono o email |
 | `Search` | Al buscar en el catálogo (con espera de 0,9 s) |
 
-Los UTM y el `fbclid` se guardan en la primera visita (`sessionStorage`) y viajan entre páginas; si no existe la cookie `_fbc`, se construye desde el `fbclid`.
+Los UTM y el `fbclid` se guardan en la primera visita (`sessionStorage`) y viajan entre páginas; si no existe la cookie `_fbc`, se construye desde el `fbclid`. La CSP de `vercel.json` ya permite `connect.facebook.net` y `www.facebook.com`.
 
 ## 6 bis. Analítica (Vercel Web Analytics)
 
-La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`). No usa cookies (Vercel calcula un identificador anónimo que caduca a las 24 horas), pero aun así **solo se carga si el visitante acepta la categoría "Analítica"** del aviso de cookies; si la retira, deja de enviar datos en esa misma visita. El script y los envíos van al propio dominio (`/_vercel/insights/...`), así que la CSP no cambia.
-
-1. En Vercel, abre el proyecto y entra en **Analytics > Enable** (Web Analytics).
-2. `src/config.ts` ya trae `VERCEL_ANALYTICS = true`; ponlo a `false` para desactivarla sin tocar nada más.
-3. En local (`localhost`) nunca se carga, para no ensuciar los datos.
+La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`). No usa cookies (Vercel calcula un identificador anónimo que caduca a las 24 horas), pero aun así **solo se carga si el visitante acepta la categoría "Analítica"** del aviso de cookies; si la retira, deja de enviar datos en esa misma visita. El script y los envíos van al propio dominio (`/_vercel/insights/...`), así que la CSP no cambia. En local (`localhost`) nunca se carga. Para apagarla sin tocar código: variable `VERCEL_ANALYTICS` = `false`.
 
 ---
 
-## 7. Despliegue en Vercel y dominio
+## 7. Despliegue en Vercel, dominio y variables de entorno
 
-1. Sube el repositorio a GitHub e impórtalo en Vercel (**Add New > Project**). Vercel detecta Astro; `vercel.json` ya fija `npm run build` y la carpeta `dist`.
-2. Antes del primer despliegue, rellena `src/config.ts` (endpoint y píxel) o déjalos vacíos para una versión de prueba.
-3. **Dominio vytalgroup.com:** en el proyecto de Vercel, **Settings > Domains > Add** `vytalgroup.com` y `www.vytalgroup.com` (redirige `www` al dominio principal). En el proveedor del dominio:
-   - `vytalgroup.com`: registro **A** a `76.76.21.21`
-   - `www`: registro **CNAME** a `cname.vercel-dns.com`
+- **Producción sale de la rama `main`.** Cada cambio se trabaja en una rama y se fusiona en `main`; Vercel publica en uno o dos minutos. Las vistas previas de otras ramas llevan su propio `noindex` (lo pone Vercel) y no afectan a Google.
+- **Dominio: `https://www.vytalgroupem.com`** (comprobado el 1 de octubre de 2026: responde con HTTPS; `vytalgroupem.com` y `http://` redirigen a él con 308). `SITE_URL` ya vale eso por defecto: de ahí salen canonical, Open Graph, JSON-LD, sitemap, `robots.txt` y `llms.txt`. `vercel.json` redirige `vytalgroup.vercel.app` al dominio para que solo exista una dirección. Si algún día el principal pasa a ser el dominio sin `www`, define `SITE_URL` en Vercel.
+- **Ninguna página lleva noindex** y `robots.txt` deja pasar a todos los bots.
+- `vercel.json` incluye la CSP (solo scripts propios y el de Meta; conexión a Apps Script y Meta), cabeceras de seguridad, caché inmutable para `/_astro` y `/assets`, el PDF como descarga y redirecciones de rutas antiguas o probables (`/nosotros`, `/tecarterapia`, `/equipos/ecografia`...).
 
-   (o cambia los DNS a los de Vercel). El certificado HTTPS se emite solo.
-   - La landing de venta va en otro proyecto de Vercel con el subdominio `vsl.vytalgroup.com`: en ese proyecto, **Settings > Domains > Add** `vsl.vytalgroup.com` y en el DNS un **CNAME** `vsl` a `cname.vercel-dns.com`.
-4. **Canonical y dominio:** `SITE_URL` (en `src/config.ts`) es `https://vytalgroup.com`: de ahí salen canonical, Open Graph, JSON-LD, sitemap y `llms.txt`. **Ninguna página lleva noindex** y `robots.txt` deja pasar a todos los bots: la canonical es la que le dice a Google que la dirección buena es `vytalgroup.com`. Hoy (1 de octubre de 2026) `vytalgroup.com` todavía muestra la página de aparcamiento del registrador, así que conectar el dominio (punto 3) es lo primero; después, redirige `vytalgroup.vercel.app` a `vytalgroup.com` desde **Settings > Domains** (Redirect to). Para usar otro dominio, define la variable de entorno `SITE_URL` en Vercel.
-5. En Google Search Console, añade la propiedad del dominio y envía `https://vytalgroup.com/sitemap.xml`.
+**Variables de entorno** (Vercel > el proyecto > **Settings > Environment Variables**, entorno **Production**). Ninguna es obligatoria: sin ellas la web usa los valores de `src/config.ts`. Después de crear o cambiar una: **Deployments** > el último > menú **⋯** > **Redeploy**.
 
-`vercel.json` incluye la CSP (solo scripts propios y el de Meta; conexión a Apps Script y Meta), cabeceras de seguridad, caché inmutable para `/_astro` y `/assets`, el PDF como descarga y redirecciones de rutas antiguas o probables (`/nosotros`, `/tecarterapia`, `/equipos/ecografia`...).
+| Variable | Valor | Para qué |
+| --- | --- | --- |
+| `META_PIXEL_ID` | El número del píxel (solo cifras) | Activar el píxel de Meta |
+| `META_DOMAIN_VERIFICATION` | El código de la etiqueta de Meta (solo lo que va en `content="..."`) | Verificar el dominio en Meta con etiqueta (si no se hace por DNS) |
+| `GOOGLE_SITE_VERIFICATION` | El código de la etiqueta de Google (solo lo de `content="..."`) | Verificar Search Console con etiqueta HTML (si no se hace por DNS) |
+| `SHEETS_ENDPOINT` | URL `/exec` del Apps Script | Solo si se crea otra implementación del script |
+| `SITE_URL` | `https://www.vytalgroupem.com` | Ya es el valor por defecto; solo si cambia el dominio principal |
+| `VERCEL_ANALYTICS` | `false` | Solo para apagar la analítica |
 
 ---
 
-## 8. Pendientes para el cliente
+## 8. Guía para publicar, paso a paso
 
-- [ ] **Fusionar esta rama en `main`.** `vytalgroup.vercel.app` se publica desde `main`, que hoy tiene la ronda 5 (y su cabecera `X-Robots-Tag: noindex`). La rama `claude/eloquent-turing-1arlub` lleva la ronda 6 (formulario arreglado incluido) y se fusiona sin conflictos.
-- [ ] **Conectar el dominio `vytalgroup.com`** a este proyecto de Vercel (apartado 7, punto 3). Hoy muestra la página de aparcamiento del registrador.
-- [ ] **Vercel Web Analytics:** activarlo en el panel de Vercel (apartado 6 bis). Hasta entonces `/_vercel/insights/script.js` responde 404 y no se cuenta nada.
-- [ ] **Borrar las filas de prueba** de la hoja de leads ("PRUEBA WEB ... (borrar)").
-- [ ] **ID del Meta Pixel** en `src/config.ts` (`META_PIXEL_ID`).
-- [x] **URL del Apps Script** en `src/config.ts` (`SHEETS_ENDPOINT`): conectada a la hoja de la landing y probada de punta a punta (apartado 5).
-- [ ] **Datos legales del titular** (razón social o nombre, NIF o CIF, domicilio y datos registrales) en `src/components/LegalTitular.astro`, y el **plazo de conservación de los leads** en `src/pages/privacidad.astro`. Ahora están vacíos y marcados en amarillo como "[Pendiente: ...]".
-- [ ] **Revisión de las 3 guías por Javier** antes de publicar (`src/content/guias/`). Están escritas en su voz, con datos solo del catálogo y del brief, pero debe leerlas y aprobarlas.
-- [ ] **Revisar los 5 EDAN de la web oficial** (Nano, U60, U50, DUS60 y U2): tienen ficha completa con los datos y fotos de edan.com. Confirmar que se ofrecen en España y con qué configuración; el catálogo EDAN ("ENG-2024-25 Product Catalogue") no estaba en el material recibido.
-- [ ] **Fotos originales:** las fotos de producto se han mejorado con IA desde el PDF comprimido del catálogo y la web de EDAN. Con las fotos originales en alta resolución (y fotos de Javier en su contexto de trabajo) la web ganaría aún más. Basta con procesarlas con `scripts/imagenes/mejorar_ia.py` manteniendo el nombre.
-- [ ] **Camillas:** ya tienen ficha con lo que da el catálogo (descripción, rasgos, certificación CE y garantía). Con su ficha técnica (medidas, peso admitido, motor) se pueden completar.
-- [ ] **Logotipo de VytaMeD:** no hay logotipo publicado de la marca propia; en la cinta de marcas de Sobre nosotros aparece su nombre en texto. Basta con añadir su SVG en `src/assets/marcas/`.
+En este orden. Lo que ya está hecho va marcado.
+
+1. [x] **Dominio conectado:** `https://www.vytalgroupem.com` sirve la web con HTTPS y `vytalgroupem.com` redirige a él.
+2. [x] **Formulario y hoja:** funcionan y están probados de punta a punta (apartado 5).
+3. [ ] **Fusionar en `main`** la rama de la última ronda (en GitHub: **Pull requests > New pull request**, base `main` y la rama `claude/eloquent-turing-1arlub`, **Create** y **Merge**). Hasta entonces el dominio sigue mostrando la versión anterior.
+4. [ ] **Activar Vercel Web Analytics:** Vercel > el proyecto > **Analytics** > **Enable**. Después, **Redeploy** del último despliegue. Comprobación: `https://www.vytalgroupem.com/_vercel/insights/script.js` deja de dar 404 y, tras aceptar la analítica en el aviso de cookies, la visita aparece en el panel a los pocos minutos.
+5. [ ] **Datos legales del titular** (obligatorios por la LSSI antes de anunciar la web): nombre o razón social, NIF o CIF, domicilio y datos registrales (o "no procede" si no hay inscripción), en `src/components/LegalTitular.astro`, y el plazo de conservación de los leads en `src/pages/privacidad.astro` (por ejemplo, 12 meses desde el último contacto). Hoy salen en amarillo como "[Pendiente: ...]" en el aviso legal y la privacidad.
+6. [ ] **Apps Script:** decidir a qué correo llegan los avisos de cada lead (`NOTIFY_EMAIL`) y pegar el script de `integrations/google-sheets.gs` con el método del apartado 5 (la URL no cambia). Borrar la fila de prueba "PRUEBA WEB envio rapido (borrar)".
+7. [ ] **Meta Pixel** (si se van a hacer anuncios):
+   1. [business.facebook.com](https://business.facebook.com) > **Administrador de eventos** > **Conectar orígenes de datos** > **Web** > **Píxel de Meta**; ponle nombre ("VytalGroup web") y elige instalar el código **manualmente** (el código ya está en la web: solo hace falta el ID).
+   2. Copia el **ID del píxel** (un número de 15 o 16 cifras) y ponlo en la variable `META_PIXEL_ID` de Vercel. **Redeploy**.
+   3. Verifica el dominio: **Configuración del negocio > Seguridad de la marca > Dominios > Añadir** `vytalgroupem.com`. Lo más limpio es el **registro TXT** en el DNS del dominio; con la **etiqueta meta**, copia solo el código de `content="..."` a la variable `META_DOMAIN_VERIFICATION`, **Redeploy** y pulsa **Verificar**.
+   4. Prueba: **Administrador de eventos > Probar eventos**, abre la web, acepta las cookies de marketing y comprueba `PageView`, `ViewContent` (en una ficha), `Contact` (botón de WhatsApp) y `Lead` (enviando el formulario con "PRUEBA" en el nombre; bórralo después de la hoja).
+   5. Para medir la landing con el mismo píxel, pon el mismo ID en `config.js` de la landing.
+8. [ ] **Google Search Console:** [search.google.com/search-console](https://search.google.com/search-console) > **Añadir propiedad** > **Dominio** `vytalgroupem.com` > añade el registro **TXT** que te da en el DNS del dominio y verifica (alternativa: propiedad de **Prefijo de URL** `https://www.vytalgroupem.com` con etiqueta HTML y la variable `GOOGLE_SITE_VERIFICATION`). Después: **Sitemaps** > envía `https://www.vytalgroupem.com/sitemap.xml` e **Inspección de URLs** de la portada > **Solicitar indexación**.
+9. [ ] **Comprobación final en el dominio** (tras el paso 3):
+   - La portada abre con la intro y el hero nuevo; en "Ver código fuente" aparece `<link rel="canonical" href="https://www.vytalgroupem.com/">`.
+   - `https://www.vytalgroupem.com/robots.txt` dice `Allow: /` y apunta a `https://www.vytalgroupem.com/sitemap.xml`.
+   - `https://vytalgroup.vercel.app` redirige a `https://www.vytalgroupem.com`.
+   - Un envío de prueba del formulario llega a la hoja y al correo; el WhatsApp flotante abre el chat con el mensaje escrito; el teléfono, el correo y la descarga del catálogo funcionan.
+
+**Contenido pendiente (no impide publicar):**
+
+- [ ] **Revisión de las 3 guías por Javier** (`src/content/guias/`). Están escritas en su voz, con datos solo del catálogo y del brief, pero debe leerlas y aprobarlas.
+- [ ] **Revisar los 5 EDAN de la web oficial** (Nano, U60, U50, DUS60 y U2): confirmar que se ofrecen en España y con qué configuración; el catálogo EDAN ("ENG-2024-25 Product Catalogue") no estaba en el material recibido.
+- [ ] **Fotos originales:** con las fotos de producto en alta resolución (y fotos de Javier en su contexto de trabajo) la web ganaría aún más. Basta con procesarlas con `scripts/imagenes/mejorar_ia.py` manteniendo el nombre.
+- [ ] **Camillas:** con su ficha técnica (medidas, peso admitido, motor) se pueden completar.
+- [ ] **Logotipo de VytaMeD:** basta con añadir su SVG en `src/assets/marcas/`.
+
+**Landing (`vsl-vytalgroup`, repositorio aparte):** lleva todavía el envío antiguo del formulario (sigue la redirección de Google y espera hasta 20 s, lo que daba "No se ha podido enviar" aunque el lead llegaba): conviene llevar allí la forma de enviar de `src/scripts/form.js`. Además: copiar el `integrations/google-sheets.gs` de aquí, poner su `SITE_URL` en el dominio que vaya a tener (por ejemplo `https://vsl.vytalgroupem.com`) y sustituir su PDF del catálogo por el de esta web (el suyo lleva una nota interna en los metadatos).
 
 ---
 

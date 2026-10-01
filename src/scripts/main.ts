@@ -18,10 +18,28 @@ const $$ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document
 const hasIO = 'IntersectionObserver' in window;
 const belowFold = (el: Element) => el.getBoundingClientRect().top > window.innerHeight;
 
+// ------------------------------------------------------------------ inicio: intro de marca (una vez por sesión)
+// La intro va dentro del hero y la anima el CSS (también sin JS). Aquí solo se decide: si ya se vio en esta
+// sesión (o hay movimiento reducido), se quita al momento; si no, se marca como vista y cualquier gesto
+// (clic, tecla, rueda, toque o scroll) la adelanta. El aviso de cookies espera a que termine.
+const intro = $('[data-intro]');
+let introEnCurso = false;
+if (intro) {
+  let vista = false;
+  try { vista = sessionStorage.getItem('vg_intro') === '1'; sessionStorage.setItem('vg_intro', '1'); } catch { /* sin almacenamiento: se ve */ }
+  if (vista || reduced) { html.classList.add('intro-vista'); intro.remove(); }
+  else {
+    introEnCurso = true;
+    const saltar = () => html.classList.add('intro-saltada');
+    ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach((ev) => window.addEventListener(ev, saltar, { once: true, passive: true }));
+    intro.addEventListener('animationend', (e) => { if (e.target === intro) intro.remove(); });
+  }
+}
+
 captureAttribution();
 initTracking();
 initAnalytics();
-initConsent();
+initConsent({ delay: introEnCurso ? 2000 : 900 });
 
 // ------------------------------------------------------------------ cabecera, progreso de lectura y parallax
 const header = $('[data-header]')!;
@@ -517,6 +535,22 @@ $$('[data-map]').forEach((map) => {
   const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); map.classList.add('is-on'); } }, { threshold: 0.3 });
   io.observe(map);
 });
+
+// ------------------------------------------------------------------ hero del inicio: la foto sigue un poco al cursor
+// Solo con ratón y sin movimiento reducido; mueve la foto unos píxeles (propiedad translate, en CSS).
+const hx = $('[data-hero].hx');
+if (hx && fine && !reduced) {
+  let raf = 0;
+  hx.addEventListener('pointermove', (e) => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const r = hx.getBoundingClientRect();
+      hx.style.setProperty('--mx', (((e as PointerEvent).clientX - r.left) / r.width - 0.5).toFixed(3));
+      hx.style.setProperty('--my', (((e as PointerEvent).clientY - r.top) / r.height - 0.5).toFixed(3));
+    });
+  }, { passive: true });
+  hx.addEventListener('pointerleave', () => { hx.style.removeProperty('--mx'); hx.style.removeProperty('--my'); });
+}
 
 // ------------------------------------------------------------------ maqueta 3D del catálogo: abanico e inclinación
 $$('[data-mockup]').forEach((m) => {

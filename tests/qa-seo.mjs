@@ -14,7 +14,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
 const DIST = 'dist';
-const SITE = 'https://vytalgroup.com';
+const SITE = 'https://www.vytalgroupem.com';
 const results = [];
 const ok = (cond, name, extra = '') => { results.push({ cond, name, extra }); };
 

@@ -7,8 +7,11 @@ import { createHash } from 'node:crypto';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
+import { SITE_URL } from '../config';
 
 const ROOT = process.cwd();
+// Dominio del pie de cada imagen, sin www (vytalgroupem.com)
+const DOMINIO = new URL(SITE_URL).hostname.replace(/^www\./, '');
 const nm = (p: string) => readFileSync(join(ROOT, 'node_modules', p));
 const FONTS = [
   { name: 'Geist', data: nm('@fontsource/geist/files/geist-latin-400-normal.woff'), weight: 400 as const, style: 'normal' as const },
@@ -67,7 +70,7 @@ export interface OgDatos { kicker: string; titulo: string; sub?: string; imagen?
 // Caché en disco: si no cambian los datos, la imagen ni este archivo, se reutiliza la JPG ya generada
 const CACHE = join(ROOT, 'node_modules/.cache/vg-og');
 function clave(d: OgDatos) {
-  const h = createHash('sha1').update(JSON.stringify(d)).update(readFileSync(join(ROOT, 'src/lib/og.ts')));
+  const h = createHash('sha1').update(JSON.stringify(d)).update(DOMINIO).update(readFileSync(join(ROOT, 'src/lib/og.ts')));
   if (d.imagen) h.update(String(statSync(archivo(d.imagen)).mtimeMs));
   return h.digest('hex');
 }
@@ -94,7 +97,7 @@ async function generar(d: OgDatos) {
     ].filter(Boolean)),
     h('div', { display: 'flex', alignItems: 'center', gap: 14, fontFamily: 'Geist', fontWeight: 500, fontSize: 20, color: 'rgba(255,255,255,0.6)' }, [
       h('div', { display: 'flex', width: 10, height: 10, borderRadius: 10, backgroundColor: '#48A0A8' }),
-      h('div', { display: 'flex' }, 'vytalgroup.com · Te asesoran fisioterapeutas'),
+      h('div', { display: 'flex' }, `${DOMINIO} · Te asesoran fisioterapeutas`),
     ]),
   ]);
   const hijos: Nodo[] = [izq];

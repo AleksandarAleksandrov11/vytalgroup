@@ -42,7 +42,9 @@ function doPost(e) {
     sheet.appendRow([lead.fecha, lead.nombre, lead.telefono, lead.email, lead.perfil, lead.equipo, lead.modelo, d.utm_source, d.utm_medium, d.utm_campaign, d.utm_content, d.utm_term, d.event_id].map(clean_));
     SpreadsheetApp.flush();
 
-    if (SEND_EMAIL_NOTIFICATION) notify_(lead);
+    if (SEND_EMAIL_NOTIFICATION) {
+      try { notify_(lead); } catch (err) { console.error('Aviso por email no enviado: ' + err); }
+    }
     return json_({ ok: true });
   } catch (err) {
     console.error(err);

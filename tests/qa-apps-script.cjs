@@ -1,11 +1,11 @@
-// Ejecuta integrations/google-sheets.gs (el Apps Script real, copia exacta del de la landing) contra una
-// hoja de Google simulada: columnas, WhatsApp o correo, aviso por email, duplicados, campo trampa,
-// validaciones, fórmulas, la columna Modelo añadida a una pestaña ya en uso, el paso de una pestaña muy
-// antigua a una nueva y, al final, los envíos tal y como los hace la web (UTM de la web y campos de más).
+// Ejecuta integrations/google-sheets.gs (el Apps Script real: el de la landing más una mejora, un email que falla
+// no convierte en error un lead ya guardado) contra una hoja de Google simulada: columnas, WhatsApp o correo,
+// aviso por email, duplicados, campo trampa, validaciones, fórmulas, la columna Modelo añadida a una pestaña ya
+// en uso, el paso de una pestaña muy antigua a una nueva y los envíos tal y como los hace la web.
 const fs = require('fs');
 const vm = require('vm');
 const code = fs.readFileSync(require('path').join(__dirname, '..', 'integrations', 'google-sheets.gs'), 'utf8');
-function makeEnv() {
+function makeEnv({ mailFalla = false } = {}) {
   const sheets = {};
   const mails = [];
   const mkSheet = (name) => {
@@ -45,7 +45,7 @@ function makeEnv() {
     LockService: { getScriptLock: () => ({ waitLock: () => {}, releaseLock: () => {} }) },
     Utilities: { formatDate: () => '24/09/2026 12:00' },
     ContentService: { MimeType: { JSON: 'json' }, createTextOutput: (t) => ({ setMimeType: () => ({ body: JSON.parse(t) }) }) },
-    MailApp: { sendEmail: (m) => mails.push(m), getRemainingDailyQuota: () => 100 },
+    MailApp: { sendEmail: (m) => { if (mailFalla) throw new Error('Service invoked too many times for one day: email.'); mails.push(m); }, getRemainingDailyQuota: () => 100 },
   };
   vm.createContext(ctx);
   vm.runInContext(code, ctx);
@@ -131,10 +131,10 @@ const ok = (c, n, x = '') => res.push(`${c ? 'PASS' : 'FAIL'}  ${n}${x ? '  · '
   // Sin UTM en la visita, la web pone utm_source "web", el medio según la procedencia y la página como campaña.
   const { ctx, sheets, mails } = makeEnv();
   const web = {
-    origen: 'web', pagina: 'https://vytalgroup.com/ecografos/acclarix-ax8', nombre: 'Pablo Sanz', canal: 'WhatsApp',
+    origen: 'web', pagina: 'https://www.vytalgroupem.com/ecografos/acclarix-ax8', nombre: 'Pablo Sanz', canal: 'WhatsApp',
     telefono: '+34 600 111 222', email: '', perfil: 'Clínica', equipo: 'Ecógrafo', modelo: 'Acclarix AX8 (EDAN)',
     consentimiento: 'Sí · 2026-10-01T10:00:00Z', utm_source: 'web', utm_medium: 'organico', utm_campaign: 'ecografos/acclarix-ax8',
-    utm_content: 'google.com', utm_term: '', fbclid: '', fbc: '', fbp: '', referrer: 'https://www.google.com/', landing_url: 'https://vytalgroup.com/ecografos/acclarix-ax8',
+    utm_content: 'google.com', utm_term: '', fbclid: '', fbc: '', fbp: '', referrer: 'https://www.google.com/', landing_url: 'https://www.vytalgroupem.com/ecografos/acclarix-ax8',
     dispositivo: 'iOS · móvil', idioma: 'es-ES', event_id: 'web-1', website: '',
   };
   const r = post(ctx, web);
@@ -146,6 +146,12 @@ const ok = (c, n, x = '') => res.push(`${c ? 'PASS' : 'FAIL'}  ${n}${x ? '  · '
   ok(r2.ok === true && row2[2] === '' && row2[3] === 'pablo@clinica.es' && row2[5] === 'Diatermia' && row2[6] === '' && row2[7] === 'web' && row2[8] === 'directo' && row2[9] === 'contacto', 'Web: por correo y sin modelo decidido (Contacto, visita directa)', row2.slice(2, 10).join(' | '));
   const r3 = post(ctx, { ...web, event_id: 'web-1' });
   ok(r3.ok === true && r3.duplicate === true && sh.rows.length === 3, 'Web: el reintento del mismo envío no duplica la fila');
+}
+{
+  // Si el aviso por email falla (cuota diaria agotada, permisos...), el lead ya está guardado: responde ok
+  const { ctx, sheets } = makeEnv({ mailFalla: true });
+  const r = post(ctx, { ...base, event_id: 'mail-ko' });
+  ok(r.ok === true && sheets.Leads.rows.length === 2 && sheets.Leads.rows[1][12] === 'mail-ko', 'Email que falla: el lead se guarda y la respuesta sigue siendo { ok: true }', JSON.stringify(r));
 }
 console.log(res.join('\n'));
 const fails = res.filter((x) => x.startsWith('FAIL')).length;

@@ -1,88 +1,87 @@
 ---
-// Mapa de alcance: la Tierra de noche (NASA Earth Observatory, Black Marble, dominio público) recortada
-// al Atlántico, de Los Ángeles a Europa del Este, y encima las rutas de envío desde España, dibujadas
-// en las coordenadas reales. La foto y el SVG usan el mismo recorte ("cover" y "slice"), así que las
-// rutas caen en su sitio con cualquier ancho. Al entrar en pantalla, las rutas se dibujan una a una.
-import Img from './Img.astro';
+// Mapa de alcance: los países de América y Europa (Natural Earth, src/assets/mapa/alcance-tierra.svg, con los
+// países con envío algo más claros) y encima, en el mismo lienzo, un punto por destino: países de la UE, seis
+// estados de EE. UU. y cada país de Latinoamérica, con España como origen. Al entrar en pantalla, las rutas
+// salen de España y los puntos se encienden de más cerca a más lejos. Se genera con scripts/mapa/generar-alcance.mjs.
+import tierraUrl from '../assets/mapa/alcance-tierra.svg?url';
+import { ALCANCE, ORIGEN, UE, USA, LATAM } from '../data/alcance';
 
-// Recorte del mapa equirectangular (fotos/fondo-mapa-noche-atlantico, 2400 × 1440)
-const W = 2400;
-const H = 1440;
-const LON0 = -125;
-const LON1 = 45;
-const LAT0 = 62;
-const LAT1 = -40;
-const P = (lon: number, lat: number): [number, number] => [
-  Math.round(((lon - LON0) / (LON1 - LON0)) * W * 10) / 10,
-  Math.round(((LAT0 - lat) / (LAT0 - LAT1)) * H * 10) / 10,
-];
-const ORIGEN = { nombre: 'España', xy: P(-3.7, 40.4) };
-const DESTINOS = [
-  { zona: 'europa', nombre: 'Luxemburgo', xy: P(6.13, 49.61) },
-  { zona: 'europa', nombre: 'Alemania', xy: P(10.0, 51.2) },
-  { zona: 'europa', nombre: 'Italia', xy: P(12.5, 41.9) },
-  { zona: 'usa', nombre: 'Nueva York', xy: P(-74.0, 40.7) },
-  { zona: 'usa', nombre: 'Miami', xy: P(-80.2, 25.8) },
-  { zona: 'usa', nombre: 'Los Ángeles', xy: P(-118.2, 34.0) },
-  { zona: 'latam', nombre: 'México', xy: P(-99.1, 19.4) },
-  { zona: 'latam', nombre: 'Colombia', xy: P(-74.1, 4.7) },
-  { zona: 'latam', nombre: 'Perú', xy: P(-77.0, -12.0) },
-  { zona: 'latam', nombre: 'Chile', xy: P(-70.6, -33.4) },
-  { zona: 'latam', nombre: 'Argentina', xy: P(-58.4, -34.6) },
-];
-const ZONAS = [
-  { t: 'UE', xy: P(24, 46.5) },
-  { t: 'USA', xy: P(-100, 46) },
-  { t: 'LATAM', xy: P(-97, -14) },
-];
-// Arco desde España: curva hacia arriba, más alta cuanto más lejos va
-const arco = ([x, y]: [number, number]) => {
-  const [ox, oy] = ORIGEN.xy;
+const { w: W, h: H } = ALCANCE;
+const [ox, oy] = ORIGEN.xy;
+const lejos = (xy: [number, number]) => Math.hypot(xy[0] - ox, xy[1] - oy);
+const destinos = [
+  ...UE.map((p) => ({ ...p, zona: 'ue' })),
+  ...USA.map((p) => ({ ...p, zona: 'usa' })),
+  ...LATAM.map((p) => ({ ...p, zona: 'latam' })),
+].map((p) => ({ ...p, t: Math.round((lejos(p.xy) / W) * 1400) }));
+// Rutas solo a unos destinos de referencia por región (con una a cada país el mapa se ensucia)
+const CON_RUTA = new Set(['California', 'Texas', 'Nueva York', 'México', 'Colombia', 'Brasil', 'Argentina', 'Chile']);
+// Ruta desde España: curva suave hacia arriba, más alta cuanto más lejos va
+const ruta = ([x, y]: [number, number]) => {
   const d = Math.hypot(x - ox, y - oy);
-  const mx = (ox + x) / 2;
-  const my = Math.min(oy, y) - d * 0.13;
-  return `M${ox} ${oy}Q${mx} ${Math.round(my)} ${x} ${y}`;
+  return `M${ox} ${oy}Q${Math.round((ox + x) / 2)} ${Math.round(Math.min(oy, y) - d * 0.16)} ${x} ${y}`;
 };
+const ZONAS = [
+  { t: 'Estados Unidos', xy: [250, 112] },
+  { t: 'Unión Europea', xy: [1040, 24] },
+  { t: 'Latinoamérica', xy: [700, 900] },
+];
+const lista = (ps: { nombre: string }[]) => ps.map((p) => p.nombre).join(', ');
 ---
-<figure class="map" data-map>
-  <Img name="fotos/fondo-mapa-noche-atlantico" alt="La Tierra de noche entre América y Europa, con las rutas de envío desde España a la Unión Europea, Estados Unidos y Latinoamérica" sizes="100vw" widths={[640, 960, 1280, 1600, 2000, 2400]} quality={72} class="map__img" />
-  <svg class="map__rutas" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g class="map__arcs">
-      {DESTINOS.map((d, i) => <path d={arco(d.xy)} pathLength="1" style={`--i:${i}`} />)}
+<figure class="am" data-map style={`--ar:${W} / ${H}`}>
+  <img class="am__tierra" src={tierraUrl} width={W} height={H} alt="" loading="lazy" decoding="async">
+  <svg class="am__capa" viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+    <g class="am__rutas">
+      {destinos.filter((p) => CON_RUTA.has(p.nombre)).map((p) => <path d={ruta(p.xy)} pathLength="1" style={`--t:${p.t}ms`} />)}
     </g>
-    <g class="map__dests">
-      {DESTINOS.map((d, i) => (
-        <g class="map__dest" style={`--i:${i}`} transform={`translate(${d.xy[0]} ${d.xy[1]})`}>
-          <circle class="map__pulse" r="34" />
-          <circle class="map__dot" r="11" />
+    {ZONAS.map((z) => <text class="am__zona" x={z.xy[0]} y={z.xy[1]} text-anchor="middle">{z.t}</text>)}
+    <g class="am__puntos">
+      {destinos.map((p) => (
+        <g class={`am__p am__p--${p.zona}`} style={`--t:${p.t}ms`}>
+          <title>{p.nombre}</title>
+          <circle class="am__halo" cx={p.xy[0]} cy={p.xy[1]} r="13" />
+          <circle class="am__dot" cx={p.xy[0]} cy={p.xy[1]} r="5.5" />
         </g>
       ))}
+      <g class="am__o">
+        <title>{ORIGEN.nombre}</title>
+        <circle class="am__ring" cx={ox} cy={oy} r="16" />
+        <circle class="am__dot" cx={ox} cy={oy} r="7.5" />
+      </g>
     </g>
-    <g class="map__origen" transform={`translate(${ORIGEN.xy[0]} ${ORIGEN.xy[1]})`}>
-      <circle class="map__pulse" r="44" />
-      <circle class="map__dot" r="15" />
-    </g>
-    {ZONAS.map((z) => <text class="map__zona" x={z.xy[0]} y={z.xy[1]} text-anchor="middle">{z.t}</text>)}
   </svg>
+  <figcaption class="sr-only">Mapa de envíos desde España a la Unión Europea ({lista(UE)}), a Estados Unidos ({lista(USA)}) y a Latinoamérica ({lista(LATAM)}).</figcaption>
 </figure>
 <style is:global>
-  .map { position: relative; margin: 0 auto; width: 100%; max-width: 2400px; aspect-ratio: 5 / 3; overflow: hidden; -webkit-mask-image: radial-gradient(120% 110% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(120% 110% at 50% 50%, #000 62%, transparent 100%); }
-  .map picture { position: absolute; inset: 0; display: block; }
-  .map__img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-  .map__rutas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .map__arcs path { fill: none; stroke: var(--teal-on-dark); stroke-width: 1.6; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .85; }
-  .map__dest > *, .map__origen > * { transform-box: fill-box; transform-origin: center; }
-  .map__dot { fill: var(--teal-light); opacity: .3; }
-  .map__origen .map__dot { fill: #FFF; opacity: 1; }
-  .map__pulse { fill: none; stroke: var(--teal-light); stroke-width: 1.4; vector-effect: non-scaling-stroke; opacity: 0; }
-  .map__zona { fill: #FFF; font: 600 46px/1 var(--sans); letter-spacing: .08em; paint-order: stroke; stroke: rgba(11, 25, 41, .7); stroke-width: 10px; stroke-linejoin: round; opacity: .92; }
-  .map.is-on .map__dot { opacity: 1; transition: opacity .5s var(--ease); transition-delay: calc(500ms + var(--i) * 110ms); }
-  .map.is-on .map__arcs path { stroke-dashoffset: 0; transition: stroke-dashoffset 1.3s var(--ease); transition-delay: calc(200ms + var(--i) * 110ms); }
-  @media (max-width: 639px) { .map__zona { display: none; } }
-  @media (prefers-reduced-motion: no-preference) {
-    .map__dest .map__dot { transform: scale(.4); }
-    .map.is-on .map__dest .map__dot { transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); transition-delay: calc(500ms + var(--i) * 110ms); }
-    .map.is-on .map__origen .map__pulse { animation: map-pulse 2.6s var(--ease) .3s 3; }
+  .am { position: relative; margin: 0; width: 100%; aspect-ratio: var(--ar); }
+  /* Los países se recortan en el borde del lienzo: se difuminan hacia el marino para que no haya cortes rectos */
+  .am__tierra { position: absolute; inset: 0; width: 100%; height: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 92%, transparent), linear-gradient(180deg, transparent, #000 9%, #000 94%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 92%, transparent), linear-gradient(180deg, transparent, #000 9%, #000 94%, transparent); mask-composite: intersect; }
+  .am__capa { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .am__rutas path { fill: none; stroke: var(--teal-on-dark); stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linecap: round; opacity: .45; }
+  .am__zona { fill: rgba(255, 255, 255, .86); font: 600 26px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+  .am__p circle, .am__o circle { transform-box: fill-box; transform-origin: center; }
+  .am__dot { fill: var(--teal-light); }
+  .am__halo { fill: var(--teal-light); opacity: .16; }
+  .am__o .am__dot { fill: #FFF; }
+  .am__ring { fill: none; stroke: #FFF; stroke-width: 1.5; vector-effect: non-scaling-stroke; opacity: .5; }
+  .am__p:hover .am__dot { fill: #FFF; }
+  /* En móvil el mapa es pequeño: puntos algo más grandes y sin nombres de zona (van en la leyenda) */
+  @media (max-width: 639px) {
+    .am__p circle, .am__o circle { scale: 1.45; }
+    .am__zona { display: none; }
   }
-  @keyframes map-pulse { 0% { opacity: .8; transform: scale(.4); } 70%, 100% { opacity: 0; transform: scale(1.6); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .am__tierra { opacity: 0; transform: scale(.985); transition: opacity 1s var(--ease), transform 1.2s var(--ease); }
+    .am__rutas path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .am__p { opacity: 0; }
+    .am__p .am__dot { transform: scale(0); }
+    .am__zona { opacity: 0; transition: opacity .8s var(--ease) 1.2s; }
+    .am.is-on .am__tierra { opacity: 1; transform: none; }
+    .am.is-on .am__rutas path { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s var(--ease); transition-delay: calc(250ms + var(--t)); }
+    .am.is-on .am__p { opacity: 1; transition: opacity .5s var(--ease); transition-delay: calc(700ms + var(--t)); }
+    .am.is-on .am__p .am__dot { transform: none; transition: transform .6s cubic-bezier(.34, 1.56, .64, 1); transition-delay: calc(700ms + var(--t)); }
+    .am.is-on .am__zona { opacity: 1; }
+    .am.is-on .am__ring { animation: am-pulse 2.4s var(--ease) .2s 4; }
+  }
+  @keyframes am-pulse { 0% { opacity: .8; transform: scale(.5); } 80%, 100% { opacity: 0; transform: scale(2.4); } }
 </style>

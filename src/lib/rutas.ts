@@ -1,5 +1,5 @@
 // Rutas indexables del sitio, calculadas a partir de los datos (sitemap.xml y llms.txt).
-// Las legales y la 404 no se incluyen porque van con noindex.
+// Todas las páginas son indexables; la 404 no se incluye porque no es una página real.
 import { getCollection } from 'astro:content';
 import { CATEGORIAS } from '../data/categorias';
 import { PRODUCTOS, urlFicha } from '../data/productos';
@@ -20,6 +20,9 @@ export async function rutasIndexables(): Promise<Ruta[]> {
     { path: '/contacto', prioridad: 0.6, cambio: 'monthly' },
     { path: '/guias', prioridad: 0.6, cambio: 'weekly' },
     ...guias.map((g) => ({ path: `/guias/${g.id}`, prioridad: 0.6, cambio: 'monthly' as const, lastmod: g.data.actualizada || g.data.fecha })),
+    { path: '/aviso-legal', prioridad: 0.2, cambio: 'monthly' },
+    { path: '/privacidad', prioridad: 0.2, cambio: 'monthly' },
+    { path: '/cookies', prioridad: 0.2, cambio: 'monthly' },
   ];
   return r;
 }

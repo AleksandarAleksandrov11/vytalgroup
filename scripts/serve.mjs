@@ -14,7 +14,7 @@ import { brotliCompressSync, gzipSync, constants } from 'node:zlib';
 const root = resolve(process.argv[2] || 'dist');
 const port = Number(process.argv[3] || process.env.PORT || 8080);
 const vercel = JSON.parse(readFileSync(resolve('vercel.json'), 'utf8'));
-// Las reglas con "has" (por host, p. ej. el noindex de vytalgroup.vercel.app) no aplican en local
+// Las reglas con "has" (condicionadas al host o a cabeceras de la petición) no aplican en local
 const rules = (vercel.headers || []).filter((r) => !r.has).map((r) => ({ re: new RegExp(`^${r.source}$`), headers: r.headers }));
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',

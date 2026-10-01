@@ -1,5 +1,5 @@
 ---
-// Inicio: hero de estudio (titular y tres equipos sobre el mismo suelo), cinta de confianza,
+// Inicio: hero con foto de una ecografía de hombro, cinta de confianza,
 // ecografía en profundidad (sticky), diatermias destacadas, todo tu equipamiento, sin timos +
 // comparador, así trabajamos, envíos, catálogo, guías, preguntas frecuentes y el bloque final
 // con el formulario.
@@ -22,7 +22,7 @@ import { producto, urlFicha, altProducto } from '../data/productos';
 import { FAQ_GENERAL } from '../data/faqs';
 import { EMPRESA } from '../data/empresa';
 import { h1Html } from '../lib/texto';
-import { escena, recorte } from '../lib/imagenes';
+import { escena } from '../lib/imagenes';
 import { faqPage, organization, website } from '../lib/seo';
 
 const ecoPasos = [
@@ -33,16 +33,7 @@ const ecoPasos = [
 const diatermias = ['diatermia-multifuncion', 'reatherm', 'hr-tek'].map(producto);
 const resto = CATEGORIAS.filter((c) => !c.pilar);
 const guias = (await getCollection('guias')).sort((a, b) => b.data.fecha.localeCompare(a.data.fecha) || a.data.orden - b.data.orden).slice(0, 3);
-const titulo = 'Ecógrafos, diatermias y equipos de *fisioterapia.*';
-// Equipos del hero: el ecógrafo en el centro y delante (LCP); a los lados, la diatermia de la marca propia y
-// unas ondas de choque, algo más atrás. El lienzo de cada foto se recorta a la caja del equipo; los sizes son
-// el ancho de ese lienzo en pantalla (ver .hx__stage en inicio.css).
-const lados = '(min-width: 1440px) 410px, (min-width: 1024px) 28vw, (min-width: 640px) 45vw, 51vw';
-const heroEquipos = [
-  { pos: 'l', p: producto('diatermia-multifuncion'), img: 'diatermia-multifuncion-vytamed', sizes: lados, widths: [240, 320, 480, 640, 820] },
-  { pos: 'c', p: producto('acclarix-ax8'), img: 'ecografo-portatil-acclarix-ax8-edan', sizes: '(min-width: 1440px) 580px, (min-width: 1024px) 40vw, (min-width: 640px) 63vw, 76vw', widths: [320, 480, 640, 800, 1040, 1280] },
-  { pos: 'r', p: producto('shock-med'), img: 'ondas-de-choque-shock-med-eme', sizes: lados, widths: [240, 320, 480, 640, 820] },
-];
+const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
 ---
 <Base
   title="VytalGroup: ecógrafos, diatermias y equipos de fisioterapia"
@@ -52,25 +43,20 @@ const heroEquipos = [
   seccion="inicio"
   jsonld={[organization(), website(), faqPage(FAQ_GENERAL)]}
 >
-  <!-- 1 · Hero: fondo claro de estudio, titular centrado y debajo tres equipos reales (diatermia, ecógrafo
-       y ondas de choque) apoyados en el mismo suelo, cada uno con su sombra de contacto. Sin efectos: solo
-       una entrada suave y, en escritorio, un leve paralaje con el cursor. -->
-  <section class="hx" data-hero aria-labelledby="hero-title">
+  <!-- 1 · Hero: titular corto sobre fondo marino y, a la derecha (debajo en móvil), una foto real de una
+       ecografía de hombro con sonda inalámbrica que se funde con el fondo. Solo una entrada suave. -->
+  <section class="hx on-dark" data-hero aria-labelledby="hero-title">
+    <div class="hx__media">
+      <Img name="fotos/hero-ecografia-hombro" alt="Fisioterapeuta haciendo una ecografía de hombro con una sonda inalámbrica y la imagen en una tablet" sizes="(min-width: 900px) calc(150vh - 132px), 100vw" widths={[480, 720, 960, 1280, 1600, 2000, 2400]} quality={70} priority class="hx__photo" />
+    </div>
     <div class="wrap hx__wrap">
       <div class="hx__copy">
         <h1 class="h1 hx__title" id="hero-title" set:html={h1Html(titulo)} />
-        <p class="hx__lead" data-enter style="--ed:.45s">Equipamiento médico para clínicas y fisioterapeutas, elegido contigo por gente de tu profesión.</p>
+        <p class="hx__lead" data-enter style="--ed:.45s">Ecógrafos, diatermias y todo lo que tu clínica necesita. Te asesoran fisioterapeutas.</p>
         <div class="hx__actions" data-enter style="--ed:.55s">
           <a class="btn btn--primary btn--lg" href="#asesoramiento" data-cta data-magnetic>Quiero asesoramiento</a>
           <a class="btn btn--line btn--lg" href="/catalogo">Ver catálogo<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
-      </div>
-      <div class="hx__stage" data-hx-stage>
-        {heroEquipos.map((e) => (
-          <a class:list={['hx__item', `hx__item--${e.pos}`]} href={urlFicha(e.p)} style={recorte(e.img)}>
-            <Img name={e.img} alt={altProducto(e.p)} sizes={e.sizes} widths={e.widths} priority={e.pos === 'c'} class="hx__img" />
-          </a>
-        ))}
       </div>
     </div>
   </section>
@@ -152,7 +138,7 @@ const heroEquipos = [
 
   <!-- 5 · Todo tu equipamiento -->
   <section class="sec sec--photo on-dark more" aria-labelledby="more-title">
-    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-sala-tratamiento-fisioterapia" alt="Sala de tratamiento de fisioterapia con camilla eléctrica" sizes="(max-width: 767px) 280vw, (max-width: 1023px) 190vw, 100vw" widths={[640, 1080, 1600]} quality={32} /></div>
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ultrasonido-terapeutico" alt="Fisioterapeuta aplicando ultrasonido terapéutico en el tobillo de un paciente" sizes="(max-width: 767px) 280vw, (max-width: 1023px) 190vw, 100vw" widths={[640, 1080, 1600]} quality={32} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="more-title" data-lines>Más equipos para <em>tu consulta.</em></h2>

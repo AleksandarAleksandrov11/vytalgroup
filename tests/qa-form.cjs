@@ -89,6 +89,17 @@ async function block(name, fn) {
     ok(leads[0] && leads[0][2] && leads[0][2].content_name === 'Ecógrafo', 'píxel: content_name con el equipo', JSON.stringify(leads[0] && leads[0][2]));
     // Doble clic o reenvío: no hay segundo envío
     ok(await p.isHidden('[data-submit]') || await p.isDisabled('[data-submit]'), 'contacto: no se puede reenviar tras el éxito');
+    // "Enviar otra consulta": vuelve a la pregunta 1, vacío, y permite otro envío con su propio event_id
+    await p.click('[data-again]');
+    await p.waitForTimeout(500);
+    ok((await step(p)) === '1' && (await p.inputValue('#f-name')) === '' && !(await p.isChecked('input[name="consent"]')) && !(await p.$('#qf .opt input:checked')), 'enviar otra: vuelve a la pregunta 1 con el formulario vacío');
+    await p.waitForTimeout(3100);
+    await fillToEnd(p, { name: 'Marta Díaz', perfil: 'Clínica', equipo: 'Diatermia' });
+    await p.click('[data-submit]');
+    await p.waitForSelector('[data-done]:not([hidden])', { timeout: 8000 });
+    const dos = posts().slice(antes);
+    const d2 = JSON.parse((dos[1] || {}).body || '{}');
+    ok(dos.length === 2 && d2.nombre === 'Marta Díaz' && d2.equipo === 'Diatermia' && !!d2.event_id && d2.event_id !== d.event_id, 'enviar otra: segundo envío con sus datos y otro event_id', `${dos.length} · ${d2.nombre}`);
     ok(!logs.some((l) => /pageerror|error:/.test(l)), 'contacto: sin errores en consola', logs.join(' | '));
     await ctx.close();
   });
@@ -129,19 +140,23 @@ async function block(name, fn) {
     const { ctx, p } = await open(b, '/ecografos/acclarix-ax8', { consent: true });
     const antes = posts().length;
     await toForm(p);
-    ok((await step(p)) === '2', 'ficha: la pregunta 1 llega respondida (empieza en la 2)');
-    const picked = (await p.textContent('[data-picked-box]')).replace(/\s+/g, ' ').trim();
-    ok(/Te interesa: Acclarix AX8/.test(picked) && /Cambiar/.test(picked), 'ficha: "Te interesa: Acclarix AX8 · Cambiar"', picked);
+    ok((await step(p)) === '1' && await p.isChecked('input[name="equipo"][value="Ecógrafo"]') && await p.isVisible('.qf__step.is-active [data-next]'), 'ficha: empieza en la pregunta 1 con el equipo ya marcado');
     const ev = await fb(p);
     const vc = ev.find((e) => e[0] === 'track' && e[1] === 'ViewContent');
     ok(vc && JSON.stringify(vc[2].content_ids) === '["acclarix-ax8"]' && vc[2].content_type === 'product', 'píxel: ViewContent de la ficha con su slug', JSON.stringify(vc && vc[2]));
     await p.waitForTimeout(3100);
+    // Pulsar la opción ya marcada avanza sin perder el modelo
+    await p.click('.qf__step.is-active label.opt:has(input[value="Ecógrafo"])');
+    await p.waitForTimeout(700);
+    const picked = (await p.textContent('[data-picked-box]')).replace(/\s+/g, ' ').trim();
+    ok((await step(p)) === '2' && /Te interesa: Acclarix AX8/.test(picked) && /Cambiar/.test(picked), 'ficha: en la pregunta 2, "Te interesa: Acclarix AX8 · Cambiar"', picked);
     await fillToEnd(p, { name: 'Pedro', perfil: 'Clínica' });
     await p.click('[data-submit]');
     await p.waitForSelector('[data-done]:not([hidden])', { timeout: 8000 });
     const d = JSON.parse((posts().slice(antes)[0] || {}).body || '{}');
     ok(d.modelo === 'Acclarix AX8 (EDAN)' && d.equipo === 'Ecógrafo', 'ficha: payload con modelo y equipo', `${d.modelo} · ${d.equipo}`);
     ok(d.pagina === `${BASE}/ecografos/acclarix-ax8`, 'ficha: payload con la página', d.pagina);
+    ok(d.utm_source === 'web' && d.utm_medium === 'directo' && d.utm_campaign === 'ecografos/acclarix-ax8' && d.utm_content === '', 'UTM sin anuncio: los de la web (source web, medio y página del envío)', `${d.utm_source} · ${d.utm_medium} · ${d.utm_campaign} · ${d.utm_content}`);
     const lead = (await fb(p)).find((e) => e[1] === 'Lead');
     ok(lead && lead[2].content_name === 'Acclarix AX8', 'ficha: Lead con el modelo', JSON.stringify(lead && lead[2]));
     await ctx.close();
@@ -152,9 +167,11 @@ async function block(name, fn) {
     const { ctx, p } = await open(b, '/equipos/camillas/camilla-electrica-premium', { consent: false });
     await p.click('.fp__actions [data-want]');
     await p.waitForTimeout(900);
-    ok((await step(p)) === '2', 'ficha de camilla: el CTA salta al formulario con el equipo respondido');
+    ok((await step(p)) === '1' && await p.isChecked('input[name="equipo"][value="Otro equipo"]'), 'ficha de camilla: el CTA lleva al formulario, en la pregunta 1 con el equipo marcado');
+    await p.click('.qf__step.is-active [data-next]');
+    await p.waitForTimeout(700);
     const picked = (await p.textContent('[data-picked-box]')).replace(/\s+/g, ' ').trim();
-    ok(/Te interesa: Camilla Eléctrica Premium/.test(picked), 'ficha de camilla: muestra el producto', picked);
+    ok(/Te interesa: Camilla Eléctrica Premium/.test(picked), 'ficha de camilla: al seguir, muestra el producto', picked);
     await ctx.close();
   });
 
@@ -184,6 +201,26 @@ async function block(name, fn) {
     await p.waitForSelector('[data-fail]:not([hidden])', { timeout: 8000 });
     ok(true, 'error del servidor: muestra el error amable');
     ok(!(await fb(p)).some((e) => e[1] === 'Lead'), 'error del servidor: no se envía Lead');
+    await ctx.close();
+  });
+
+  await block('Servidor lento: el gracias no espera a Apps Script', async () => {
+    const { ctx, p } = await open(b, '/contacto', { endpoint: `${MOCK}/exec?mode=slow`, consent: true });
+    const antes = posts().length;
+    await toForm(p);
+    await p.waitForTimeout(3100);
+    await fillToEnd(p, { name: 'Lucía' });
+    // Tiempo medido dentro de la página: del clic en Enviar al "gracias" (evento vg:lead-done)
+    await p.evaluate(() => {
+      document.querySelector('[data-submit]').addEventListener('click', () => { window.__t0 = performance.now(); }, { capture: true });
+      window.addEventListener('vg:lead-done', () => { window.__t1 = performance.now(); });
+    });
+    await p.click('[data-submit]');
+    await p.waitForSelector('[data-done]:not([hidden])', { timeout: 8000 });
+    const ms = Math.round(await p.evaluate(() => window.__t1 - window.__t0));
+    ok(ms < 1500, 'servidor lento: el "gracias" sale en menos de 1,5 s aunque el script tarde 3', `${ms} ms`);
+    await p.waitForTimeout(3500);
+    ok(await p.isHidden('[data-fail]') && posts().length === antes + 1, 'servidor lento: el envío termina en segundo plano, una sola vez y sin error');
     await ctx.close();
   });
 

@@ -1,6 +1,6 @@
 ---
 // Formulario de 4 pasos, idéntico al de la landing (mismos textos, diseño y animaciones).
-// Con `preset`, la pregunta 1 llega respondida: "Te interesa: [modelo] · Cambiar".
+// Siempre empieza en la pregunta 1; con `preset`, la opción llega marcada y "Siguiente" visible.
 import '../styles/form.css';
 import { OTROS_EQUIPOS } from '../data/categorias';
 import { EMPRESA, wa } from '../data/empresa';
@@ -19,10 +19,10 @@ const PERFILES = ['Clínica', 'Fisioterapeuta', 'Médico', 'Otro'];
   data-preset-equipo={preset?.equipo}
   data-preset-otro={preset?.otro}
   data-preset-modelo={preset?.modelo}>
-  <div class="qf__bar" role="progressbar" aria-label="Progreso del formulario" aria-valuemin="1" aria-valuemax="4" aria-valuenow={con ? 2 : 1} aria-valuetext={`Paso ${con ? 2 : 1} de 4`}><span data-progress style={`--p:${con ? 0.5 : 0.25}`}></span></div>
-  <div class="qf__nav"><button class="qf__back" type="button" data-back aria-label="Volver a la pregunta anterior" hidden={!con}><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></button><span class="qf__count" aria-hidden="true" data-count-step>{con ? '2/4' : '1/4'}</span></div>
+  <div class="qf__bar" role="progressbar" aria-label="Progreso del formulario" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Paso 1 de 4"><span data-progress style="--p:0.25"></span></div>
+  <div class="qf__nav"><button class="qf__back" type="button" data-back aria-label="Volver a la pregunta anterior" hidden><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></button><span class="qf__count" aria-hidden="true" data-count-step>1/4</span></div>
 
-  <fieldset class:list={['qf__step', { 'is-active': !con }]} data-step="1">
+  <fieldset class="qf__step is-active" data-step="1">
     <legend class="qf__q">¿Qué equipo te interesa?</legend>
     <div class="opts" data-opts>
       {EQUIPOS.map((v) => <label class="opt"><input type="radio" name="equipo" value={v} checked={preset?.equipo === v}><span>{v}</span></label>)}
@@ -35,7 +35,7 @@ const PERFILES = ['Clínica', 'Fisioterapeuta', 'Médico', 'Otro'];
     <button class:list={['btn btn--primary btn--block qf__next', { 'is-shown': con }]} type="button" data-next>Siguiente</button>
   </fieldset>
 
-  <fieldset class:list={['qf__step', { 'is-active': con }]} data-step="2">
+  <fieldset class="qf__step" data-step="2">
     <legend class="qf__q">¿Cuál es tu perfil?</legend>
     <div class="qf__picked" data-picked-box hidden={!con}>
       <p>Te interesa: <strong data-picked>{interesa}</strong></p>
@@ -87,7 +87,10 @@ const PERFILES = ['Clínica', 'Fisioterapeuta', 'Médico', 'Otro'];
     <p class="qf__end-title" data-done-title>Gracias. Te escribimos muy pronto.</p>
     <p class="sign sign--dark"><svg class="sign__svg" viewBox="0 0 3592 1230" role="img" aria-label="Firma de Javier"><use href="#sig"/></svg><span>Javier Ruiz, fisioterapeuta</span></p>
     <a class="btn btn--primary btn--block" href={wa()} target="_blank" rel="noopener" data-done-wa data-origen="gracias"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>Escríbenos ya por WhatsApp</a>
-    <a class="link" href="/catalogo">Ver el catálogo completo</a>
+    <div class="qf__end-links">
+      <button class="link" type="button" data-again>Enviar otra consulta</button>
+      <a class="link" href="/catalogo">Ver el catálogo</a>
+    </div>
   </div>
 
   <div class="qf__end" data-fail tabindex="-1" hidden>

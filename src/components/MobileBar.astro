@@ -1,20 +1,16 @@
 ---
-// Barra CTA fija en móvil, como en la landing: "Quiero asesoramiento" y WhatsApp.
+// Barra CTA fija en móvil: "Quiero asesoramiento" (el WhatsApp es el botón flotante, que se coloca encima).
 // Aparece al pasar el hero, se oculta con el formulario en pantalla y respeta el safe-area de iOS.
-import { wa } from '../data/empresa';
 interface Props { conFormulario: boolean }
 const { conFormulario } = Astro.props;
 ---
 <div class="mbar" data-mbar inert>
   <a class="btn btn--primary mbar__cta" href={conFormulario ? '#asesoramiento' : '/contacto#asesoramiento'} data-cta>Quiero asesoramiento</a>
-  <a class="mbar__wa" href={wa()} target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-contact="whatsapp" data-origen="barra"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
 </div>
 <style is:global>
   .mbar { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; display: flex; gap: 10px; padding: 10px max(12px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); background: rgba(250, 251, 252, .86); -webkit-backdrop-filter: saturate(1.8) blur(16px); backdrop-filter: saturate(1.8) blur(16px); box-shadow: 0 -1px 0 var(--line); transform: translateY(110%); transition: transform .5s var(--ease); }
   .mbar.is-on { transform: none; }
   html.has-cookie-banner .mbar, html.menu-open .mbar { transform: translateY(110%); }
   .mbar__cta { flex: 1 1 auto; min-width: 0; min-height: 52px; padding: 0 16px; }
-  .mbar__wa { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 50%; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2); }
-  .mbar__wa .icon { width: 22px; height: 22px; }
   @media (min-width: 900px) { .mbar { display: none; } }
 </style>

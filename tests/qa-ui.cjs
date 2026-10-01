@@ -172,28 +172,61 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await nos.ctx.close();
   });
 
-  await block('Inicio: hero de estudio y cinta de confianza', async () => {
+  await block('Inicio: hero y cinta de confianza', async () => {
     const { ctx, p } = await open(b, '/');
-    ok(await p.$eval('.hx__item--c img', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager'), 'hero: el ecógrafo del centro es la imagen prioritaria (LCP)');
-    ok(await p.$eval('.hx', (h) => !h.querySelector('.sweep, [class*="kicker"], [class*="badge"], .hx__floor, .hx__world') && !h.classList.contains('on-dark')), 'hero: claro, sin radar, antetítulo, etiquetas ni escena 3D');
-    ok(await p.$$eval('.hx__item', (as) => as.length === 3 && as.every((a) => a.getAttribute('href') && a.querySelector('img')?.alt)), 'hero: tres equipos enlazados a su ficha, con alt');
-    await p.waitForTimeout(1600);
+    ok(await p.$eval('.hx__photo', (i) => i.getAttribute('fetchpriority') === 'high' && i.loading === 'eager' && /ecograf/i.test(i.alt)), 'hero: la foto de la ecografía es la imagen prioritaria (LCP), con alt');
+    ok(await p.$eval('.hx', (h) => h.classList.contains('on-dark') && !h.querySelector('.sweep, [class*="kicker"], [class*="badge"], .hx__item, [data-hx-stage]')), 'hero: marino, sin radar, antetítulo, etiquetas ni equipos sueltos');
+    ok(await p.$eval('#hero-title', (h) => h.textContent.replace(/\s+/g, ' ').trim() === 'Equipos médicos de alta calidad. Sin letra pequeña.' && h.querySelector('em')?.textContent.replace(/\s+/g, ' ').trim() === 'Sin letra pequeña.'), 'hero: titular corto pedido, con "Sin letra pequeña." en cursiva');
+    ok(await p.$eval('.hx__lead', (l) => l.textContent.trim() === 'Ecógrafos, diatermias y todo lo que tu clínica necesita. Te asesoran fisioterapeutas.'), 'hero: subtítulo pedido');
+    ok(await p.$$eval('.hx__actions a', (as) => as.length === 2 && as[0].getAttribute('href') === '#asesoramiento' && /Quiero asesoramiento/.test(as[0].textContent) && as[1].getAttribute('href') === '/catalogo'), 'hero: se mantienen los dos botones');
+    await p.waitForTimeout(1800);
     ok(await p.evaluate(() => {
       const hx = document.querySelector('.hx').getBoundingClientRect();
-      const [l, c, r] = [...document.querySelectorAll('.hx__item')].map((a) => a.getBoundingClientRect());
-      const acts = document.querySelector('.hx__actions').getBoundingClientRect();
-      return l.right > c.left && c.right > r.left && l.bottom < c.bottom && Math.abs(l.bottom - r.bottom) < 2 && c.top > acts.bottom && c.bottom < hx.bottom && document.documentElement.scrollWidth <= innerWidth;
-    }), 'hero: el ecógrafo delante y la diatermia y las ondas de choque detrás, bajo los botones y sin desbordar');
-    await p.mouse.move(400, 400);
-    await p.mouse.move(1200, 300, { steps: 6 });
-    await p.waitForTimeout(300);
-    ok(await p.$eval('[data-hx-stage]', (s) => s.style.getPropertyValue('--px') !== ''), 'hero: los equipos se desplazan un poco con el cursor');
+      const foto = document.querySelector('.hx__media').getBoundingClientRect();
+      const copy = document.querySelector('.hx__copy').getBoundingClientRect();
+      const cinta = document.querySelector('.hx').nextElementSibling.getBoundingClientRect();
+      const lineas = new Set([...document.querySelectorAll('#hero-title .w')].map((w) => Math.round(w.getBoundingClientRect().top))).size;
+      return foto.right === hx.right && foto.left > copy.left && foto.left < copy.right && cinta.top < innerHeight && lineas === 3 && document.documentElement.scrollWidth <= innerWidth;
+    }), 'hero (escritorio): la foto a la derecha se funde con el texto, titular en 3 líneas y la cinta asoma en el primer pantallazo');
     ok(await p.evaluate(() => document.querySelector('.hx').nextElementSibling?.classList.contains('stats')), 'cinta de confianza justo debajo del hero');
     ok(await p.evaluate(() => !document.querySelector('.bm')), 'inicio: sin cinta de marcas (solo en Sobre nosotros)');
     await ctx.close();
+    const m = await open(b, '/', { width: 390, height: 844, mobile: true });
+    await m.p.waitForTimeout(1800);
+    ok(await m.p.evaluate(() => {
+      const foto = document.querySelector('.hx__media').getBoundingClientRect();
+      const acts = document.querySelector('.hx__actions').getBoundingClientRect();
+      return foto.top >= acts.bottom && foto.width >= innerWidth - 1 && foto.height > 200 && document.documentElement.scrollWidth <= innerWidth;
+    }), 'hero (móvil): texto arriba y la foto debajo, a todo el ancho');
+    await m.ctx.close();
     const nos = await open(b, '/sobre-nosotros');
     ok(await nos.p.evaluate(() => { const h = document.querySelector('.phero'); const m = document.querySelector('.bm'); return !!m && h.nextElementSibling === m && !m.querySelector('.bm__title'); }), 'marcas: en Sobre nosotros, bajo el hero y sin título');
+    ok(await nos.p.evaluate(() => { const s = document.querySelector('.alc'); return !!s && s.classList.contains('sec--dark') && !!s.querySelector('.map .map__img') && s.querySelectorAll('.map__arcs path').length === 11; }), 'alcance internacional: mapa nocturno de la Tierra con las 11 rutas desde España');
     await nos.ctx.close();
+  });
+
+  await block('Botón flotante de WhatsApp', async () => {
+    const { ctx, p } = await open(b, '/ecografos/acclarix-ax8');
+    const waf = await p.$eval('.waf', (a) => ({ href: a.href, pos: getComputedStyle(a).position, label: a.getAttribute('aria-label'), r: a.getBoundingClientRect(), vw: innerWidth, vh: innerHeight }));
+    const txt = decodeURIComponent((new URL(waf.href).searchParams.get('text') || ''));
+    ok(/^https:\/\/wa\.me\/\d+\?text=/.test(waf.href) && /Acclarix AX8/.test(txt), 'WhatsApp flotante: enlace a wa.me con el mensaje ya escrito del equipo', txt);
+    ok(waf.pos === 'fixed' && waf.vw - waf.r.right < 40 && waf.vh - waf.r.bottom < 40 && !!waf.label, 'WhatsApp flotante: fijo abajo a la derecha y con nombre accesible');
+    await p.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
+    await p.waitForTimeout(400);
+    ok(await p.isVisible('.waf'), 'WhatsApp flotante: sigue visible al final de la página');
+    await ctx.close();
+    const m = await open(b, '/', { width: 390, height: 844, mobile: true });
+    await m.p.evaluate(() => window.scrollTo({ top: innerHeight * 2.5, behavior: 'instant' }));
+    await m.p.waitForTimeout(800);
+    ok(await m.p.evaluate(() => {
+      const w = document.querySelector('.waf').getBoundingClientRect();
+      const bar = document.querySelector('[data-mbar]');
+      const r = bar.getBoundingClientRect();
+      return bar.classList.contains('is-on') && w.bottom <= r.top + 1;
+    }), 'WhatsApp flotante (móvil): sube por encima de la barra fija sin taparla');
+    const def = decodeURIComponent(new URL(await m.p.$eval('.waf', (a) => a.href)).searchParams.get('text') || '');
+    ok(/web de VytalGroup/.test(def), 'WhatsApp flotante: mensaje general en el inicio', def);
+    await m.ctx.close();
   });
 
   await block('Ficha: galería', async () => {
@@ -266,7 +299,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     ok(csp.length === 0, 'CSP: ninguna violación en las plantillas', csp.slice(0, 3).join(' | '));
     const { ctx, p, res } = await open(b, '/esta-pagina-no-existe');
     ok(res.status() === 404 && /no hay/.test(await p.textContent('h1')), '404: estado 404 real y página propia');
-    ok(await p.$eval('meta[name="robots"]', (m) => m.content) === 'noindex, follow', '404: noindex');
+    ok(!/noindex/.test(await p.$eval('meta[name="robots"]', (m) => m.content)) && !/noindex/i.test(res.headers()['x-robots-tag'] || ''), '404: sin noindex (el estado 404 ya evita que se indexe)');
     await ctx.close();
     const get = (u) => fetch(BASE + u, { redirect: 'manual' });
     const html = await get('/ecografos');

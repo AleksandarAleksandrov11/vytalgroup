@@ -518,27 +518,6 @@ $$('[data-map]').forEach((map) => {
   io.observe(map);
 });
 
-// ------------------------------------------------------------------ hero del inicio: paralaje leve con el ratón
-// Los equipos se desplazan unos píxeles hacia el cursor según su profundidad (el ecógrafo, delante, más; los de
-// detrás, al revés). Solo la propiedad translate; con movimiento reducido o en pantallas táctiles no se toca.
-$$('[data-hx-stage]').forEach((stage) => {
-  if (reduced || !fine) return;
-  const zone = stage.closest('section');
-  if (!zone) return;
-  let raf = 0;
-  zone.addEventListener('pointermove', (e) => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      const r = zone.getBoundingClientRect();
-      const x = ((e as PointerEvent).clientX - (r.left + r.width / 2)) / (r.width / 2);
-      const y = ((e as PointerEvent).clientY - (r.top + r.height / 2)) / (r.height / 2);
-      stage.style.setProperty('--px', x.toFixed(3));
-      stage.style.setProperty('--py', y.toFixed(3));
-    });
-  }, { passive: true });
-  zone.addEventListener('pointerleave', () => { stage.style.removeProperty('--px'); stage.style.removeProperty('--py'); });
-});
-
 // ------------------------------------------------------------------ maqueta 3D del catálogo: abanico e inclinación
 $$('[data-mockup]').forEach((m) => {
   if (!hasIO || reduced) { m.classList.add('is-open'); return; }
@@ -669,6 +648,8 @@ if (bar) {
   const paint = () => {
     const on = !vis.hero && !vis.form;
     bar.classList.toggle('is-on', on);
+    // El botón flotante de WhatsApp sube encima de la barra mientras se ve
+    document.documentElement.classList.toggle('mbar-on', on && matchMedia('(max-width: 899px)').matches);
     bar.inert = !on;
   };
   if (hasIO) {

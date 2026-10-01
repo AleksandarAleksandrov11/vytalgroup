@@ -266,7 +266,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     ok(csp.length === 0, 'CSP: ninguna violación en las plantillas', csp.slice(0, 3).join(' | '));
     const { ctx, p, res } = await open(b, '/esta-pagina-no-existe');
     ok(res.status() === 404 && /no hay/.test(await p.textContent('h1')), '404: estado 404 real y página propia');
-    ok(await p.$eval('meta[name="robots"]', (m) => m.content) === 'noindex, follow', '404: noindex');
+    ok(!/noindex/.test(await p.$eval('meta[name="robots"]', (m) => m.content)) && !/noindex/i.test(res.headers()['x-robots-tag'] || ''), '404: sin noindex (el estado 404 ya evita que se indexe)');
     await ctx.close();
     const get = (u) => fetch(BASE + u, { redirect: 'manual' });
     const html = await get('/ecografos');

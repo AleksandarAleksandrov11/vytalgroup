@@ -120,6 +120,7 @@
 .qf__end-title { max-width: 18ch; font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.125rem); font-weight: 540; line-height: 1.15; letter-spacing: -.03em; color: var(--ink); }
 .qf__end-text { max-width: 36ch; color: var(--ink-2); }
 .qf__end .btn { margin-top: 4px; }
+.qf__end-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 28px; }
 .sign--dark { justify-items: center; }
 .sign--dark .sign__svg { width: 132px; color: var(--ink); }
 .sign--dark span { color: var(--ink-3); }

@@ -2,7 +2,7 @@
 //  · title único de 50 a 60 caracteres y description única de 140 a 160 en cada página
 //  · un solo H1 por página, con el acento en cursiva (<em>)
 //  · lang="es", canonical absoluto en SITE_URL, og:locale, Open Graph y Twitter con imagen 1200 × 630 existente
-//  · noindex, follow solo en legales y 404; el resto, index
+//  · ninguna página con noindex: todas con robots index, follow (también legales y 404)
 //  · JSON-LD válido y sin offers, aggregateRating ni review; tipos esperados por plantilla
 //  · ninguna raya ni guion largo (U+2014 y U+2013) en ningún archivo publicado de texto
 //  · nada de veterinaria
@@ -22,7 +22,8 @@ const walk = (d) => readdirSync(d).flatMap((f) => { const p = join(d, f); return
 const files = walk(DIST);
 const html = files.filter((f) => f.endsWith('.html'));
 const route = (f) => { const r = '/' + f.slice(DIST.length + 1).replace(/\.html$/, ''); return r === '/index' ? '/' : r; };
-const NOINDEX = new Set(['/404', '/aviso-legal', '/privacidad', '/cookies']);
+// Fuera del sitemap: solo la 404, que no es una página real (todas son indexables)
+const FUERA = new Set(['/404']);
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d));
 const meta = (s, attr, name) => { const m = s.match(new RegExp(`<meta ${attr}="${name}" content="([^"]*)"`)); return m ? decode(m[1]) : null; };
 
@@ -56,7 +57,7 @@ for (const [r, s] of pages) {
   ok(og.startsWith(SITE + '/og/') && existsSync(join(DIST, og.slice(SITE.length))), `${r}: og:image propia y existente`, og);
   ok(meta(s, 'name', 'twitter:card') === 'summary_large_image' && !!meta(s, 'name', 'twitter:image'), `${r}: Twitter Card`);
   const robots = meta(s, 'name', 'robots') || '';
-  ok(NOINDEX.has(r) ? robots === 'noindex, follow' : robots.startsWith('index, follow'), `${r}: robots`, robots);
+  ok(robots.startsWith('index, follow') && !/noindex/.test(s), `${r}: robots index, follow y sin noindex`, robots);
   // JSON-LD
   const ld = [...s.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   let tipos = [];
@@ -128,9 +129,13 @@ for (const f of files.filter((f) => ['.html', '.xml', '.txt', '.css', '.js', '.j
 // sitemap.xml, robots.txt y llms.txt
 const sm = readFileSync(join(DIST, 'sitemap.xml'), 'utf8');
 const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].slice(SITE.length) || '/'));
-const indexables = [...pages.keys()].filter((r) => !NOINDEX.has(r));
+const indexables = [...pages.keys()].filter((r) => !FUERA.has(r));
 ok(indexables.every((r) => locs.has(r)), 'sitemap: todas las páginas indexables', indexables.filter((r) => !locs.has(r)).join(' '));
-ok([...locs].every((r) => pages.has(r) && !NOINDEX.has(r)), 'sitemap: solo páginas indexables existentes', [...locs].filter((r) => !pages.has(r) || NOINDEX.has(r)).join(' '));
+ok([...locs].every((r) => pages.has(r) && !FUERA.has(r)), 'sitemap: solo páginas existentes', [...locs].filter((r) => !pages.has(r) || FUERA.has(r)).join(' '));
+const robotsTxt = readFileSync(join(DIST, 'robots.txt'), 'utf8');
+ok(/User-agent: \*\s*\nAllow: \/\s*\n/.test(robotsTxt) && !/Disallow/.test(robotsTxt), 'robots.txt: todos los bots pueden rastrear todo', robotsTxt.replace(/\n/g, ' | '));
+const vercelCfg = readFileSync('vercel.json', 'utf8');
+ok(!/X-Robots-Tag|noindex/i.test(vercelCfg), 'vercel.json: sin X-Robots-Tag ni noindex');
 ok(readFileSync(join(DIST, 'robots.txt'), 'utf8').includes(`Sitemap: ${SITE}/sitemap.xml`), 'robots.txt apunta al sitemap');
 const llms = readFileSync(join(DIST, 'llms.txt'), 'utf8');
 ok(llms.startsWith('# VytalGroup') && /## Productos/.test(llms) && /## Guías/.test(llms), 'llms.txt con empresa, productos y guías');

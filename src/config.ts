@@ -3,9 +3,9 @@
  *
  *  · SITE_URL: dominio de producción, https://vytalgroup.com, sin barra final. Todas las URL absolutas
  *    salen de aquí (canonical, Open Graph, JSON-LD, sitemap.xml, robots.txt y llms.txt). La variable de
- *    entorno SITE_URL lo cambia si hiciera falta. Mientras la web se vea en vytalgroup.vercel.app, esa
- *    dirección va con noindex (vercel.json) para que Google solo indexe vytalgroup.com. La landing de
- *    venta vive en vsl.vytalgroup.com.
+ *    entorno SITE_URL lo cambia si hiciera falta. Ninguna página lleva noindex: mientras la web se vea
+ *    también en vytalgroup.vercel.app, el canonical de cada página apunta a vytalgroup.com y Google
+ *    indexa esa. La landing de venta vive en vsl.vytalgroup.com.
  *  · SHEETS_ENDPOINT: URL de la aplicación web de Google Apps Script que guarda los leads
  *    (termina en /exec). Instrucciones en el README, apartado "Google Sheets".
  *  · META_PIXEL_ID: identificador numérico del píxel de Meta (Administrador de eventos).

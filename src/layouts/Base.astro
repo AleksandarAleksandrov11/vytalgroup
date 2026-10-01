@@ -22,7 +22,6 @@ interface Props {
   og?: string;
   ogAlt?: string;
   ogType?: 'website' | 'article' | 'product';
-  noindex?: boolean;
   jsonld?: object[];
   migas?: Miga[];
   seccion?: Seccion;
@@ -33,7 +32,7 @@ interface Props {
   bodyClass?: string;
 }
 const {
-  title, description, path, og = '/og/inicio.jpg', ogAlt, ogType = 'website', noindex = false, jsonld = [], migas,
+  title, description, path, og = '/og/inicio.jpg', ogAlt, ogType = 'website', jsonld = [], migas,
   seccion = '', conFormulario = true, viewContent, lectura = false, bodyClass,
 } = Astro.props;
 
@@ -53,7 +52,7 @@ if (!nodos.some((n: any) => n['@type'] === 'Person')) nodos.push(persona());
 <title>{title}</title>
 <meta name="description" content={description}>
 {path !== '/404' && <link rel="canonical" href={canonical}>}
-<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}>
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#FAFBFC">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:type" content={ogType === 'product' ? 'website' : ogType}>

@@ -1,5 +1,5 @@
 ---
-// Plantilla de las páginas legales: sin formulario ni CTA final, noindex y lectura cómoda.
+// Plantilla de las páginas legales: sin formulario ni CTA final, indexables y de lectura cómoda.
 // Los datos del titular quedan VACÍOS con huecos marcados hasta que el cliente los facilite.
 import '../styles/legal.css';
 import Base from '../layouts/Base.astro';
@@ -9,7 +9,7 @@ interface Props { titulo: string; seo: string; description: string; path: string
 const { titulo, seo, description, path, lead } = Astro.props;
 const migas = [{ name: 'Inicio', href: '/' }, { name: titulo.replace(/\*/g, '').replace(/\.$/, ''), href: path }];
 ---
-<Base title={seo} description={description} path={path} noindex conFormulario={false} seccion="legal" migas={migas}>
+<Base title={seo} description={description} path={path} conFormulario={false} seccion="legal" migas={migas}>
   <PageHero migas={migas} titulo={titulo} lead={lead} imagen="fotos/recepcion-clinica-fisioterapia" alt="Recepción de una clínica de fisioterapia" />
   <section class="legal" aria-label="Texto legal">
     <div class="wrap wrap--legal">

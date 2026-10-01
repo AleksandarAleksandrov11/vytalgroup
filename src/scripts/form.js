@@ -1,6 +1,7 @@
 // Formulario de 4 preguntas, una por pantalla (idéntico al de la landing):
-//   1. ¿Qué equipo te interesa? (si se llega desde una ficha, categoría o CTA con producto, viene
-//      respondida y se muestra "Te interesa: [modelo] · Cambiar")
+//   1. ¿Qué equipo te interesa? Siempre se empieza por aquí; si se llega desde una ficha, categoría
+//      o CTA con producto, la opción viene marcada y basta con "Siguiente" (en el paso 2 se ve
+//      "Te interesa: [modelo] · Cambiar")
 //   2. ¿Cuál es tu perfil? Clínica, fisioterapeuta, médico u otro.
 //   3. ¿Cómo te llamas?
 //   4. ¿A qué WhatsApp te escribimos? + consentimiento. Con "Prefiero por correo" la misma pregunta
@@ -8,9 +9,17 @@
 // · Avance automático al elegir una opción con el dedo o el ratón; con teclado, Enter.
 // · Validación en línea, datos conservados al volver atrás, prefijo con buscador.
 // · Antispam: campo trampa, tiempo mínimo de 3 s y bloqueo de doble envío.
-// · Envío a Google Apps Script (texto plano, sin preflight CORS). Solo tras una respuesta
-//   { ok: true } se muestra el "gracias" y se dispara Lead (una vez, eventID = event_id).
-// · Llegan a la hoja Origen ("web") y Página (URL donde se envió), además de UTM y fbclid.
+// · Envío a Google Apps Script (texto plano, sin preflight CORS) sin esperar a su segunda petición:
+//   Apps Script guarda la fila y responde con una redirección; con redirect "manual" esa redirección
+//   ya confirma el envío, sin depender de script.googleusercontent.com (que algunos navegadores y
+//   bloqueadores cortan) ni del aviso por email del script. Si tarda, el "gracias" sale al segundo
+//   y la petición sigue en segundo plano (keepalive); si falla de verdad, se reintenta una vez y,
+//   si vuelve a fallar, se muestra el error con los datos intactos. Lead se dispara una vez
+//   (eventID = event_id) al mostrar el "gracias".
+// · Tras el "gracias", "Enviar otra consulta" deja el formulario como nuevo, en la pregunta 1.
+// · UTM: los de la visita (anuncios, enlaces con UTM) o, si no hay, los de la web: utm_source "web",
+//   utm_medium según de dónde llegó (directo, organico, redes o referencia), utm_campaign la página
+//   del envío y utm_content el dominio de procedencia. También van Origen ("web") y Página.
 
 import { COUNTRIES } from './paises.js';
 import { createSelect } from './select.js';
@@ -55,6 +64,7 @@ let busy = false;
 let finished = false;
 let pointerPick = false;
 let pending = null;
+let tail = null; // envío que sigue en segundo plano tras un "gracias" anticipado
 
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
@@ -342,14 +352,9 @@ function applyPreselect(model, equipo, otro, silent = false) {
     other.setValue(state.otro);
   } else showOther(false);
   setError(1, '');
-  if (state.step === 1) {
-    if (silent) {
-      stepEl(1).classList.remove('is-active');
-      state.step = 2;
-      stepEl(2).classList.add('is-active');
-      update();
-    } else goTo(2);
-  } else update();
+  // Se queda en la pregunta en la que esté (la 1 al llegar): la opción ya marcada y "Siguiente" visible
+  update();
+  if (!silent && state.step === 1) ui.live.textContent = `Te interesa: ${state.modelo ? shortModel(state.modelo) : equipoFinal()}`;
 }
 
 // ------------------------------------------------------------------ envío
@@ -362,9 +367,25 @@ function device() {
   const app = /Instagram/.test(ua) ? ' · Instagram' : /FBAN|FBAV|FB_IAB/.test(ua) ? ' · Facebook' : '';
   return `${type} · ${os}${app}`;
 }
+// Medio de la visita según la página de procedencia (la primera de la sesión)
+const BUSCADORES = /(^|\.)(google|bing|yahoo|duckduckgo|ecosia|yandex|baidu|qwant|startpage|search\.brave)\./;
+const REDES = /(^|\.)(instagram|facebook|fb|messenger|whatsapp|t|twitter|x|linkedin|lnkd|tiktok|youtube|pinterest|threads)\.(com|co|me|net)$/;
+function hostDe(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
+}
+function utmWeb(a) {
+  const ref = hostDe(a.referrer || '');
+  const propio = !ref || ref === location.hostname.replace(/^www\./, '');
+  const medio = propio ? 'directo' : BUSCADORES.test(ref) ? 'organico' : REDES.test(ref) ? 'redes' : 'referencia';
+  const ruta = location.pathname.replace(/\/+$/, '');
+  return { utm_source: 'web', utm_medium: medio, utm_campaign: ruta ? ruta.slice(1) : 'inicio', utm_content: propio ? '' : ref };
+}
 function payload() {
   const a = getAttribution();
   const byEmail = state.contact === 'email';
+  // UTM de la visita si los hay; si no, los de la web
+  const conUtm = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].some((k) => a[k]);
+  const u = conUtm ? a : { ...a, ...utmWeb(a) };
   return {
     origen: 'web',
     pagina: location.href.split('#')[0].slice(0, 1000),
@@ -376,11 +397,11 @@ function payload() {
     equipo: equipoFinal(),
     modelo: state.modelo || (WITH_MODELS.includes(state.equipo) ? 'Sin decidir' : ''),
     consentimiento: `Sí · ${new Date().toISOString()}`,
-    utm_source: a.utm_source || '',
-    utm_medium: a.utm_medium || '',
-    utm_campaign: a.utm_campaign || '',
-    utm_content: a.utm_content || '',
-    utm_term: a.utm_term || '',
+    utm_source: u.utm_source || '',
+    utm_medium: u.utm_medium || '',
+    utm_campaign: u.utm_campaign || '',
+    utm_content: u.utm_content || '',
+    utm_term: u.utm_term || '',
     fbclid: a.fbclid || '',
     fbc: a.fbc || '',
     fbp: a.fbp || '',
@@ -401,6 +422,33 @@ function setLoading(on) {
   ui.submit.classList.toggle('is-loading', on);
   ui.submit.setAttribute('aria-busy', String(on));
   ui.submit.setAttribute('aria-disabled', String(on));
+}
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+// Un envío a Apps Script. Su respuesta es una redirección a script.googleusercontent.com con el JSON;
+// con redirect "manual" no se sigue: la redirección (opaqueredirect) ya significa que el script ha
+// terminado. Si el servidor responde directamente (pruebas, otro backend), se lee su JSON.
+async function post(endpoint, data) {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(data),
+    redirect: 'manual',
+    credentials: 'omit',
+    cache: 'no-store',
+    keepalive: true,
+  });
+  if (res.type === 'opaqueredirect' || (res.status >= 300 && res.status < 400)) return;
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  let json = null;
+  try { json = JSON.parse(await res.text()); } catch { json = null; }
+  if (json && json.ok === false) throw new Error(json.error || 'rechazado');
+}
+// Un intento con plazo: 'ok' si el script confirma antes de 1 s, 'sigue' si aún no ha respondido
+// (la petición continúa) o el error si la red falla enseguida
+function intento(endpoint, data) {
+  const envio = post(endpoint, data);
+  return Promise.race([envio.then(() => 'ok', (e) => (e instanceof Error ? e : new Error(String(e)))), wait(1000).then(() => 'sigue')])
+    .then((r) => ({ r, envio }));
 }
 async function submit() {
   if (busy || finished) return;
@@ -429,7 +477,7 @@ async function submit() {
   const bot = data.website.trim() !== '' || performance.now() - state.t0 < MIN_MS;
   try {
     if (bot) {
-      await new Promise((r) => setTimeout(r, 800));
+      await wait(800);
       done(false);
       return;
     }
@@ -438,20 +486,29 @@ async function submit() {
       console.warn('[VytalGroup] Falta SHEETS_ENDPOINT en src/config.ts: el formulario no puede guardar leads hasta que pegues la URL de la aplicación web de Apps Script (ver README).');
       throw new Error('sin-endpoint');
     }
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 20000);
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data),
-      redirect: 'follow',
-      credentials: 'omit',
-      signal: ctrl.signal,
-    });
-    clearTimeout(timer);
-    let json = null;
-    try { json = JSON.parse(await res.text()); } catch { json = null; }
-    if (!res.ok || !json || json.ok !== true) throw new Error((json && json.error) || `HTTP ${res.status}`);
+    // El "gracias" sale en cuanto el script confirma o, como mucho, al segundo: Apps Script tarda
+    // de 2 a 4 s en guardar la fila y avisar por email, y la petición sigue sola (keepalive).
+    // Si la red falla enseguida, se reintenta una vez a la vista (mismo event_id: sin duplicados).
+    let { r, envio } = await intento(endpoint, data);
+    if (r instanceof Error) {
+      await wait(1200);
+      ({ r, envio } = await intento(endpoint, data));
+      if (r instanceof Error) throw r;
+    }
+    if (r === 'sigue') {
+      // Si este envío acaba fallando, un último intento en segundo plano y, si tampoco, el aviso
+      const fin = envio.catch(() => wait(1500).then(() => post(endpoint, data)));
+      tail = fin;
+      fin.then(() => { if (tail === fin) tail = null; }, (err) => {
+        if (tail !== fin) return;
+        tail = null;
+        console.warn('[VytalGroup] El envío no se pudo completar:', err.message || err);
+        // El "gracias" ya se veía: se vuelve al aviso de error, con los datos y el reintento
+        ui.done.hidden = true;
+        finished = false;
+        failed();
+      });
+    }
     done(true);
   } catch (err) {
     if (err.message !== 'sin-endpoint') console.warn('[VytalGroup] No se pudo enviar el formulario:', err.message || err);
@@ -476,7 +533,12 @@ function done(real) {
   update();
   showEnd(ui.done);
   ui.live.textContent = ui.doneTitle.textContent;
-  if (real) lead(state.eventId, state.modelo ? shortModel(state.modelo) : equipoFinal(), equipoFinal());
+  try {
+    if (real && !state.leadSent) {
+      state.leadSent = true;
+      lead(state.eventId, state.modelo ? shortModel(state.modelo) : equipoFinal(), equipoFinal());
+    }
+  } catch (err) { console.warn('[VytalGroup] No se pudo registrar el Lead:', err); }
   window.dispatchEvent(new CustomEvent('vg:lead-done'));
 }
 function failed() {
@@ -489,6 +551,31 @@ function retry() {
   form.classList.remove('is-finished');
   stepEl(state.step).classList.add('is-active');
   submit();
+}
+// "Enviar otra consulta": formulario como nuevo, en la pregunta 1 (el prefijo del país se mantiene)
+function again() {
+  tail = null;
+  finished = false;
+  busy = false;
+  ui.done.hidden = true;
+  ui.fail.hidden = true;
+  form.classList.remove('is-finished', 'is-back');
+  steps.forEach((el) => el.classList.remove('is-active'));
+  form.querySelectorAll('.opt input').forEach((i) => { i.checked = false; });
+  [ui.name, ui.tel, ui.email].forEach((f) => { f.value = ''; f.removeAttribute('aria-invalid'); });
+  ui.consent.checked = false;
+  ui.consent.removeAttribute('aria-invalid');
+  form.querySelectorAll('.qf__err').forEach((e) => { e.textContent = ''; });
+  ui.hint.hidden = true;
+  showOther(false);
+  state = { ...state, step: 1, equipo: '', modelo: '', otro: '', perfil: '', sugFor: '', leadSent: false, eventId: uuid(), t0: performance.now() };
+  setContact('tel', false);
+  stepEl(1).classList.add('is-active');
+  update();
+  keepInView();
+  const first = stepEl(1).querySelector('.opt input');
+  if (first) first.focus({ preventScroll: true });
+  ui.live.textContent = `Paso 1 de ${TOTAL}: ${stepEl(1).querySelector('.qf__q').textContent}`;
 }
 
 // ------------------------------------------------------------------ API
@@ -526,11 +613,6 @@ export function initForm() {
   };
   try { otros = JSON.parse(form.dataset.otros || '[]'); } catch { otros = ['Otro']; }
   state = { step: 1, equipo: '', modelo: '', otro: '', perfil: '', contact: 'tel', country: COUNTRIES[0], eventId: uuid(), t0: performance.now() };
-  // Si el HTML llega con la pregunta 1 ya respondida (ficha o categoría), el estado empieza igual
-  if (form.dataset.presetEquipo) {
-    stepEl(1).classList.add('is-active');
-    stepEl(2).classList.remove('is-active');
-  }
 
   prefix = createSelect($('[data-prefix]'), {
     id: 'pf',
@@ -573,8 +655,8 @@ export function initForm() {
     if (t.matches('.opt input')) {
       let wait = false;
       if (t.name === 'equipo') {
+        if (t.value !== state.equipo) state.modelo = '';
         state.equipo = t.value;
-        state.modelo = '';
         wait = t.value === 'Otro equipo';
         showOther(wait);
         setError(1, '');
@@ -606,6 +688,7 @@ export function initForm() {
       return;
     }
     if (t.closest('[data-retry]')) retry();
+    if (t.closest('[data-again]')) again();
   });
   form.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' || e.isComposing) return;

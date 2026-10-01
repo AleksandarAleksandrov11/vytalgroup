@@ -1,5 +1,7 @@
 // Servidor que imita una aplicación web de Google Apps Script:
 // POST /exec → 302 a /echo (como script.googleusercontent.com) → 200 JSON con CORS.
+// ?mode=fail corta la conexión (fallo de red); ?mode=slow tarda 3 s en responder (como Apps Script
+// guardando la fila y mandando el email).
 const http = require('http');
 const fs = require('fs');
 const LOG = process.argv[2] || 'mock-log.jsonl';
@@ -16,8 +18,12 @@ http.createServer((req, res) => {
       let ok = true; let err = '';
       try { last = JSON.parse(body); } catch (e) { ok = false; err = 'JSON no válido'; }
       const mode = (req.url.match(/mode=(\w+)/) || [])[1];
-      res.writeHead(302, { ...cors, Location: `/echo?ok=${ok && mode !== 'fail' ? 1 : 0}&err=${encodeURIComponent(err || (mode === 'fail' ? 'Fallo simulado' : ''))}` });
-      res.end();
+      if (mode === 'fail') { req.socket.destroy(); return; }
+      const reply = () => {
+        res.writeHead(302, { ...cors, Location: `/echo?ok=${ok ? 1 : 0}&err=${encodeURIComponent(err)}` });
+        res.end();
+      };
+      if (mode === 'slow') setTimeout(reply, 3000); else reply();
       return;
     }
     if (req.url.startsWith('/echo')) {

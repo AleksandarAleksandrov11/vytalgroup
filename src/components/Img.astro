@@ -1,6 +1,10 @@
 ---
-// Imagen de contenido: <picture> con AVIF y WebP, srcset, sizes y dimensiones fijas (CLS 0).
+// Imagen de contenido: <picture> en WebP (y AVIF cuando pesa menos), srcset, sizes y dimensiones fijas (CLS 0).
 // Carga diferida salvo que sea el LCP (priority → fetchpriority="high" y carga inmediata).
+// Formatos: Astro pasa la misma calidad a los dos códecs y sus escalas no coinciden. Con una calidad propia
+// (fotos del hero y de fondo), AVIF a ese número pesa más que WebP, así que van solo en WebP. Sin ella, cada
+// códec usa su calidad por defecto y AVIF pesa en torno a un 40 % menos (sobre todo en los equipos recortados,
+// con transparencia), así que se ofrece AVIF y WebP de respaldo.
 import { Picture } from 'astro:assets';
 import { imagen, anchos } from '../lib/imagenes';
 
@@ -14,7 +18,7 @@ interface Props {
   pictureClass?: string;
   vt?: string;
   parallax?: boolean;
-  /** Calidad AVIF/WebP (por defecto la de Astro). Las fotos de fondo bajo capa marina bajan a 32. */
+  /** Calidad WebP (por defecto la de cada códec). Las fotos de fondo bajo capa marina bajan a 32. */
   quality?: number;
 }
 const { name, alt, sizes, widths = [240, 320, 480, 640], priority = false, class: cls, pictureClass, vt, parallax = false, quality } = Astro.props;
@@ -24,7 +28,7 @@ const w = anchos(meta, widths);
 <Picture
   src={meta}
   alt={alt}
-  formats={['avif', 'webp']}
+  formats={quality ? ['webp'] : ['avif', 'webp']}
   fallbackFormat="webp"
   widths={w}
   sizes={sizes}

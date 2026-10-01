@@ -1,0 +1,39 @@
+---
+// Botón flotante de WhatsApp: siempre visible abajo a la derecha, con un mensaje ya escrito según la
+// página (ficha, categoría o general). En móvil sube por encima de la barra de asesoramiento y del
+// aviso de cookies para no taparlos; con el menú móvil abierto se aparta. Va en un <aside> con nombre para
+// que, aunque esté fuera de la cabecera, el contenido y el pie, quede dentro de una zona de referencia.
+import { wa } from '../data/empresa';
+
+interface Props { texto?: string }
+const { texto = 'Hola, vengo de la web de VytalGroup y me gustaría que me asesoraseis sobre un equipo.' } = Astro.props;
+---
+<aside aria-label="Contacto por WhatsApp">
+  <a class="waf" href={wa(texto)} target="_blank" rel="noopener" data-contact="whatsapp" data-origen="flotante" aria-label="Escríbenos por WhatsApp (se abre en otra pestaña)">
+    <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+    <span class="waf__txt" aria-hidden="true">WhatsApp</span>
+  </a>
+</aside>
+<style is:global>
+  .waf { --waf-b: 16px; position: fixed; z-index: 46; right: max(16px, env(safe-area-inset-right)); bottom: calc(var(--waf-b) + env(safe-area-inset-bottom)); display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 56px; height: 56px; padding: 0 16px; border-radius: 999px; background: var(--teal); color: var(--ink); font-size: 1rem; font-weight: 560; letter-spacing: -.01em; text-decoration: none; box-shadow: 0 1px 2px rgba(11, 25, 41, .12), 0 14px 32px -12px rgba(11, 25, 41, .55); transition: bottom .5s var(--ease), transform .4s var(--ease), box-shadow .3s ease, opacity .3s ease; -webkit-tap-highlight-color: transparent; }
+  .waf .icon { flex: none; width: 26px; height: 26px; }
+  .waf__txt { display: none; }
+  .waf:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  @media (hover: hover) and (pointer: fine) {
+    .waf:hover { transform: translateY(-2px); box-shadow: 0 1px 2px rgba(11, 25, 41, .12), 0 20px 40px -14px rgba(11, 25, 41, .6); }
+  }
+  /* En escritorio, con el nombre: se reconoce sin tener que pasar el ratón */
+  @media (min-width: 900px) {
+    .waf { --waf-b: 24px; right: 24px; padding: 0 22px 0 18px; }
+    .waf__txt { display: inline; }
+  }
+  /* Encima de la barra de asesoramiento (móvil) y del aviso de cookies (móvil, que ocupa el ancho) */
+  @media (max-width: 899px) { html.mbar-on .waf { --waf-b: 84px; } }
+  @media (max-width: 639px) { html.has-cookie-banner .waf { --waf-b: calc(var(--ck-h, 210px) + 24px); } }
+  html.menu-open .waf { opacity: 0; pointer-events: none; transform: scale(.9); }
+  @media (prefers-reduced-motion: no-preference) {
+    .waf { animation: waf-in .6s var(--ease) 1s backwards; }
+  }
+  @keyframes waf-in { from { opacity: 0; transform: translateY(16px) scale(.92); } }
+  @media print { .waf { display: none; } }
+</style>

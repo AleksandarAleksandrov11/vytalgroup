@@ -163,3 +163,23 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - [x] Hero del inicio rediseñado por completo, más limpio: fondo claro de estudio, titular centrado y tres equipos reales (Acclarix AX8 delante, Diatermia Multifunción y Shock Med detrás) sobre el mismo suelo con su sombra de contacto; sin rejilla, reflejos, brillos ni animaciones en bucle
 - [x] Probadas dos composiciones (centrada y a dos columnas) en 320 a 1920 px; la centrada gana porque los equipos se apoyan en el suelo en lugar de flotar
 - Pruebas de la ronda 5: SEO 1916/1916, HTML válido, Apps Script 18/18, formulario 60/60, interfaz 75/75 (con las del hero nuevo), accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil del inicio 100 · 100 · 100 · 100, LCP 1,40 s y CLS 0 (el resto de plantillas, de 99 a 100).
+
+## Ronda 6 (lista para publicar)
+- [x] `robots.txt` abierto a todos los bots y ninguna página con noindex (ni etiqueta ni cabecera `X-Robots-Tag`, tampoco en `vytalgroup.vercel.app`); las páginas legales entran en el sitemap
+- [x] Hero del inicio nuevo: "Equipos médicos de alta calidad. *Sin letra pequeña.*", el subtítulo pedido y los mismos dos botones, sobre marino y con una foto real de una ecografía de hombro con sonda inalámbrica que se funde con el fondo (adiós al estudio claro con los tres equipos)
+- [x] "Más equipos para tu consulta" con foto de fondo nueva (ultrasonido terapéutico en un tobillo)
+- [x] Botón flotante de WhatsApp en todas las páginas, con el estilo de la web y el mensaje ya escrito según la página (general, categoría o equipo de la ficha); en móvil sube por encima de la barra de asesoramiento y del aviso de cookies
+- [x] Alcance internacional con fondo nuevo: la Tierra de noche (NASA) con las rutas de envío desde España a la UE, USA y LATAM, que se dibujan al entrar en pantalla
+- [x] Cabecera de Contacto: mosaico de cuatro equipos (diatermia, ecógrafo inalámbrico, magnetoterapia y sondas) en lugar de una foto de fisio o de recepción
+- [x] Formulario: agradecimiento en torno a 1 s y sin el error falso (el lead llegaba pero la página decía "No se ha podido enviar"), "Enviar otra consulta", UTM de la web cuando la visita no trae los suyos (`utm_source = web`, medio según la procedencia y la página como campaña) y siempre empieza en la pregunta 1; probado de punta a punta con la hoja
+- [x] Apps Script de la web igual al de la landing (el que tiene la hoja, con la columna Modelo) y sus pruebas, más los envíos tal y como los hace la web
+- [x] Revisión de enlaces y botones: 266 enlaces internos con sus anclas, 176 enlaces de WhatsApp con mensaje, teléfono, correo y externos; todos los botones con su acción
+- [x] Carga: fotos con calidad propia (hero, fondos y mapa) solo en WebP, que a esa calidad pesa menos que AVIF; equipos recortados en AVIF con WebP de respaldo (pesan en torno a un 40 % menos); `sizes` del hero según su recorte real. HTML del inicio de 37 KB comprimido con el CSS en línea y un único JS de 8 KB (el del formulario se carga al usarlo)
+- [x] Vercel Web Analytics listo en el código (con consentimiento, sin cookies); falta activarlo en el panel de Vercel
+- [x] Revisión legal para publicar: aviso legal, privacidad y cookies coherentes con lo que hace la web y aviso de cookies con aceptar, rechazar y configurar al mismo nivel. Faltan los datos del titular y el plazo de conservación de los leads (tampoco están en la landing); no se inventan
+
+## Registro de la ronda 6
+- Envío del formulario: Apps Script responde con una redirección a `script.googleusercontent.com` que algunos bloqueadores y Safari cortan; la web daba error aunque la fila ya estaba guardada, y esperaba hasta 20 s. Ahora no sigue la redirección (su llegada ya indica que el script terminó), da las gracias en cuanto responde Google o a 1 s, sigue en segundo plano con `keepalive` y un reintento, y solo muestra el aviso si falla de verdad. Los reintentos no duplican filas (mismo `event_id`).
+- Prueba real contra la hoja del cliente: agradecimiento a 1,39 s, una sola petición y la fila con `web / directo / contacto`.
+- Accesibilidad: el botón flotante de WhatsApp quedaba fuera de toda zona de referencia (axe, regla `region`, en las 156 combinaciones); va dentro de un `<aside>` con nombre.
+- Pruebas de la ronda 6: SEO 1984/1984, HTML válido, Apps Script 27/27 (con los envíos de la web), formulario 65/65, interfaz 83/83 (hero, WhatsApp flotante y mapa nuevos), accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en 8 de las 9 plantillas y 99 de rendimiento en el catálogo, LCP entre 1,38 y 1,64 s y CLS de 0,002 como máximo.

@@ -57,6 +57,7 @@ const tituloH1 = !yaLoDice ? `${pre} *${p.nombre}*` : corte > 0 ? `${p.nombre.sl
   migas={migas}
   jsonld={[product(p, ldImgs.map((i) => `${SITE_URL}${i.src}`)), faqPage(faqs)]}
   viewContent={{ ids: [p.slug], type: 'product', category: c.nombre, name: `${p.nombre} (${p.marca})` }}
+  waTexto={`Hola, vengo de la web de VytalGroup y me interesa el equipo ${p.nombre} de ${p.marca}. ¿Me podéis asesorar?`}
 >
   <section class="phero fp on-dark" data-hero aria-labelledby="page-title">
     <div class="wrap">

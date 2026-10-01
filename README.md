@@ -5,8 +5,9 @@ Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con 
 - 78 páginas HTML: inicio, 2 páginas pilar (ecógrafos y diatermias), índice de equipos, 10 páginas de categoría, 53 fichas de producto, catálogo navegable, sobre nosotros, contacto, índice de guías y 3 guías, 3 legales y 404.
 - 53 productos en un único origen de datos (`src/data/productos/`): los 48 del catálogo 2026 y 5 modelos EDAN (Nano, U60, U50, DUS60 y U2) con los datos de la web oficial de EDAN. Todos tienen ficha propia con la misma estructura y sus preguntas frecuentes.
 - Fotos de producto mejoradas con IA (Real-ESRGAN) y sin fondo (BiRefNet), sin cambiar el contenido de las fotos.
-- Formulario de 4 pasos idéntico al de la landing, conectado a la **misma hoja de Google Sheets** (columnas nuevas Origen y Página).
+- Formulario de 4 pasos idéntico al de la landing, conectado a la **misma hoja de Google Sheets**. Los leads de la web llegan con `utm_source = web` (si la visita no trae UTM propios).
 - Aviso de cookies con tres categorías (necesarias, analítica y marketing): Vercel Web Analytics y Meta Pixel solo se cargan con consentimiento.
+- Botón flotante de WhatsApp en todas las páginas, con el mensaje ya escrito según la página (general, categoría o equipo).
 - Imágenes OG de 1200 × 630 generadas en el build para cada página, categoría, ficha y guía.
 
 ---
@@ -20,7 +21,7 @@ Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con 
   - `design-system.md`: Tokens y componentes extraídos de la landing (fuente de verdad del diseño)
   - `referencia-landing/`: Capturas de la landing a 375 y 1440 px
 - `integrations/`
-  - `google-sheets.gs`: Apps Script de la hoja de leads (web y landing, misma hoja)
+  - `google-sheets.gs`: Apps Script de la hoja de leads (copia exacta del de la landing: web y landing, misma hoja)
 - `public/`: Favicon, iconos, manifest y el catálogo en PDF (assets/docs/)
 - `scripts/`
   - `serve.mjs`: Servidor local que imita a Vercel (cabeceras, URLs limpias y 404 real)
@@ -46,14 +47,14 @@ Web multipágina de VytalGroup: **equipos médicos de alta calidad**. Astro con 
 | Ruta | Contenido |
 | --- | --- |
 | `/` | Inicio (13 secciones) |
-| `/ecografos` y `/ecografos/[modelo]` | Pilar de ecografía y sus 10 fichas |
+| `/ecografos` y `/ecografos/[modelo]` | Pilar de ecografía y sus 15 fichas |
 | `/diatermias` y `/diatermias/[modelo]` | Pilar de diatermia y sus 4 fichas |
 | `/equipos` | Todas las categorías |
-| `/equipos/[categoria]` y `/equipos/[categoria]/[modelo]` | 10 categorías y 28 fichas |
+| `/equipos/[categoria]` y `/equipos/[categoria]/[modelo]` | 10 categorías y 34 fichas |
 | `/catalogo` | Catálogo completo con filtros, buscador y orden, más el PDF |
 | `/sobre-nosotros`, `/contacto` | Empresa y contacto |
 | `/guias` y `/guias/[slug]` | Guías |
-| `/aviso-legal`, `/privacidad`, `/cookies` | Legales (noindex) |
+| `/aviso-legal`, `/privacidad`, `/cookies` | Legales |
 | `/404` | Error con estado 404 real |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt` | Generados desde los datos |
 | `/og/[slug].jpg` | Imágenes para compartir en redes |
@@ -127,20 +128,29 @@ El índice, el tiempo de lectura, la fecha, el autor, el CTA final, el JSON-LD `
 
 ## 5. Google Sheets (leads del formulario)
 
-**Ya está conectado.** `SHEETS_ENDPOINT` en `src/config.ts` apunta a la misma aplicación web de Apps Script que usa la landing (`vsl.vytalgroup.com`), así que los leads de la web y de la landing caen en la misma hoja. Se comprobó con un envío de prueba desde la web ("PRUEBA WEB (borrar esta fila)", respuesta `{"ok":true}`): bórralo de la hoja.
+**Ya está conectado.** `SHEETS_ENDPOINT` en `src/config.ts` apunta a la misma aplicación web de Apps Script que usa la landing (`vsl.vytalgroup.com`), así que los leads de la web y de la landing caen en la misma hoja, pestaña **Leads**: Fecha, Nombre, Teléfono, Email, Perfil, Equipo de interés, Modelo, utm_source, utm_medium, utm_campaign, utm_content, utm_term y event_id (oculta).
 
-Para que la hoja distinga de dónde viene cada lead (columnas **Origen** y **Página**), sustituye el script de la hoja por `integrations/google-sheets.gs` (pasos 2 a 4) usando **Gestionar implementaciones > editar > Versión: nueva**: la URL `/exec` no cambia y la landing sigue funcionando igual. Con el script antiguo los leads de la web también se guardan, solo sin esas dos columnas.
+`integrations/google-sheets.gs` es una **copia exacta** del script de la landing (el que tiene la hoja hoy). No hace falta tocar nada en la hoja para la web. Si se cambia el script, se cambia en los dos repositorios a la vez.
 
-La web envía `origen: "web"` y la página exacta; la landing no envía origen y se guarda como `landing`, con su URL de entrada como página.
+**Cómo se distinguen los leads de la web.** Si la visita trae UTM propios (por ejemplo, de un anuncio), se guardan tal cual. Si no, la web los rellena así:
 
-### Pasos
+| Columna | Valor |
+| --- | --- |
+| `utm_source` | `web` |
+| `utm_medium` | `directo` (sin procedencia o desde la propia web), `organico` (buscadores), `redes` (Instagram, Facebook, WhatsApp, LinkedIn, TikTok, YouTube...) o `referencia` (otra web) |
+| `utm_campaign` | La página desde la que se envía: `inicio`, `contacto`, `ecografos/acclarix-ax8`... |
+| `utm_content` | El dominio de procedencia, si viene de fuera |
 
-1. Abre la hoja de leads de la landing (o crea una nueva, por ejemplo "Leads VytalGroup").
+**Envío rápido y sin errores falsos.** El formulario manda el lead y muestra el agradecimiento en cuanto Google responde (normalmente en menos de 1,5 s). La respuesta de Apps Script es una redirección a `script.googleusercontent.com`: la web no la sigue (`redirect: "manual"`), porque esa redirección solo llega cuando el script ya ha terminado de ejecutarse. Así no depende de un segundo dominio que algunos bloqueadores o Safari cortan, que era lo que mostraba "No se ha podido enviar" aunque el lead llegaba. A cambio, la web no lee el `{ok:false}` de una validación del servidor; por eso el formulario comprueba lo mismo antes de enviar (nombre, perfil, equipo, consentimiento y teléfono o correo válidos). Si Google tarda más de 1 s, se da las gracias igualmente y el envío sigue en segundo plano (con `keepalive` y un reintento); solo si falla de verdad aparece el aviso con Reintentar y WhatsApp, con los datos intactos. Los reintentos no duplican filas: el script descarta el mismo `event_id`. Tras enviar, "Enviar otra consulta" deja el formulario vacío en la pregunta 1.
+
+### Si algún día hay que montar la hoja de cero
+
+1. Crea una hoja (por ejemplo "Leads VytalGroup").
 2. En la hoja: **Extensiones > Apps Script**. Borra lo que haya y pega entero `integrations/google-sheets.gs`.
-3. Guarda. Elige la función **setup** y pulsa **Ejecutar**. Acepta los permisos (Revisar permisos > tu cuenta > Configuración avanzada > Ir a (proyecto) > Permitir). Se crea o actualiza la pestaña "Leads".
+3. Guarda. Elige la función **setup** y pulsa **Ejecutar**. Acepta los permisos (Revisar permisos > tu cuenta > Configuración avanzada > Ir a (proyecto) > Permitir). Se crea la pestaña "Leads".
 4. **Implementar > Nueva implementación**, tipo **Aplicación web**: Ejecutar como **Yo**; Quién tiene acceso **Cualquier usuario**. Copia la URL que termina en `/exec`.
-   - Si la landing ya tenía una implementación, puedes usar **Gestionar implementaciones > editar > Versión: nueva**: la URL no cambia y la landing sigue funcionando.
-5. Pega la URL en `src/config.ts`:
+   - Si cambias el código de una implementación que ya existe, usa **Gestionar implementaciones > editar > Versión: nueva**: la URL no cambia y la landing sigue funcionando.
+5. Pega la URL en `src/config.ts` (y en `config.js` de la landing):
    ```ts
    export const SHEETS_ENDPOINT = 'https://script.google.com/macros/s/.../exec';
    ```
@@ -148,7 +158,7 @@ La web envía `origen: "web"` y la página exacta; la landing no envía origen y
 
 Con `SHEETS_ENDPOINT` vacío, el formulario muestra un error amable (con WhatsApp como alternativa, sin perder los datos) y avisa en la consola del navegador.
 
-El script valida en el servidor, usa `LockService`, descarta duplicados por `event_id`, guarda la fecha en hora de Madrid, evita fórmulas en las celdas y envía un email por lead a `vytalkinetech@gmail.com` (`SEND_EMAIL_NOTIFICATION` para desactivarlo).
+El script valida en el servidor, usa `LockService`, descarta duplicados por `event_id`, guarda la fecha en hora de Madrid, evita fórmulas en las celdas y envía un email por lead a la dirección de `NOTIFY_EMAIL` (`SEND_EMAIL_NOTIFICATION` para desactivarlo). Si el email de aviso falla después de guardar la fila, el script responde `{ok:false}` aunque el lead esté en la hoja; la web ya no lo muestra como error (ver arriba).
 
 ## 6. Meta Pixel
 
@@ -191,7 +201,7 @@ La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`).
 
    (o cambia los DNS a los de Vercel). El certificado HTTPS se emite solo.
    - La landing de venta va en otro proyecto de Vercel con el subdominio `vsl.vytalgroup.com`: en ese proyecto, **Settings > Domains > Add** `vsl.vytalgroup.com` y en el DNS un **CNAME** `vsl` a `cname.vercel-dns.com`.
-4. **Canonical y dominio:** `SITE_URL` (en `src/config.ts`) es `https://vytalgroup.com`: de ahí salen canonical, Open Graph, JSON-LD, sitemap y `llms.txt`. Mientras la web se vea también en `vytalgroup.vercel.app`, `vercel.json` le pone `X-Robots-Tag: noindex` a ese host para que Google solo indexe `vytalgroup.com`. Cuando el dominio esté conectado, puedes redirigir `vytalgroup.vercel.app` a `vytalgroup.com` desde **Settings > Domains** (Redirect to). Para usar otro dominio, define la variable de entorno `SITE_URL` en Vercel.
+4. **Canonical y dominio:** `SITE_URL` (en `src/config.ts`) es `https://vytalgroup.com`: de ahí salen canonical, Open Graph, JSON-LD, sitemap y `llms.txt`. **Ninguna página lleva noindex** y `robots.txt` deja pasar a todos los bots: la canonical es la que le dice a Google que la dirección buena es `vytalgroup.com`. Hoy (1 de octubre de 2026) `vytalgroup.com` todavía muestra la página de aparcamiento del registrador, así que conectar el dominio (punto 3) es lo primero; después, redirige `vytalgroup.vercel.app` a `vytalgroup.com` desde **Settings > Domains** (Redirect to). Para usar otro dominio, define la variable de entorno `SITE_URL` en Vercel.
 5. En Google Search Console, añade la propiedad del dominio y envía `https://vytalgroup.com/sitemap.xml`.
 
 `vercel.json` incluye la CSP (solo scripts propios y el de Meta; conexión a Apps Script y Meta), cabeceras de seguridad, caché inmutable para `/_astro` y `/assets`, el PDF como descarga y redirecciones de rutas antiguas o probables (`/nosotros`, `/tecarterapia`, `/equipos/ecografia`...).
@@ -200,15 +210,17 @@ La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`).
 
 ## 8. Pendientes para el cliente
 
+- [ ] **Conectar el dominio `vytalgroup.com`** a este proyecto de Vercel (apartado 7, punto 3). Hoy muestra la página de aparcamiento del registrador.
+- [ ] **Vercel Web Analytics:** activarlo en el panel de Vercel (apartado 6 bis). Hasta entonces `/_vercel/insights/script.js` responde 404 y no se cuenta nada.
+- [ ] **Borrar las filas de prueba** de la hoja de leads ("PRUEBA WEB ... (borrar)").
 - [ ] **ID del Meta Pixel** en `src/config.ts` (`META_PIXEL_ID`).
-- [ ] **URL del Apps Script** en `src/config.ts` (`SHEETS_ENDPOINT`), siguiendo el apartado 5.
+- [x] **URL del Apps Script** en `src/config.ts` (`SHEETS_ENDPOINT`): conectada a la hoja de la landing y probada de punta a punta (apartado 5).
 - [ ] **Datos legales del titular** (razón social o nombre, NIF o CIF, domicilio y datos registrales) en `src/components/LegalTitular.astro`, y el **plazo de conservación de los leads** en `src/pages/privacidad.astro`. Ahora están vacíos y marcados en amarillo como "[Pendiente: ...]".
 - [ ] **Revisión de las 3 guías por Javier** antes de publicar (`src/content/guias/`). Están escritas en su voz, con datos solo del catálogo y del brief, pero debe leerlas y aprobarlas.
 - [ ] **Revisar los 5 EDAN de la web oficial** (Nano, U60, U50, DUS60 y U2): tienen ficha completa con los datos y fotos de edan.com. Confirmar que se ofrecen en España y con qué configuración; el catálogo EDAN ("ENG-2024-25 Product Catalogue") no estaba en el material recibido.
 - [ ] **Fotos originales:** las fotos de producto se han mejorado con IA desde el PDF comprimido del catálogo y la web de EDAN. Con las fotos originales en alta resolución (y fotos de Javier en su contexto de trabajo) la web ganaría aún más. Basta con procesarlas con `scripts/imagenes/mejorar_ia.py` manteniendo el nombre.
 - [ ] **Camillas:** ya tienen ficha con lo que da el catálogo (descripción, rasgos, certificación CE y garantía). Con su ficha técnica (medidas, peso admitido, motor) se pueden completar.
 - [ ] **Logotipo de VytaMeD:** no hay logotipo publicado de la marca propia; en la cinta de marcas de Sobre nosotros aparece su nombre en texto. Basta con añadir su SVG en `src/assets/marcas/`.
-- [ ] **Vercel Web Analytics:** activarlo en el panel de Vercel (apartado 6 bis).
 
 ---
 
@@ -218,11 +230,11 @@ La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`).
 
 | Prueba | Qué comprueba |
 | --- | --- |
-| `qa-seo` | Sin navegador: title de 50 a 60 y description de 140 a 160 caracteres, únicos; un H1 con acento; lang, canonical, Open Graph y Twitter con imagen existente; robots (noindex solo en legales y 404); JSON-LD válido, sin offers ni valoraciones y con los tipos de cada plantilla; sin rayas ni veterinaria en ningún archivo publicado; sin scripts en línea; alt en todas las imágenes; enlaces internos, anclas y recursos; sitemap, robots.txt y llms.txt |
-| `qa-apps-script` | El Apps Script real contra una hoja simulada: hoja nueva, hoja de la landing (columnas por título), origen por defecto, duplicados, campo trampa y validaciones |
-| `qa-form` | Formulario completo con UTM, preselección desde ficha y desde tarjeta sin ficha, validación, error del servidor, endpoint vacío, antispam (3 s y campo trampa), consentimiento y todos los eventos del píxel (Meta simulado, sin salir a internet) |
-| `qa-ui` | Cabecera y menús (ratón y teclado), catálogo (filtros, búsqueda, orden, URL, sin JavaScript), segmentado, acordeón, galería, guías (índice y progreso), teclado, movimiento reducido, CSP sin violaciones, 404 real y caché |
-| `qa-a11y` | axe-core (WCAG 2.2 AA y buenas prácticas) en las 67 páginas a 390 y 1440 px, más un cálculo de contraste propio donde axe no puede resolver el fondo (degradados y pseudoelementos) |
+| `qa-seo` | Sin navegador: title de 50 a 60 y description de 140 a 160 caracteres, únicos; un H1 con acento; lang, canonical, Open Graph y Twitter con imagen existente; robots `index, follow` en todas (ninguna con noindex, tampoco en `vercel.json`); JSON-LD válido, sin offers ni valoraciones y con los tipos de cada plantilla; sin rayas ni veterinaria en ningún archivo publicado; sin scripts en línea; alt en todas las imágenes; enlaces internos, anclas y recursos; sitemap, robots.txt y llms.txt |
+| `qa-apps-script` | El Apps Script real (el de la landing) contra una hoja simulada: columnas, columna Modelo, aviso por email, duplicados, campo trampa, validaciones y los envíos tal y como los hace la web (`utm_source = web`) |
+| `qa-form` | Formulario completo con UTM y con los UTM de la web, preselección desde ficha y desde tarjeta sin ficha (siempre desde la pregunta 1), validación, error del servidor, servidor lento (agradecimiento en menos de 1,5 s), "Enviar otra consulta", endpoint vacío, antispam (3 s y campo trampa), consentimiento y todos los eventos del píxel (Meta simulado, sin salir a internet) |
+| `qa-ui` | Cabecera y menús (ratón y teclado), hero del inicio (textos, foto prioritaria, escritorio y móvil), WhatsApp flotante (mensaje por página y posición sobre la barra móvil), mapa de alcance, catálogo (filtros, búsqueda, orden, URL, sin JavaScript), segmentado, acordeón, galería, guías (índice y progreso), teclado, movimiento reducido, CSP sin violaciones, 404 real y caché |
+| `qa-a11y` | axe-core (WCAG 2.2 AA y buenas prácticas) en las 78 páginas a 390 y 1440 px, más un cálculo de contraste propio donde axe no puede resolver el fondo (degradados y pseudoelementos) |
 | `html-validate` | HTML válido en todas las páginas (reglas en `.htmlvalidate.json`) |
 | `qa-layout` | 15 páginas (todas las plantillas, más una categoría con fila impar) en los 12 anchos del brief (320 a 1920): sin scroll horizontal, sin elementos fuera de pantalla, sin textos cortados, botones en una línea, áreas táctiles de 44 px, H1 en la primera pantalla y sin errores de consola. Guarda capturas de página completa en `tests/output/screenshots/` |
 
@@ -246,7 +258,7 @@ Se puede lanzar una sola: `node tests/run.mjs qa-form`.
 - **Contacto.** El formulario grande está arriba (es el protagonista de la página) y la página termina con las dudas y un botón que vuelve a él, en lugar de repetir un segundo formulario idéntico. Sin mapa ni dirección.
 - **Legales y 404.** Sin CTA final ni formulario, como pide el brief; la barra móvil y la cabecera llevan a `/contacto#asesoramiento`.
 - **Guías.** Tres guías de 950 a 1.100 palabras, firmadas por Javier, con fecha de publicación del día en que se escribieron (26 de septiembre de 2026). Solo usan datos del catálogo y afirmaciones generales prudentes (física básica de la ecografía y de la tecarterapia, normativa MDR), sin promesas clínicas.
-- **Hoja de leads.** Se mantienen las columnas de la landing "Contactar por" y "WhatsApp" (enlace directo al lead) además de las del brief. El script localiza las columnas por su título para no romper la hoja que ya usa la landing.
+- **Hoja de leads.** La web usa la hoja y el script de la landing tal cual (13 columnas, con Modelo). En lugar de columnas propias de origen, los leads de la web se reconocen por `utm_source = web` y la página en `utm_campaign`.
 - **URLs.** Sin barra final y sin `.html` (`cleanUrls`); las fichas de ecografía y diatermia cuelgan de su pilar (`/ecografos/acclarix-ax8`), y el resto de `/equipos/[categoria]/[modelo]`. Se añaden redirecciones para `/equipos/ecografia` y `/equipos/diatermia`.
 - **Rendimiento.** CSS en línea por página (sin peticiones de estilos), JS dividido (el formulario y los filtros se cargan solo cuando hacen falta), imágenes con dimensiones fijas y una integración de Astro que borra del build las imágenes originales que no se usan.
 - **Imágenes OG.** Se generan en el build con satori y resvg (marca, titular con acento y producto o foto) y se guardan en caché en `node_modules/.cache/vg-og` para que los siguientes builds sean rápidos.

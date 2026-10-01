@@ -45,6 +45,10 @@ export function initConsent({ delay = 900 } = {}) {
   function showBanner() {
     banner!.hidden = false;
     html.classList.add('has-cookie-banner');
+    // Alto del aviso, para que el botón flotante de WhatsApp se coloque encima en móvil
+    const alto = () => html.style.setProperty('--ck-h', `${banner!.offsetHeight + 12}px`);
+    alto();
+    if ('ResizeObserver' in window) new ResizeObserver(alto).observe(banner!);
     requestAnimationFrame(() => requestAnimationFrame(() => banner!.classList.add('is-visible')));
   }
   function hideBanner() {

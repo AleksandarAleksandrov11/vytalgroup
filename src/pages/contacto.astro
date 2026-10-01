@@ -19,6 +19,13 @@ const CANALES = [
   { k: 'Teléfono', v: EMPRESA.telefonoTexto, d: 'Si prefieres contarlo de viva voz.', href: EMPRESA.telefonoHref, icono: 'i-phone', externo: false },
   { k: 'Email', v: EMPRESA.email, d: 'Para enviarnos detalles o documentación.', href: `mailto:${EMPRESA.email}`, icono: 'i-mail', externo: false },
 ];
+// Cabecera: un mosaico con varios equipos (tres de la marca propia en consulta y unas sondas de ecógrafo)
+const MOSAICO = [
+  { img: 'fotos/diatermia-multifuncion-vytamed-en-consulta', t: 'Diatermia', alt: 'Diatermia Multifunción de VytaMeD en una consulta de fisioterapia', foco: '40% 45%' },
+  { img: 'fotos/eco-wireless-vytamed-estuche', t: 'Ecógrafo inalámbrico', alt: 'Ecógrafo inalámbrico Eco Wireless de VytaMeD en su maletín', foco: '72% 50%' },
+  { img: 'fotos/superinductiva-clinica-vytamed-en-consulta', t: 'Magnetoterapia', alt: 'Equipo de magnetoterapia Superinductiva de VytaMeD en una clínica', foco: '60% 55%' },
+  { img: 'fotos/sondas-ecografo', t: 'Sondas de ecografía', alt: 'Sondas de un ecógrafo en su soporte', foco: '45% 40%' },
+];
 const PASOS = [
   { t: 'Te escribimos', d: 'Por WhatsApp o por correo, como hayas elegido en el formulario.' },
   { t: 'Entendemos lo que necesitas', d: 'Nos cuentas cómo trabajas, qué tratas y dónde, y vemos qué equipos encajan contigo.' },
@@ -34,7 +41,15 @@ const PASOS = [
   migas={migas}
   jsonld={[contactPage('/contacto'), organization(), faqPage(FAQ_CONTACTO)]}
 >
-  <PageHero migas={migas} titulo="Contacto y *asesoramiento.*" lead="Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara." imagen="fotos/recepcion-clinica-fisioterapia" alt="Recepción luminosa de una clínica de fisioterapia" sinVisualMovil>
+  <PageHero migas={migas} titulo="Contacto y *asesoramiento.*" lead="Te asesoran fisioterapeutas. Son 4 preguntas y te respondemos con una propuesta clara." sinVisualMovil>
+    <div slot="visual" class="mos">
+      {MOSAICO.map((m) => (
+        <figure class="mos__item" style={`--foco:${m.foco}`}>
+          <Img name={m.img} alt={m.alt} sizes="(min-width: 1200px) 272px, (min-width: 900px) 23vw, 46vw" widths={[240, 360, 540]} class="mos__img" />
+          <figcaption class="mos__cap">{m.t}</figcaption>
+        </figure>
+      ))}
+    </div>
     <Fragment slot="acciones">
       <a class="btn btn--primary btn--lg" href="#asesoramiento">Empezar las 4 preguntas</a>
       <a class="link" href={wa('Hola, quiero asesoramiento sobre un equipo.')} target="_blank" rel="noopener" data-origen="contacto-hero">Escríbenos por WhatsApp<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>

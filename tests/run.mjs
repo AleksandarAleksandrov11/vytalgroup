@@ -4,8 +4,8 @@
 //                    Open Graph, robots, JSON-LD, rayas, veterinaria, scripts en línea, alt, enlaces
 //                    internos y anclas, sitemap, robots.txt y llms.txt.
 //  · html-validate → HTML válido en todas las páginas (reglas en .htmlvalidate.json).
-//  · qa-apps-script→ el Apps Script real (integrations/google-sheets.gs) contra una hoja simulada:
-//                    hoja nueva, hoja de la landing (columnas añadidas por título), duplicados y validación.
+//  · qa-apps-script→ el Apps Script real (integrations/google-sheets.gs, el de la landing) contra una hoja
+//                    simulada: columnas, columna Modelo, duplicados, validación y los envíos de la web.
 //  · qa-form       → formulario (preselección, validación, envío, error, sin endpoint, antispam),
 //                    consentimiento y eventos del píxel (Meta simulado, sin salir a internet).
 //  · qa-ui         → cabecera, menús, catálogo (filtros, búsqueda, orden y URL), acordeones, guías,

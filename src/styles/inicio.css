@@ -2,53 +2,41 @@
    Inicio
    ========================================================================== */
 
-/* ---------- 1 · Hero: estudio claro, titular centrado y tres equipos sobre el mismo suelo ---------- */
-/* Alto según el contenido: titular, botones y los equipos apoyados abajo; la cinta de datos asoma debajo */
-.hx { position: relative; isolation: isolate; display: flex; padding: calc(var(--hd) + clamp(28px, 5.5vh, 64px)) 0 0; overflow: clip; background: #FFF; }
-/* Pared blanca que se funde con un suelo gris perla, con luz bajo los equipos */
-.hx::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(46% 30% at 50% 100%, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 100%), linear-gradient(180deg, #FFF 0%, #FFF 50%, #F3F7F8 76%, #EAF1F3 100%); }
-.hx__wrap { display: flex; flex-direction: column; align-items: center; width: 100%; text-align: center; }
-.hx__copy { max-width: 1000px; }
-.hx__title { color: var(--ink); font-size: min(clamp(2.5rem, 1.55rem + 3.3vw, 4.875rem), calc(11.5vw - 2px)); }
-.hx__title em { color: var(--teal-ink); }
-.hx__lead { max-width: 42ch; margin: 20px auto 0; font-size: var(--fs-lead); line-height: 1.45; letter-spacing: -.01em; color: var(--ink-2); text-wrap: balance; }
-.hx__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
-@media (max-width: 479px) { .hx__actions { width: 100%; } .hx__actions .btn { width: 100%; } }
-
-/* Escenario: los equipos se colocan por el tamaño real de su caja (el lienzo 4:3 se recorta con --cx, --cy,
-   --cw y --ch). El ecógrafo, delante y más grande; la diatermia y las ondas de choque, un paso por detrás */
-.hx__stage { --ih: clamp(132px, min(19vw, 28vh), 276px); position: relative; display: flex; justify-content: center; align-items: flex-end; width: 100%; padding: clamp(36px, 6vh, 64px) 0 clamp(26px, 4.5vh, 48px); }
-/* Halo turquesa muy tenue detrás de los equipos (va con el escenario, no con la sección) */
-.hx__stage::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 4%; width: calc(var(--ih) * 3.6); height: calc(var(--ih) * 1.7); translate: -50% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(72, 160, 168, .15), rgba(72, 160, 168, .05) 60%, rgba(72, 160, 168, 0)); pointer-events: none; }
-.hx__item { --h: var(--ih); position: relative; flex: none; display: block; height: var(--h); aspect-ratio: var(--ar); border-radius: 12px; translate: calc(var(--px, 0) * var(--d, 0) * 1px) calc(var(--py, 0) * var(--d, 0) * .5px); transition: translate 1s var(--ease), transform .7s var(--ease); }
-.hx__item picture { position: absolute; left: calc(-100% * var(--cx) / var(--cw)); top: calc(-100% * var(--cy) / var(--ch)); width: calc(100% / var(--cw)); max-width: none; pointer-events: none; }
-.hx__img { display: block; width: 100%; max-width: none; height: auto; }
-/* Sombra de contacto bajo la base de cada equipo (en el ecógrafo, sin contar el cable de la sonda) */
-.hx__item::before { content: ""; position: absolute; z-index: -1; left: var(--sl, 3%); right: var(--sr, 3%); bottom: var(--sb, -4%); height: 11%; border-radius: 50%; background: radial-gradient(closest-side, rgba(11, 25, 41, .3), rgba(11, 25, 41, .12) 55%, transparent); transition: transform .7s var(--ease), opacity .7s var(--ease); pointer-events: none; }
-.hx__item--c { --d: 9; --sl: 2%; --sr: 22%; --sb: 2%; z-index: 2; }
-.hx__item--l, .hx__item--r { --h: calc(var(--ih) * .66); --d: -5; z-index: 1; margin-bottom: calc(var(--ih) * .1); }
-.hx__item--l { margin-right: calc(var(--ih) * -.07); }
-.hx__item--r { margin-left: calc(var(--ih) * -.07); }
-.hx__item:focus-visible { outline: 2px solid var(--teal-ink); outline-offset: 6px; }
-@media (hover: hover) and (pointer: fine) {
-  .hx__item:hover { transform: translateY(-2.5%); }
-  .hx__item:hover::before { transform: translateY(12%) scale(.9); opacity: .7; }
+/* ---------- 1 · Hero: titular corto sobre marino y una ecografía de hombro real que se funde con el fondo ---------- */
+/* Escritorio: la foto ocupa la derecha y se disuelve hacia el texto. Móvil: el texto arriba y la foto debajo, en banda.
+   Llena el primer pantallazo y deja asomar la cinta de datos (--band) */
+.hx { position: relative; isolation: isolate; display: flex; flex-direction: column; overflow: clip; padding-top: calc(var(--hd) + clamp(32px, 6vh, 56px)); background: var(--navy); color: #FFF; }
+/* Luz turquesa muy tenue detrás del titular y rejilla de puntos fina, como en el resto de cabeceras */
+.hx::before { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(52% 62% at 12% 42%, rgba(72, 160, 168, .2), transparent 72%), radial-gradient(40% 50% at 0% 100%, rgba(47, 123, 208, .12), transparent 70%); }
+.hx::after { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1.4px); background-size: 22px 22px; -webkit-mask-image: radial-gradient(ellipse 46% 60% at 14% 52%, #000, transparent 75%); mask-image: radial-gradient(ellipse 46% 60% at 14% 52%, #000, transparent 75%); }
+.hx__wrap { position: relative; z-index: 1; }
+.hx__copy { max-width: 600px; }
+/* inicio.css se carga antes que base.css: el tamaño va con más especificidad que .h1 */
+.hx .hx__title { color: #FFF; }
+/* "Sin letra pequeña." siempre en su propia línea */
+.hx__title em { display: block; color: var(--teal-light); }
+.hx__lead { max-width: 34ch; margin-top: 20px; font-size: var(--fs-lead); line-height: 1.45; letter-spacing: -.01em; color: var(--on-dark); text-wrap: pretty; }
+.hx__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hx__media { position: relative; z-index: -1; order: 2; aspect-ratio: 16 / 10; margin-top: clamp(32px, 7vw, 48px); background: var(--navy-2); }
+.hx__media picture { position: absolute; inset: 0; display: block; }
+.hx__photo { width: 100%; height: 100%; object-fit: cover; object-position: 55% 50%; }
+/* Fundido con el marino: arriba en móvil, a la izquierda en escritorio */
+.hx__media::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, var(--navy) 0%, rgba(11, 25, 41, .55) 16%, rgba(11, 25, 41, 0) 44%), linear-gradient(0deg, rgba(11, 25, 41, .28), rgba(11, 25, 41, 0) 30%); }
+@media (max-width: 479px) { .hx__actions .btn { flex: 1 1 100%; } }
+@media (min-width: 900px) {
+  .hx { justify-content: center; min-height: clamp(600px, calc(100svh - var(--band, 88px)), 1000px); padding: calc(var(--hd) + 48px) 0 72px; }
+  .hx__copy { max-width: min(680px, 54%); }
+  .hx .hx__title { font-size: min(var(--fs-h1), 5.25rem, 6.6vw); }
+  /* La foto se disuelve con una máscara (no con un degradado marino), así no deja costura sobre la luz del fondo */
+  .hx__media { position: absolute; inset: 0 0 0 auto; width: 58%; margin: 0; aspect-ratio: auto; background: none; -webkit-mask-image: linear-gradient(90deg, transparent, rgba(0, 0, 0, .3) 14%, #000 40%); mask-image: linear-gradient(90deg, transparent, rgba(0, 0, 0, .3) 14%, #000 40%); }
+  .hx__media::after { background: linear-gradient(0deg, rgba(11, 25, 41, .5), rgba(11, 25, 41, 0) 26%), linear-gradient(180deg, rgba(11, 25, 41, .3), rgba(11, 25, 41, 0) 18%); }
 }
-@media (min-width: 640px) and (max-width: 1023px) { .hx__stage { --ih: clamp(170px, 30vw, 270px); } }
-@media (max-width: 639px) {
-  .hx__stage { --ih: clamp(112px, 36vw, 180px); }
-  .hx__item--l, .hx__item--r { --h: calc(var(--ih) * .62); }
-  .hx__item--l { margin-right: calc(var(--ih) * -.15); }
-  .hx__item--r { margin-left: calc(var(--ih) * -.15); }
-}
-/* Entrada: el ecógrafo sube (solo transform: es el LCP) y los otros dos aparecen detrás, algo después */
+@media (min-width: 1400px) { .hx__media { width: 60%; } }
+/* Entrada: la foto se asienta con un zoom muy leve (solo transform: puede ser el LCP) */
 @media (prefers-reduced-motion: no-preference) {
-  .hx__item--c { animation: hx-up 1.1s var(--ease) .2s backwards; }
-  .hx__item--l, .hx__item--r { animation: hx-in 1.1s var(--ease) .45s backwards; }
-  .hx__item--r { animation-delay: .55s; }
+  .hx__photo { animation: hx-zoom 1.8s var(--ease) backwards; }
 }
-@keyframes hx-up { from { transform: translateY(8%); } }
-@keyframes hx-in { from { opacity: 0; transform: translateY(10%); } }
+@keyframes hx-zoom { from { transform: scale(1.07); } }
 
 /* ---------- 4 · Ecografía en profundidad (sticky) ---------- */
 .eco__grid { display: grid; gap: 24px; }

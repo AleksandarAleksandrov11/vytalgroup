@@ -29,17 +29,5 @@ export function anchoEquipo(nombre: string): number {
   return (encuadre as Record<string, { w: number }>)[nombre]?.w ?? 0.6;
 }
 
-/** Caja del equipo dentro de su lienzo (0 a 1): ancho, alto y esquina superior izquierda */
-export function cajaEquipo(nombre: string): { w: number; h: number; x: number; y: number } {
-  return (encuadre as Record<string, { w: number; h: number; x: number; y: number }>)[nombre] ?? { w: 0.6, h: 0.6, x: 0.2, y: 0.28 };
-}
-
-/** Variables CSS para recortar el lienzo a la caja del equipo (el hero del inicio coloca cada equipo por su
- *  tamaño real en pantalla, no por el de su lienzo) */
-export const recorte = (nombre: string) => {
-  const c = cajaEquipo(nombre);
-  return `--cw:${c.w};--ch:${c.h};--cx:${c.x};--cy:${c.y};--ar:${((c.w * 4) / (c.h * 3)).toFixed(4)}`;
-};
-
 /** Estilo del escenario de producto: la sombra de contacto toma el ancho del equipo */
 export const escena = (nombre: string) => (nombre.startsWith('fotos/') ? undefined : `--sw:${anchoEquipo(nombre)}`);

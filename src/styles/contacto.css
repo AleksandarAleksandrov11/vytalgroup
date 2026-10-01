@@ -40,3 +40,11 @@
   .chan__go { display: none; }
   .chan__v { font-size: .9375rem; }
 }
+
+/* Cabecera: mosaico de equipos en el marco 4:3 (2 × 2, con el nombre de cada uno) */
+.mos { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; padding: 8px; }
+.mos__item { position: relative; margin: 0; overflow: hidden; border-radius: 16px; background: var(--navy-3); }
+.mos__item picture { display: block; width: 100%; height: 100%; }
+.mos__img { width: 100%; height: 100%; object-fit: cover; object-position: var(--foco, 50% 50%); transition: transform .9s var(--ease); }
+.mos__cap { position: absolute; left: 10px; bottom: 10px; padding: 5px 10px; border-radius: 999px; background: rgba(11, 25, 41, .72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #FFF; font-size: .8125rem; font-weight: 500; letter-spacing: -.005em; line-height: 1.2; }
+@media (hover: hover) and (pointer: fine) { .mos__item:hover .mos__img { transform: scale(1.04); } }

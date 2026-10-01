@@ -11,6 +11,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileBar from '../components/MobileBar.astro';
 import Cookies from '../components/Cookies.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { absUrl, breadcrumbList, graph, organization, type Miga, website, persona } from '../lib/seo';
 
 export type Seccion = 'inicio' | 'ecografos' | 'diatermias' | 'equipos' | 'catalogo' | 'sobre-nosotros' | 'contacto' | 'guias' | 'legal' | '';
@@ -30,10 +31,12 @@ interface Props {
   viewContent?: { ids?: string[]; type: string; category: string; name: string };
   lectura?: boolean;
   bodyClass?: string;
+  /** Mensaje ya escrito del botón flotante de WhatsApp (por defecto, uno general) */
+  waTexto?: string;
 }
 const {
   title, description, path, og = '/og/inicio.jpg', ogAlt, ogType = 'website', jsonld = [], migas,
-  seccion = '', conFormulario = true, viewContent, lectura = false, bodyClass,
+  seccion = '', conFormulario = true, viewContent, lectura = false, bodyClass, waTexto,
 } = Astro.props;
 
 const canonical = absUrl(path);
@@ -91,6 +94,7 @@ if (!nodos.some((n: any) => n['@type'] === 'Person')) nodos.push(persona());
 </main>
 <Footer conFormulario={conFormulario} />
 <MobileBar conFormulario={conFormulario} />
+<WhatsAppFloat texto={waTexto} />
 <Cookies />
 <script>
   import '../scripts/main';

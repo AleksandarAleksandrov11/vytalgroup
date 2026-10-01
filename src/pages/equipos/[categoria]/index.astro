@@ -59,6 +59,7 @@ const altHero = repr ? altProducto(repr) : c.nombre;
   seccion="equipos"
   migas={migas}
   jsonld={jsonld}
+  waTexto={`Hola, vengo de la web de VytalGroup y quiero información sobre ${c.nombre.toLowerCase()}. ¿Me podéis asesorar?`}
 >
   <PageHero migas={migas} titulo={c.h1} lead={c.apoyo} imagen={c.imagen} alt={altHero}>
     <Fragment slot="acciones">

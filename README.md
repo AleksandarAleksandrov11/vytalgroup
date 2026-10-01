@@ -210,6 +210,7 @@ La web cuenta visitas con **Vercel Web Analytics** (`src/scripts/analytics.ts`).
 
 ## 8. Pendientes para el cliente
 
+- [ ] **Fusionar esta rama en `main`.** `vytalgroup.vercel.app` se publica desde `main`, que hoy tiene la ronda 5 (y su cabecera `X-Robots-Tag: noindex`). La rama `claude/eloquent-turing-1arlub` lleva la ronda 6 (formulario arreglado incluido) y se fusiona sin conflictos.
 - [ ] **Conectar el dominio `vytalgroup.com`** a este proyecto de Vercel (apartado 7, punto 3). Hoy muestra la página de aparcamiento del registrador.
 - [ ] **Vercel Web Analytics:** activarlo en el panel de Vercel (apartado 6 bis). Hasta entonces `/_vercel/insights/script.js` responde 404 y no se cuenta nada.
 - [ ] **Borrar las filas de prueba** de la hoja de leads ("PRUEBA WEB ... (borrar)").

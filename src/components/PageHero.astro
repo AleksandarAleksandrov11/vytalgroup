@@ -41,7 +41,7 @@ const esFoto = !!imagen && imagen.startsWith('fotos/');
           <div class="phero__frame phero__frame--custom"><slot name="visual" /></div>
         ) : imagen && (
           <div class:list={['phero__frame', { stage: !esFoto, 'phero__frame--retrato': retrato }]} style={esFoto ? (foco ? `--foco:${foco}` : undefined) : escena(imagen)}>
-            <Img name={imagen} alt={alt} sizes="(min-width: 900px) 540px, 92vw" widths={[360, 540, 720, 1080]} priority={!sinVisualMovil} class={esFoto ? 'phero__photo' : undefined} />
+            <Img name={imagen} alt={alt} sizes="(min-width: 900px) 540px, 92vw" widths={[360, 540, 720, 1080, 1280]} priority={!sinVisualMovil} class={esFoto ? 'phero__photo' : undefined} />
           </div>
         )}
       </div>

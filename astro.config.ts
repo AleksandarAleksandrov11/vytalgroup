@@ -48,13 +48,13 @@ export default defineConfig({
     // CSS en línea: la página pinta sin esperar a ninguna hoja de estilos (LCP en móvil)
     inlineStylesheets: 'always',
   },
-  // Imágenes: todas en WebP. Codificador ajustado para que pesen poco sin perder calidad visible: esfuerzo máximo,
-  // submuestreo de color inteligente, transparencia con pérdida ligera (equipos recortados) y calidad 74 por defecto
-  // (cada imagen puede pedir la suya: el hero y las fotos de fondo).
+  // Imágenes: todas en WebP. Codificador ajustado para que se vean nítidas y pesen poco: calidad 85 por defecto (las
+  // fotos de contexto piden 88 en Img.astro), transparencia sin pérdida para que los bordes de los equipos recortados
+  // salgan limpios, submuestreo de color inteligente y esfuerzo máximo (mismo peso con más calidad).
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',
-      config: { webp: { quality: 74, alphaQuality: 82, effort: 6, smartSubsample: true } },
+      config: { webp: { quality: 85, alphaQuality: 100, effort: 6, smartSubsample: true } },
     },
   },
   devToolbar: { enabled: false },

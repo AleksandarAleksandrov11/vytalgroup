@@ -1,6 +1,8 @@
 ---
 // Imagen de contenido: <picture> en WebP con srcset, sizes y dimensiones fijas (CLS 0). El codificador WebP está
 // ajustado en astro.config.ts. Carga diferida salvo que sea el LCP (priority → fetchpriority="high" e inmediata).
+// Los anchos del srcset llegan a lo que pide una pantalla retina (2x) o un móvil (3x) para el tamaño pintado, sin
+// pasar nunca del original: así el navegador no amplía la imagen (se vería blanda) y cada pantalla baja solo lo suyo.
 import { Picture } from 'astro:assets';
 import { imagen, anchos } from '../lib/imagenes';
 
@@ -14,12 +16,14 @@ interface Props {
   pictureClass?: string;
   vt?: string;
   parallax?: boolean;
-  /** Calidad WebP (por defecto la de cada códec). Las fotos de fondo de sección (desenfocadas) van a 60. */
+  /** Calidad WebP: 85 (astro.config.ts) en los equipos, 88 en las fotos (piel, pelo y texturas) y 80 en las fotos
+   *  de fondo de sección, que van desenfocadas. */
   quality?: number;
 }
-const { name, alt, sizes, widths = [240, 320, 480, 640], priority = false, class: cls, pictureClass, vt, parallax = false, quality } = Astro.props;
+const { name, alt, sizes, widths = [320, 480, 640, 800, 960, 1280], priority = false, class: cls, pictureClass, vt, parallax = false, quality } = Astro.props;
 const meta = imagen(name);
 const w = anchos(meta, widths);
+const q = quality ?? (name.startsWith('fotos/') ? 88 : undefined);
 ---
 <Picture
   src={meta}
@@ -32,7 +36,7 @@ const w = anchos(meta, widths);
   height={meta.height}
   loading={priority ? 'eager' : 'lazy'}
   decoding="async"
-  quality={quality}
+  quality={q}
   fetchpriority={priority ? 'high' : undefined}
   class={cls}
   style={vt ? `view-transition-name: ${vt}` : undefined}

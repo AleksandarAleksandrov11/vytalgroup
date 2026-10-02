@@ -13,8 +13,11 @@ Producto (src/assets/productos, WebP con transparencia):
   La sombra de contacto ya no va en la imagen: la pone el CSS, igual para todos los equipos.
 
 Fotos (src/assets/fotos): realesr-general-x4v3 mezclado con su versión de reducción de ruido
-(más conservador, no inventa texturas), a como mucho 2,5 veces el original. Javier, además, se recorta
-con birefnet-portrait para la sección del inicio.
+(más conservador, no inventa texturas), a como mucho 2,5 veces el original; 3 veces en las que se ven
+más grandes de lo que daba su original (ronda 9: la magnetoterapia Clínica de la cabecera de Equipos y
+Javier), para que las pantallas retina y los móviles tengan los píxeles que piden. A Javier, además, se
+le alisa la pared del fondo (el original de 384 px trae ondas de compresión alrededor de la cabeza) y se
+recorta con birefnet-portrait.
 
 Uso:
   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
@@ -337,20 +340,28 @@ def foto(nombre, src, size=(1440, 1080), limpiar=(), ruido=0.35, max_factor=2.5)
 
 
 def javier():
-    """Foto de Javier: escalado conservador (sin restauración facial, que inventa rasgos) y recorte."""
+    """Foto de Javier: escalado conservador ×3 (sin restauración facial, que inventa rasgos), pared del fondo
+    alisada y recorte."""
     from pymatting import estimate_foreground_ml
     src = landing('javier-384.webp')
     sr = cache('javier-x4.png', lambda: escalar(src, modelo('realesr-general-x4v3.pth', 0.3)))
-    w, h = src.width * 2, src.height * 2
+    w, h = src.width * 3, src.height * 3
     base = sr.resize((w, h), Image.LANCZOS)
     # 20 % del original ampliado: conserva la textura natural de la piel
-    out = Image.blend(base, src.resize((w, h), Image.LANCZOS), 0.2)
-    out = grade(out, 0.04)
-    p = guardar(out, 'javier-ruiz-fisioterapeuta', FOTOS, q=90)
-    print('foto javier', out.size, os.path.getsize(p) // 1024, 'KB')
+    out = grade(Image.blend(base, src.resize((w, h), Image.LANCZOS), 0.2), 0.04)
     m = cache('javier-mask.png', lambda: mascara(sr, 'birefnet-portrait')).resize((w, h), Image.LANCZOS)
     a = np.clip((np.asarray(m.convert('L')).astype(np.float32) / 255. - 0.1) / 0.8, 0, 1)
-    fg = estimate_foreground_ml(np.asarray(out).astype(np.float64) / 255., a.astype(np.float64))
+    rgb = np.asarray(out).astype(np.float64) / 255.
+    fg = estimate_foreground_ml(rgb, a.astype(np.float64))
+    # Pared: media local de los píxeles de fondo (convolución normalizada, sin la silueta). Conserva la luz
+    # y la sombra de la pared y quita las ondas de compresión del original. Javier se compone encima.
+    peso = (1 - a).astype(np.float64)
+    num = cv2.GaussianBlur(rgb * peso[..., None], (0, 0), 18)
+    den = cv2.GaussianBlur(peso, (0, 0), 18)[..., None]
+    pared = num / np.maximum(den, 1e-3)
+    final = np.clip(fg * a[..., None] + pared * (1 - a[..., None]), 0, 1)
+    p = guardar(Image.fromarray((final * 255 + .5).astype(np.uint8)), 'javier-ruiz-fisioterapeuta', FOTOS, q=90)
+    print('foto javier', (w, h), os.path.getsize(p) // 1024, 'KB')
     rgba = np.dstack([(np.clip(fg, 0, 1) * 255 + .5).astype(np.uint8), (a * 255 + .5).astype(np.uint8)])
     p = guardar(Image.fromarray(rgba, 'RGBA'), 'javier-ruiz-fisioterapeuta-recorte', FOTOS, q=90)
     print('recorte javier', os.path.getsize(p) // 1024, 'KB')
@@ -381,12 +392,17 @@ if __name__ == '__main__':
         p = guardar(lienzo, nombre)
         print(nombre, f'×{factor}', os.path.getsize(p) // 1024, 'KB', flush=True)
 
-    if not SOLO or 'fotos' in SOLO:
-        foto('diatermia-multifuncion-vytamed-en-consulta', pdf('i-004-016.jpg'))
-        foto('diatermia-multifuncion-vytamed-pantalla', pdf('i-008-038.jpg'))
-        foto('eco-wireless-vytamed-estuche', pdf('i-006-024.jpg'))
-        foto('superinductiva-vytamed-en-consulta', pdf('i-005-017.jpg', (0, 100, 540, 505)))
-        foto('superinductiva-clinica-vytamed-en-consulta', pdf('i-007-031.jpg', (190, 0, 554, 369)), limpiar=[(0, 44, 58, 90), (0, 92, 14, 116)])
+    # Fotos: todas con "fotos" o cada una por su nombre
+    FOTOS_IA = {
+        'diatermia-multifuncion-vytamed-en-consulta': (lambda: pdf('i-004-016.jpg'), {}),
+        'diatermia-multifuncion-vytamed-pantalla': (lambda: pdf('i-008-038.jpg'), {}),
+        'eco-wireless-vytamed-estuche': (lambda: pdf('i-006-024.jpg'), {}),
+        'superinductiva-vytamed-en-consulta': (lambda: pdf('i-005-017.jpg', (0, 100, 540, 505)), {}),
+        'superinductiva-clinica-vytamed-en-consulta': (lambda: pdf('i-007-031.jpg', (190, 0, 554, 369)), dict(limpiar=[(0, 44, 58, 90), (0, 92, 14, 116)], max_factor=3)),
+    }
+    for nombre, (fuente, opciones) in FOTOS_IA.items():
+        if not SOLO or 'fotos' in SOLO or nombre in SOLO:
+            foto(nombre, fuente(), **opciones)
     if not SOLO or 'javier' in SOLO:
         javier()
     if not SOLO or 'catalogo' in SOLO:

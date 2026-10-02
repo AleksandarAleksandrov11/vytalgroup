@@ -224,3 +224,6 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - Después de los cambios, 0 imágenes por debajo de lo necesario en escritorio, retina y móvil; quedan solo las fotos de fondo (desenfocadas a propósito, una ampliación no se nota) y, en tableta, los equipos a pantalla completa al 83 % (su lienzo original es de 1280 px).
 - Peso: el inicio pasa de 106 a 130 KB en la primera carga de Lighthouse móvil (59 KB de imágenes, con la foto del hero a más calidad) y el catálogo pesa 177 KB; las versiones grandes solo las descargan las pantallas que las piden.
 - Pruebas de la ronda 9: SEO 1988/1988, HTML válido, Apps Script 28/28, formulario 55/55, interfaz 91/91, accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 99 a 100 de rendimiento y 100 en accesibilidad, buenas prácticas y SEO en las 9 plantillas; LCP entre 1,50 y 1,86 s y CLS 0.
+
+## Ronda 10 (fichas)
+- [x] Sección de garantía y servicio de las 53 fichas con el título grande como el resto de secciones: "Tu equipo, con *garantía y servicio.*", con el cambio a la cursiva serif turquesa sobre "garantía y servicio" (antes era una etiqueta pequeña en mayúsculas). La sección toma el espaciado normal de las demás

@@ -114,6 +114,3 @@
 .side-box__list .icon { width: 18px; height: 18px; margin-top: 2px; color: var(--teal-ink); }
 .side-box__list--dots li { position: relative; display: block; padding-left: 16px; color: var(--ink-2); }
 .side-box__list--dots li::before { content: ""; position: absolute; left: 2px; top: .66em; width: 5px; height: 5px; border-radius: 50%; background: var(--teal); }
-
-/* Garantía y servicio */
-.fp-gar__title { margin-bottom: 18px; font-size: .8125rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); text-align: center; }

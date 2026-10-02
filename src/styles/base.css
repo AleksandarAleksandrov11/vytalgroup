@@ -226,7 +226,6 @@ html.intro-saltada .intro { animation: intro-telon-rapido .5s cubic-bezier(.76, 
 
 /* Textos corridos y títulos pequeños dentro de secciones oscuras (marino o foto) */
 :is(.sec--dark, .sec--photo) :is(.what__txt, .combo__copy .lead, .cat__copy .lead) { color: var(--on-dark); }
-:is(.sec--dark, .sec--photo) .fp-gar__title { color: var(--on-dark-2); }
 :is(.sec--dark, .sec--photo) .combo__media { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(255, 255, 255, .1); }
 :is(.sec--dark, .sec--photo) .what__txt a:not(.link) { color: #FFF; text-decoration: underline; text-decoration-color: var(--teal-light); text-underline-offset: 3px; }
 .what__txt a:not(.link) { color: var(--ink); text-decoration: underline; text-decoration-color: var(--teal); text-underline-offset: 3px; }

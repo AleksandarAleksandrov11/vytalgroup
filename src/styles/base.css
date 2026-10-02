@@ -119,10 +119,10 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .sec--photo { isolation: isolate; overflow: clip; background: var(--navy); color: #FFF; }
 .sec__photo { position: absolute; inset: 0; z-index: -2; }
 .sec__photo picture { display: block; height: 100%; }
-.sec__photo img { width: 100%; height: 100%; object-fit: cover; }
-/* Velo ligero: la foto se ve; solo un poco más de marino arriba (titular) y abajo (enlaces), donde hay texto
-   directamente sobre la foto. Las tarjetas son blancas y no lo necesitan */
-.sec--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(11, 25, 41, .62) 0%, rgba(11, 25, 41, .3) 32%, rgba(11, 25, 41, .24) 64%, rgba(11, 25, 41, .62) 100%); }
+/* Foto suave de fondo: ya viene desenfocada (fotos/fondo-*.webp), con poca opacidad sobre el marino y un velo
+   con un toque azul; algo más denso arriba (titular) y abajo (enlaces), donde hay texto sobre la foto */
+.sec__photo img { width: 100%; height: 100%; object-fit: cover; opacity: .5; }
+.sec--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(11, 25, 41, .5) 0%, rgba(26, 74, 132, .36) 38%, rgba(26, 74, 132, .36) 66%, rgba(11, 25, 41, .58) 100%); }
 /* Titular y enlaces con una sombra suave, para leerse sobre cualquier zona de la foto */
 .sec--photo .sec__head .h2, .sec--photo .sec__cta .link { text-shadow: 0 2px 18px rgba(11, 25, 41, .55), 0 1px 3px rgba(11, 25, 41, .45); }
 /* En móvil y tableta la sección es muy alta: la foto ocupa la parte de arriba y se funde con el marino */
@@ -173,7 +173,7 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .h1 .w { display: inline-block; vertical-align: top; padding: 0 .08em .14em; margin: 0 -.08em -.14em; clip-path: inset(-.4em -.1em 0 -.1em); }
 .h1 .w > span { display: inline-block; }
 @media (prefers-reduced-motion: no-preference) {
-  /* --hx-d: espera de la intro de marca del inicio (0 en el resto de páginas) */
+  /* --hx-d: espera de la intro de marca (solo en la primera visita; 0 el resto de las veces) */
   .h1 .w > span { transform: translateY(110%); animation: word-up var(--t-in-long) var(--ease) forwards; animation-delay: calc(var(--hx-d, 0s) + 60ms + var(--i, 0) * 90ms); }
   [data-enter] { opacity: 0; animation: fade-up var(--t-in-long) var(--ease) forwards; animation-delay: calc(var(--hx-d, 0s) + var(--ed, .35s)); }
   /* El visual de las cabeceras solo se desplaza: con opacidad 0 Chrome no lo cuenta como LCP */
@@ -182,6 +182,32 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 @keyframes word-up { to { transform: none; } }
 @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes move-up { from { transform: translateY(14px); } }
+
+/* ---------- Intro de marca a pantalla completa (solo la primera vez que se abre la web) ----------
+   intro-head.js pone <html class="con-intro"> antes de pintar. Sobre toda la página: el símbolo VG gira y se asienta,
+   "VytalGroup" se descubre de izquierda a derecha y una línea turquesa se carga; después el panel sube como un
+   telón con un filo de luz. El contenido de la página espera --hx-d. No recibe clics (nunca bloquea nada) y
+   cualquier gesto la adelanta (main.ts, html.intro-saltada). */
+.intro { display: none; }
+html.con-intro { --hx-d: 1.2s; }
+html.intro-saltada { --hx-d: 0s; }
+html.con-intro .intro { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: radial-gradient(60% 55% at 50% 50%, #12304A, var(--navy) 70%); pointer-events: none; animation: intro-telon .9s cubic-bezier(.76, 0, .24, 1) 1.15s forwards; }
+html.con-intro .intro::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--teal-light) 30%, #FFF 50%, var(--teal-light) 70%, transparent); box-shadow: 0 0 28px 6px rgba(143, 220, 220, .32); }
+html.intro-saltada .intro { animation: intro-telon-rapido .5s cubic-bezier(.76, 0, .24, 1) forwards; }
+.intro__in { display: grid; justify-items: center; gap: 26px; animation: intro-sube .9s cubic-bezier(.76, 0, .24, 1) 1.15s forwards; }
+.intro__logo { display: flex; align-items: center; gap: clamp(10px, 1.4vw, 16px); }
+.intro svg { --logo-m: url(#vgd); --logo-a: #FFF; --logo-b: #5CC8C8; display: block; width: auto; overflow: hidden; }
+.intro__mark { height: clamp(42px, 5.6vw, 60px); aspect-ratio: 214 / 171; animation: intro-simbolo .95s cubic-bezier(.34, 1.56, .64, 1) .12s backwards; }
+.intro__word { height: clamp(31px, 4.1vw, 45px); aspect-ratio: 847 / 171; animation: intro-palabra .8s var(--ease) .42s backwards; }
+.intro__line { width: clamp(150px, 22vw, 260px); height: 2px; border-radius: 2px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+.intro__line::before { content: ""; display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-light)); transform-origin: left; animation: intro-carga .75s var(--ease) .3s backwards; }
+@keyframes intro-telon { to { transform: translateY(-101%); } }
+@keyframes intro-telon-rapido { to { transform: translateY(-101%); } }
+@keyframes intro-sube { to { transform: translateY(-48px); opacity: 0; } }
+@keyframes intro-simbolo { from { opacity: 0; transform: scale(.35) rotate(-35deg); } }
+@keyframes intro-palabra { from { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-14px); } }
+@keyframes intro-carga { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { html.con-intro .intro { display: none; } html.con-intro { --hx-d: 0s; } }
 
 /* ---------- Transiciones entre páginas (View Transitions entre documentos) ---------- */
 @view-transition { navigation: auto; }

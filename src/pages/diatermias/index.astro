@@ -35,7 +35,6 @@ const MODOS = [
   seccion="diatermias"
   migas={migas}
   jsonld={[collectionPage('/diatermias', 'Diatermia para fisioterapia y tecarterapia'), itemList('Diatermias', todas), faqPage(FAQ_DIATERMIA)]}
-  viewContent={{ ids: todas.map((p) => p.slug), type: 'product_group', category: 'Diatermia', name: 'Diatermias' }}
   waTexto="Hola, vengo de la web de VytalGroup y quiero información sobre diatermias. ¿Me podéis asesorar?"
 >
   <PageHero migas={migas} titulo={c.h1} lead="Tecarterapia capacitiva, resistiva y bipolar de VytaMeD, I-Tech y EME. Cuatro equipos, cada uno con su sitio en la consulta." imagen="diatermia-reatherm-i-tech" alt="Diatermia capacitiva y resistiva Reatherm de I-Tech con sus manípulos">
@@ -87,7 +86,7 @@ const MODOS = [
   </section>
 
   <section class="sec sec--photo on-dark" aria-labelledby="porque-title">
-    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-terapia-manual-espalda" alt="Fisioterapeuta haciendo terapia manual en la espalda" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600, 2000]} quality={62} /></div>
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-terapia-manual-espalda" alt="Fisioterapeuta haciendo terapia manual en la espalda" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600]} quality={60} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="porque-title" data-lines>Por qué comprar tu diatermia <em>con VytalGroup.</em></h2>

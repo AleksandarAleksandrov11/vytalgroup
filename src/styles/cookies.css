@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Cookies: aviso y panel con tres categorías (necesarias, analítica y marketing)
+   Cookies: aviso y panel con dos categorías (necesarias y analítica)
    ========================================================================== */
 .ck { position: fixed; z-index: 80; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); max-width: 420px; padding: 18px; border-radius: var(--r-md); background: #FFF; color: var(--ink-2); font-size: .875rem; line-height: 1.5; box-shadow: 0 0 0 1px var(--line), 0 20px 48px -16px rgba(11, 25, 41, .28); opacity: 0; transform: translateY(16px); transition: opacity .5s var(--ease), transform .6s var(--ease); }
 .ck__txt { display: flex; gap: 12px; align-items: flex-start; }

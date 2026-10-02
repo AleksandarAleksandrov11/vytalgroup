@@ -1,28 +1,25 @@
 ---
-// Política de cookies: texto de la landing revisado (RGPD, LOPDGDD y LSSI). Datos del titular pendientes del cliente.
+// Política de cookies (RGPD, LOPDGDD y LSSI). La web no usa cookies de publicidad ni el píxel de Meta.
 import LegalPage from '../components/LegalPage.astro';
 ---
 <LegalPage titulo="Política de *cookies.*" seo="Política de cookies de VytalGroup: qué usamos y para qué" description="Qué cookies y almacenamiento usa la web de VytalGroup, para qué sirven, cuánto duran y cómo cambiar tu elección en cualquier momento desde la propia web." path="/cookies" lead="Qué cookies usa la web, para qué sirven y cómo cambiar tu elección.">
   <h2>1. Qué son las cookies</h2>
-  <p>Las cookies y tecnologías similares (como el almacenamiento local del navegador) son pequeños archivos que la web guarda en tu dispositivo para funcionar, recordar tus preferencias o medir anuncios.</p>
+  <p>Las cookies y tecnologías similares (como el almacenamiento local del navegador) son pequeños archivos o datos que la web guarda en tu dispositivo para funcionar o recordar tus preferencias. Esta web no usa cookies de publicidad.</p>
   <h2>2. Qué cookies y almacenamiento usa esta web</h2>
   <div class="legal__table-wrap">
     <table class="legal__table">
       <thead><tr><th scope="col">Nombre</th><th scope="col">Titular</th><th scope="col">Finalidad</th><th scope="col">Duración</th><th scope="col">Tipo</th></tr></thead>
       <tbody>
         <tr><td data-label="Nombre"><code>vg_consent</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Guardar tu elección sobre cookies (almacenamiento local)</td><td data-label="Duración">12 meses</td><td data-label="Tipo">Necesaria</td></tr>
-        <tr><td data-label="Nombre"><code>vg_attr</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Guardar el origen de la visita (UTM y fbclid) para asociarlo a tu solicitud (almacenamiento de sesión)</td><td data-label="Duración">Sesión</td><td data-label="Tipo">Necesaria</td></tr>
+        <tr><td data-label="Nombre"><code>vg_attr</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Guardar el origen de la visita (parámetros UTM y página de procedencia) para asociarlo a tu solicitud (almacenamiento de sesión)</td><td data-label="Duración">Sesión</td><td data-label="Tipo">Necesaria</td></tr>
+        <tr><td data-label="Nombre"><code>vg_intro</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Recordar que ya has visto la animación de bienvenida, para no repetirla (almacenamiento local, sin datos personales)</td><td data-label="Duración">Hasta que borres los datos del navegador</td><td data-label="Tipo">Necesaria</td></tr>
         <tr><td data-label="Nombre"><code>va</code> (Vercel Web Analytics)</td><td data-label="Titular">Vercel (encargado del tratamiento)</td><td data-label="Finalidad">Contar de forma anónima las visitas a cada página y su origen. No instala cookies: usa un identificador calculado que caduca a las 24 horas</td><td data-label="Duración">24 horas</td><td data-label="Tipo">Analítica</td></tr>
-        <tr><td data-label="Nombre"><code>vg_lead_*</code></td><td data-label="Titular">VytalGroup (propia)</td><td data-label="Finalidad">Evitar que un mismo evento de medición se envíe dos veces (almacenamiento de sesión)</td><td data-label="Duración">Sesión</td><td data-label="Tipo">Marketing</td></tr>
-        <tr><td data-label="Nombre"><code>_fbp</code></td><td data-label="Titular">Meta</td><td data-label="Finalidad">Identificar el navegador para medir los anuncios de Meta</td><td data-label="Duración">3 meses</td><td data-label="Tipo">Marketing</td></tr>
-        <tr><td data-label="Nombre"><code>_fbc</code></td><td data-label="Titular">Meta</td><td data-label="Finalidad">Guardar el identificador del clic en un anuncio de Meta</td><td data-label="Duración">3 meses</td><td data-label="Tipo">Marketing</td></tr>
       </tbody>
     </table>
   </div>
-  <p>Las cookies de Meta solo se instalan si aceptas la categoría de marketing. Meta puede usar además sus propias cookies en sus dominios, según su <a href="https://www.facebook.com/privacy/policies/cookies/" target="_blank" rel="noopener">política de cookies</a>.</p>
   <p><strong>Analítica:</strong> usamos Vercel Web Analytics, la analítica de la plataforma en la que se publica la web, para saber cuántas visitas tiene cada página. No usa cookies ni guarda datos que te identifiquen, y aun así solo se carga si aceptas la categoría de analítica. Más información en la <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener">política de privacidad de Vercel Web Analytics</a>.</p>
   <h2>3. Cómo gestionar tus preferencias</h2>
-  <p>Al entrar por primera vez puedes aceptar, rechazar o configurar las cookies por categorías: necesarias (siempre activas), analítica y marketing. Tu elección se guarda 12 meses y puedes cambiarla cuando quieras:</p>
+  <p>Al entrar por primera vez puedes aceptar, rechazar o configurar las cookies por categorías: necesarias (siempre activas) y analítica. Tu elección se guarda 12 meses y puedes cambiarla cuando quieras:</p>
   <p class="legal__cta"><button type="button" class="btn btn--primary" data-cookie-settings>Configurar cookies</button></p>
   <p>También puedes borrar o bloquear las cookies desde la configuración de tu navegador (Chrome, Safari, Firefox o Edge). Si bloqueas las necesarias, es posible que alguna parte de la web no funcione bien.</p>
   <h2>4. Responsable</h2>

@@ -3,7 +3,6 @@
 // el canonical de la página sigue siendo /catalogo sin parámetros.
 // Reordenación animada con FLIP (solo transform y opacity). Sin JS, el catálogo se ve completo.
 import { createSelect } from './select.js';
-import { search as trackSearch } from './tracking';
 
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 const ORDENES = [
@@ -113,7 +112,6 @@ export function initCatalogo() {
     t = window.setTimeout(() => {
       state.q = input.value.trim().slice(0, 80);
       apply();
-      trackSearch(state.q);
     }, 120);
   });
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } });

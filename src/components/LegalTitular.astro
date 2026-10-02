@@ -1,14 +1,12 @@
 ---
-// Datos del titular de la web. VACÍOS a propósito: el cliente debe facilitarlos (ver README, pendientes).
+// Datos del titular de la web (art. 10 LSSI), facilitados por el cliente. Persona física: sin datos registrales.
 import { EMPRESA } from '../data/empresa';
-const P = (t: string) => `[Pendiente: ${t}]`;
 ---
 <dl class="legal__data">
-  <div><dt>Titular</dt><dd><mark class="pending">{P('nombre y apellidos o razón social')}</mark></dd></div>
+  <div><dt>Titular</dt><dd>Javier Ruiz Vides</dd></div>
   <div><dt>Nombre comercial</dt><dd>VytalGroup</dd></div>
-  <div><dt>NIF / CIF</dt><dd><mark class="pending">{P('NIF o CIF')}</mark></dd></div>
-  <div><dt>Domicilio</dt><dd><mark class="pending">{P('dirección completa')}</mark></dd></div>
-  <div><dt>Datos registrales</dt><dd><mark class="pending">{P('Registro Mercantil, tomo, folio y hoja, o indicar que no procede')}</mark></dd></div>
+  <div><dt>DNI</dt><dd>49115639J</dd></div>
+  <div><dt>Domicilio</dt><dd>Rue des Champs 61a, Bertrange (Luxemburgo)</dd></div>
   <div><dt>Email</dt><dd><a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a></dd></div>
   <div><dt>Teléfono</dt><dd><a href={EMPRESA.telefonoHref}>{EMPRESA.telefonoTexto}</a></dd></div>
 </dl>

@@ -5,7 +5,11 @@ import '../styles/base.css';
 import '../styles/hero.css';
 import geistUrl from '../assets/fonts/geist.woff2?url';
 import serifUrl from '../assets/fonts/instrument-serif-italic.woff2?url';
-import { SHEETS_ENDPOINT, META_PIXEL_ID, SITE_URL, VERCEL_ANALYTICS, GOOGLE_SITE_VERIFICATION, META_DOMAIN_VERIFICATION } from '../config';
+// Script del <head> que decide la intro de marca antes de pintar (externo y con hash: CSP y caché inmutable).
+// Solo la primera vez que se abre la web en el navegador y sin movimiento reducido pone <html class="con-intro"> y
+// guarda vg_intro en localStorage; sin almacenamiento no hay intro (así nunca se repite).
+import introUrl from '../scripts/intro-head.js?url';
+import { SHEETS_ENDPOINT, SITE_URL, VERCEL_ANALYTICS, GOOGLE_SITE_VERIFICATION } from '../config';
 import Sprite from '../components/Sprite.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -27,8 +31,6 @@ interface Props {
   migas?: Miga[];
   seccion?: Seccion;
   conFormulario?: boolean;
-  /** ViewContent del píxel en fichas y páginas pilar */
-  viewContent?: { ids?: string[]; type: string; category: string; name: string };
   lectura?: boolean;
   bodyClass?: string;
   /** Mensaje ya escrito del botón flotante de WhatsApp (por defecto, uno general) */
@@ -36,7 +38,7 @@ interface Props {
 }
 const {
   title, description, path, og = '/og/inicio.jpg', ogAlt, ogType = 'website', jsonld = [], migas,
-  seccion = '', conFormulario = true, viewContent, lectura = false, bodyClass, waTexto,
+  seccion = '', conFormulario = true, lectura = false, bodyClass, waTexto,
 } = Astro.props;
 
 const canonical = absUrl(path);
@@ -48,10 +50,11 @@ if (!nodos.some((n: any) => n['@type'] === 'WebSite')) nodos.push(website());
 if (!nodos.some((n: any) => n['@type'] === 'Person')) nodos.push(persona());
 ---
 <!doctype html>
-<html lang="es" data-sheets={SHEETS_ENDPOINT} data-pixel={META_PIXEL_ID} data-analytics={VERCEL_ANALYTICS ? '1' : undefined}>
+<html lang="es" data-sheets={SHEETS_ENDPOINT} data-analytics={VERCEL_ANALYTICS ? '1' : undefined}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script is:inline src={introUrl}></script>
 <title>{title}</title>
 <meta name="description" content={description}>
 {path !== '/404' && <link rel="canonical" href={canonical}>}
@@ -59,7 +62,6 @@ if (!nodos.some((n: any) => n['@type'] === 'Person')) nodos.push(persona());
 <meta name="theme-color" content="#FAFBFC">
 <meta name="format-detection" content="telephone=no">
 {GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION}>}
-{META_DOMAIN_VERIFICATION && <meta name="facebook-domain-verification" content={META_DOMAIN_VERIFICATION}>}
 <meta property="og:type" content={ogType === 'product' ? 'website' : ogType}>
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="VytalGroup">
@@ -86,8 +88,18 @@ if (!nodos.some((n: any) => n['@type'] === 'Person')) nodos.push(persona());
 <script type="application/ld+json" set:html={graph(nodos)} />
 <noscript><style>[data-js-only] { display: none !important; }</style></noscript>
 </head>
-<body class={bodyClass} data-vc={viewContent ? JSON.stringify(viewContent) : undefined} data-site={SITE_URL}>
+<body class={bodyClass} data-site={SITE_URL}>
 <Sprite />
+<!-- Intro de marca a pantalla completa: solo se ve con <html class="con-intro"> (primera visita; ver intro-head.js) -->
+<div class="intro" data-intro aria-hidden="true">
+  <div class="intro__in">
+    <div class="intro__logo">
+      <svg class="intro__mark" viewBox="0 0 214 171"><use href="#logo" width="1117" height="171"/></svg>
+      <svg class="intro__word" viewBox="270 0 847 171"><use href="#logo" width="1117" height="171"/></svg>
+    </div>
+    <span class="intro__line"></span>
+  </div>
+</div>
 <a class="skip" href="#main">Saltar al contenido</a>
 <Header seccion={seccion} conFormulario={conFormulario} path={path} />
 {lectura && <div class="read-progress" data-read-progress aria-hidden="true"><span></span></div>}

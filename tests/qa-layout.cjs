@@ -36,7 +36,7 @@ const PAGES = [
     for (const [w, h] of SIZES) {
       const touch = w < 1024;
       const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: touch, hasTouch: touch });
-      await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: false })); } catch (e) { /* */ } });
+      await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false })); localStorage.setItem('vg_intro', '1'); } catch (e) { /* */ } });
       const p = await ctx.newPage();
       const errs = [];
       p.on('pageerror', (e) => errs.push(e.message));

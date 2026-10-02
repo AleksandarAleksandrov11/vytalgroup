@@ -1,6 +1,6 @@
-// QA del formulario, el consentimiento y los eventos del píxel contra dist/ y el Apps Script simulado
-// (puerto 8090). El script de Meta se sustituye por un doble que registra las llamadas a fbq (no sale
-// a internet). El endpoint y el ID del píxel se inyectan reescribiendo <html data-sheets data-pixel>.
+// QA del formulario y del consentimiento contra dist/ y el Apps Script simulado (puerto 8090). El endpoint
+// se inyecta reescribiendo <html data-sheets>. La web no lleva el píxel de Meta: cualquier petición a Meta
+// se registra (y se corta) para comprobar que no hay ninguna.
 const { chromium } = require('playwright');
 const fs = require('fs');
 
@@ -11,12 +11,14 @@ const results = [];
 const ok = (cond, name, extra = '') => results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}${extra ? `  · ${extra}` : ''}`);
 const readLog = () => (fs.existsSync(LOG) ? fs.readFileSync(LOG, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)) : []);
 const posts = () => readLog().filter((r) => r.method === 'POST');
-const PIXEL_STUB = `(function(){var c=window.__fb=window.__fb||[];var f=window.fbq;function cm(){c.push(Array.prototype.slice.call(arguments).map(function(x){return JSON.parse(JSON.stringify(x))}))}f.callMethod=cm;(f.queue||[]).forEach(function(a){cm.apply(null,a)});f.queue=[];document.cookie='_fbp=fb.1.1700000000000.987654321; path=/';})();`;
 
-async function open(b, path, { width = 1280, height = 900, mobile = false, endpoint = `${MOCK}/exec`, pixel = '1234567890', consent = null, rapido = false } = {}) {
+async function open(b, path, { width = 1280, height = 900, mobile = false, endpoint = `${MOCK}/exec`, consent = null, rapido = false } = {}) {
   const ctx = await b.newContext({ viewport: { width, height }, isMobile: mobile, hasTouch: mobile, acceptDownloads: true });
   await ctx.addInitScript(({ consent, rapido }) => {
-    try { if (consent !== null) localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: consent })); } catch (e) { /* */ }
+    try {
+      if (consent !== null) localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: consent }));
+      localStorage.setItem('vg_intro', '1'); // la intro de marca (primera visita) se prueba en qa-ui
+    } catch (e) { /* */ }
     // Simula un bot que envía en menos de 3 s
     if (rapido) { const real = performance.now.bind(performance); performance.now = () => Math.min(real(), 1000); }
   }, { consent, rapido });
@@ -26,11 +28,11 @@ async function open(b, path, { width = 1280, height = 900, mobile = false, endpo
     const res = await r.fetch();
     let body = await res.text();
     // Siempre el Apps Script simulado (nunca el real de config.ts)
-    body = body.replace(/data-sheets(="[^"]*")? data-pixel(="[^"]*")?/, `data-sheets="${endpoint}" data-pixel="${pixel}"`);
+    body = body.replace(/data-sheets(="[^"]*")?/, `data-sheets="${endpoint}"`);
     r.fulfill({ response: res, body });
   });
   const fbReq = [];
-  await ctx.route(/facebook\.(net|com)/, (r) => { fbReq.push(r.request().url()); r.fulfill({ contentType: 'text/javascript', body: PIXEL_STUB }); });
+  await ctx.route(/facebook\.(net|com)|fbcdn\.net/, (r) => { fbReq.push(r.request().url()); r.abort(); });
   await ctx.route(/wa\.me/, (r) => r.fulfill({ contentType: 'text/html', body: '<p>wa</p>' }));
   const p = await ctx.newPage();
   const logs = [];
@@ -39,7 +41,7 @@ async function open(b, path, { width = 1280, height = 900, mobile = false, endpo
   await p.goto(BASE + path, { waitUntil: 'networkidle' });
   return { ctx, p, fbReq, logs };
 }
-const fb = (p) => p.evaluate(() => window.__fb || []);
+const sinMeta = async (p, fbReq) => fbReq.length === 0 && await p.evaluate(() => !('fbq' in window) && !/(^|; )_fb[pc]=/.test(document.cookie));
 const step = (p) => p.evaluate(() => document.querySelector('#qf .qf__step.is-active')?.dataset.step || null);
 const toForm = async (p) => { await p.evaluate(() => document.querySelector('#qf').scrollIntoView({ block: 'center', behavior: 'instant' })); await p.waitForTimeout(600); };
 
@@ -59,8 +61,8 @@ async function block(name, fn) {
   // Access); el Apps Script simulado vive en otro puerto, así que se desactiva esa comprobación.
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined, args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults,BlockInsecurePrivateNetworkRequests'] });
 
-  await block('Contacto con UTM, envío correcto y Lead', async () => {
-    const { ctx, p, logs } = await open(b, '/contacto?utm_source=facebook&utm_campaign=web-test&fbclid=abc123', { consent: true });
+  await block('Contacto con UTM y envío correcto', async () => {
+    const { ctx, p, logs, fbReq } = await open(b, '/contacto?utm_source=instagram&utm_campaign=web-test', { consent: true });
     const antes = posts().length;
     await toForm(p);
     ok((await step(p)) === '1', 'contacto: el formulario empieza en la pregunta 1');
@@ -76,17 +78,13 @@ async function block(name, fn) {
     ok(/^text\/plain/.test(post.ct || ''), 'contacto: Content-Type text/plain (sin preflight)', post.ct);
     const d = JSON.parse(post.body || '{}');
     ok(d.origen === 'web', 'payload: origen "web"', d.origen);
-    ok(d.pagina === `${BASE}/contacto?utm_source=facebook&utm_campaign=web-test&fbclid=abc123`, 'payload: página exacta', d.pagina);
+    ok(d.pagina === `${BASE}/contacto?utm_source=instagram&utm_campaign=web-test`, 'payload: página exacta', d.pagina);
     ok(d.equipo === 'Ecógrafo' && d.perfil === 'Fisioterapeuta' && d.nombre === 'Laura Gómez', 'payload: equipo, perfil y nombre');
     ok(/612\s?345\s?678/.test(d.telefono) && d.telefono.startsWith('+34'), 'payload: teléfono con prefijo +34', d.telefono);
     ok(!!d.consentimiento && !!d.event_id, 'payload: consentimiento y event_id');
-    ok(d.utm_source === 'facebook' && d.utm_campaign === 'web-test' && d.fbclid === 'abc123', 'payload: UTM y fbclid');
-    ok(/^fb\.1\.\d+\.abc123$/.test(d.fbc || ''), 'payload: fbc construido desde fbclid', d.fbc);
-    const ev = await fb(p);
-    const leads = ev.filter((e) => e[0] === 'track' && e[1] === 'Lead');
-    ok(leads.length === 1, 'píxel: Lead una sola vez', `${leads.length}`);
-    ok(leads[0] && leads[0][3] && leads[0][3].eventID === d.event_id, 'píxel: eventID del Lead = event_id de la hoja');
-    ok(leads[0] && leads[0][2] && leads[0][2].content_name === 'Ecógrafo', 'píxel: content_name con el equipo', JSON.stringify(leads[0] && leads[0][2]));
+    ok(d.utm_source === 'instagram' && d.utm_campaign === 'web-test', 'payload: UTM de la visita');
+    ok(!('fbclid' in d) && !('fbc' in d) && !('fbp' in d), 'payload: sin datos de Meta (fbclid, fbc ni fbp)');
+    ok(await sinMeta(p, fbReq), 'sin píxel de Meta: ni script, ni peticiones, ni cookies de Meta');
     // Doble clic o reenvío: no hay segundo envío
     ok(await p.isHidden('[data-submit]') || await p.isDisabled('[data-submit]'), 'contacto: no se puede reenviar tras el éxito');
     // "Enviar otra consulta": vuelve a la pregunta 1, vacío, y permite otro envío con su propio event_id
@@ -105,7 +103,7 @@ async function block(name, fn) {
   });
 
   await block('UTM entre páginas, móvil, correo y doble clic', async () => {
-    const { ctx, p } = await open(b, '/?utm_source=facebook&utm_campaign=test&fbclid=abc123', { consent: true, width: 390, height: 844, mobile: true });
+    const { ctx, p } = await open(b, '/?utm_source=instagram&utm_campaign=test', { consent: true, width: 390, height: 844, mobile: true });
     await p.goto(BASE + '/ecografos', { waitUntil: 'networkidle' });
     await p.goto(BASE + '/contacto', { waitUntil: 'networkidle' });
     const antes = posts().length;
@@ -130,8 +128,8 @@ async function block(name, fn) {
     ok(nuevos.length === 1, 'doble clic: un solo envío', `${nuevos.length}`);
     const d = JSON.parse((nuevos[0] || {}).body || '{}');
     ok(d.email === 'carmen@clinica.es' && d.canal === 'Correo' && !d.telefono, 'correo: payload con email y canal Correo');
-    ok(d.utm_source === 'facebook' && d.utm_campaign === 'test' && d.fbclid === 'abc123', 'UTM: viajan entre páginas hasta el envío', `${d.utm_source} ${d.utm_campaign} ${d.fbclid}`);
-    ok(/utm_source=facebook/.test(d.landing_url || '') && d.pagina === `${BASE}/contacto`, 'UTM: URL de entrada original y página de envío', `${d.landing_url} · ${d.pagina}`);
+    ok(d.utm_source === 'instagram' && d.utm_campaign === 'test', 'UTM: viajan entre páginas hasta el envío', `${d.utm_source} ${d.utm_campaign}`);
+    ok(/utm_source=instagram/.test(d.landing_url || '') && d.pagina === `${BASE}/contacto`, 'UTM: URL de entrada original y página de envío', `${d.landing_url} · ${d.pagina}`);
     ok(d.equipo === 'Diatermia' && d.perfil === 'Médico', 'móvil: recorrido completo con toques');
     await ctx.close();
   });
@@ -141,9 +139,6 @@ async function block(name, fn) {
     const antes = posts().length;
     await toForm(p);
     ok((await step(p)) === '1' && await p.isChecked('input[name="equipo"][value="Ecógrafo"]') && await p.isVisible('.qf__step.is-active [data-next]'), 'ficha: empieza en la pregunta 1 con el equipo ya marcado');
-    const ev = await fb(p);
-    const vc = ev.find((e) => e[0] === 'track' && e[1] === 'ViewContent');
-    ok(vc && JSON.stringify(vc[2].content_ids) === '["acclarix-ax8"]' && vc[2].content_type === 'product', 'píxel: ViewContent de la ficha con su slug', JSON.stringify(vc && vc[2]));
     await p.waitForTimeout(3100);
     // Pulsar la opción ya marcada avanza sin perder el modelo
     await p.click('.qf__step.is-active label.opt:has(input[value="Ecógrafo"])');
@@ -157,8 +152,6 @@ async function block(name, fn) {
     ok(d.modelo === 'Acclarix AX8 (EDAN)' && d.equipo === 'Ecógrafo', 'ficha: payload con modelo y equipo', `${d.modelo} · ${d.equipo}`);
     ok(d.pagina === `${BASE}/ecografos/acclarix-ax8`, 'ficha: payload con la página', d.pagina);
     ok(d.utm_source === 'web' && d.utm_medium === 'directo' && d.utm_campaign === 'ecografos/acclarix-ax8' && d.utm_content === '', 'UTM sin anuncio: los de la web (source web, medio y página del envío)', `${d.utm_source} · ${d.utm_medium} · ${d.utm_campaign} · ${d.utm_content}`);
-    const lead = (await fb(p)).find((e) => e[1] === 'Lead');
-    ok(lead && lead[2].content_name === 'Acclarix AX8', 'ficha: Lead con el modelo', JSON.stringify(lead && lead[2]));
     await ctx.close();
   });
 
@@ -200,7 +193,6 @@ async function block(name, fn) {
     await p.click('[data-submit]');
     await p.waitForSelector('[data-fail]:not([hidden])', { timeout: 8000 });
     ok(true, 'error del servidor: muestra el error amable');
-    ok(!(await fb(p)).some((e) => e[1] === 'Lead'), 'error del servidor: no se envía Lead');
     await ctx.close();
   });
 
@@ -271,19 +263,18 @@ async function block(name, fn) {
     await ctx.close();
   });
 
-  await block('Consentimiento y píxel', async () => {
+  await block('Consentimiento', async () => {
     const { ctx, p, fbReq } = await open(b, '/', { consent: null });
     ok(await p.waitForSelector('#cookie-banner', { state: 'visible', timeout: 5000 }).then(() => true, () => false), 'cookies: banner visible en la primera visita');
-    ok(fbReq.length === 0, 'cookies: el píxel no se carga antes de aceptar');
+    ok(!/Meta|píxel|marketing/i.test(await p.textContent('#cookie-banner')), 'cookies: el aviso ya no habla de Meta ni de marketing');
     await p.click('#cookie-banner [data-cookie="accept"]');
     await p.waitForTimeout(600);
-    ok(fbReq.length > 0, 'cookies: al aceptar se carga el píxel');
-    ok((await fb(p)).some((e) => e[0] === 'track' && e[1] === 'PageView'), 'píxel: PageView');
+    await p.goto(BASE + '/ecografos/acclarix-ax8', { waitUntil: 'networkidle' });
+    ok(await sinMeta(p, fbReq), 'cookies: aceptando todo tampoco se carga nada de Meta');
     await ctx.close();
     const r = await open(b, '/', { consent: null });
     await r.p.click('#cookie-banner [data-cookie="reject"]');
     await r.p.goto(BASE + '/ecografos', { waitUntil: 'networkidle' });
-    ok(r.fbReq.length === 0, 'cookies: al rechazar no se carga nada, tampoco al navegar');
     ok(!(await r.p.isVisible('#cookie-banner')), 'cookies: la elección se recuerda');
     await r.ctx.close();
   });
@@ -302,7 +293,7 @@ async function block(name, fn) {
     ok(va.length === 0, 'analítica: Vercel Web Analytics no se carga antes de decidir');
     await p.click('#cookie-banner [data-cookie="config"]');
     await p.waitForTimeout(500);
-    ok((await p.$$('#cookie-panel .switch')).length === 3, 'cookies: panel con necesarias, analítica y marketing');
+    ok((await p.$$('#cookie-panel .switch')).length === 2, 'cookies: panel con necesarias y analítica (sin marketing)');
     await p.check('#cookie-panel [data-consent="analytics"]');
     await p.click('#cookie-panel [data-cookie="save"]');
     await p.waitForTimeout(600);
@@ -322,26 +313,19 @@ async function block(name, fn) {
     await b2.close();
   });
 
-  await block('Eventos: pilar, contacto, catálogo y búsqueda', async () => {
-    const { ctx, p } = await open(b, '/ecografos', { consent: true });
-    const vc = (await fb(p)).find((e) => e[1] === 'ViewContent');
-    ok(vc && vc[2].content_category, 'píxel: ViewContent en la página pilar', JSON.stringify(vc && vc[2]));
-    await p.goto(BASE + '/contacto', { waitUntil: 'networkidle' });
+  await block('Contacto directo y catálogo', async () => {
+    const { ctx, p, fbReq } = await open(b, '/contacto', { consent: true });
     const [popup] = await Promise.all([ctx.waitForEvent('page'), p.click('.chan__card[href*="wa.me"]')]);
+    ok(/wa\.me\/34616372644/.test(popup.url()), 'contacto: la tarjeta de WhatsApp abre el chat', popup.url());
     await popup.close();
-    const c = (await fb(p)).find((e) => e[1] === 'Contact');
-    ok(c && c[2].content_name === 'WhatsApp', 'píxel: Contact al pulsar WhatsApp', JSON.stringify(c && c[2]));
     const wa = await p.getAttribute('.chan__card[href*="wa.me"]', 'href');
     ok(/text=Hola/.test(wa), 'contacto: WhatsApp con mensaje prellenado');
     await p.goto(BASE + '/catalogo', { waitUntil: 'networkidle' });
     const [dl] = await Promise.all([p.waitForEvent('download'), p.click('.phero [data-catalog]')]);
     ok(/catalogo-vytalgroup-2026\.pdf$/.test(dl.suggestedFilename()), 'catálogo: descarga directa del PDF sin formulario', dl.suggestedFilename());
-    ok((await fb(p)).some((e) => e[0] === 'trackCustom' && e[1] === 'DescargaCatalogo'), 'píxel: DescargaCatalogo (trackCustom, no Lead)');
-    ok(!(await fb(p)).some((e) => e[1] === 'Lead'), 'catálogo: la descarga no es un Lead');
     await p.fill('[data-search]', 'acclarix');
-    await p.waitForTimeout(1400);
-    const s = (await fb(p)).filter((e) => e[1] === 'Search');
-    ok(s.length === 1 && s[0][2].search_string === 'acclarix', 'píxel: Search con debounce (una vez)', JSON.stringify(s.map((x) => x[2])));
+    await p.waitForTimeout(600);
+    ok(await sinMeta(p, fbReq), 'contacto y catálogo: ningún evento ni petición a Meta');
     await ctx.close();
   });
 

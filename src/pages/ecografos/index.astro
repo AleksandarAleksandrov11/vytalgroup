@@ -42,7 +42,6 @@ const PREGUNTAS = [
   seccion="ecografos"
   migas={migas}
   jsonld={[collectionPage('/ecografos', 'Ecógrafos para fisioterapia'), itemList('Ecógrafos', todos), faqPage(FAQ_ECOGRAFIA)]}
-  viewContent={{ ids: todos.map((p) => p.slug), type: 'product_group', category: 'Ecografía', name: 'Ecógrafos' }}
   waTexto="Hola, vengo de la web de VytalGroup y quiero información sobre ecógrafos. ¿Me podéis asesorar?"
 >
   <PageHero migas={migas} titulo={c.h1} lead="Inalámbricos, portátiles y de carro para fisioterapia y medicina. Te ayudamos a elegir el que encaja con tu forma de trabajar." imagen="ecografo-portatil-acclarix-ax8-edan" alt="Ecógrafo portátil Acclarix AX8 de EDAN con doble pantalla táctil">
@@ -129,7 +128,7 @@ const PREGUNTAS = [
   </section>
 
   <section class="sec sec--photo on-dark" aria-labelledby="porque-title">
-    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ecografo-en-consulta" alt="Consulta médica con equipamiento de diagnóstico" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600, 2000]} quality={62} /></div>
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ecografo-en-consulta" alt="Consulta médica con equipamiento de diagnóstico" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600]} quality={60} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="porque-title" data-lines>Por qué comprar tu ecógrafo <em>con VytalGroup.</em></h2>

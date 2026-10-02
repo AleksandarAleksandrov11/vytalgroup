@@ -67,7 +67,7 @@ const ok = (c, n, x = '') => res.push(`${c ? 'PASS' : 'FAIL'}  ${n}${x ? '  · '
   ok(r.ok === true && sh.rows.length === 2 && row.length === 13, 'doPost(): guarda una fila de 13 columnas y responde { ok: true }', JSON.stringify(r));
   ok(col('Fecha') === '24/09/2026 12:00' && col('Nombre') === 'Laura Gómez' && col('Teléfono') === "'+34 612 345 678" && col('Email') === '' && col('Perfil') === 'Fisioterapeuta' && col('Equipo de interés') === 'Ecógrafo' && col('Modelo') === 'Acclarix AX8 (EDAN)' && col('utm_source') === 'facebook' && col('utm_campaign') === 'otono' && col('utm_content') === 'video-1' && col('event_id') === base.event_id, 'doPost(): cada dato en su columna; el modelo elegido va en su propia columna', row.slice(0, 7).join(' | '));
   const m = mails[0];
-  ok(mails.length === 1 && m.to === 'aaswebmarketing@gmail.com' && m.subject === 'Nuevo lead: Laura Gómez · Acclarix AX8 (EDAN)' && /Teléfono: \+34 612 345 678 {2}\(WhatsApp: https:\/\/wa\.me\/34612345678\)/.test(m.body) && /Perfil: Fisioterapeuta/.test(m.body) && /Equipo de interés: Ecógrafo\nModelo: Acclarix AX8 \(EDAN\)/.test(m.body) && /Campaña: facebook \/ paid \/ otono/.test(m.body) && !/Email:/.test(m.body), 'Email: asunto con nombre y modelo, teléfono con enlace de WhatsApp, perfil, equipo, modelo y campaña', m && m.subject);
+  ok(mails.length === 1 && m.to === 'vytalkinetech@gmail.com' && m.subject === 'Nuevo lead: Laura Gómez · Acclarix AX8 (EDAN)' && /Teléfono: \+34 612 345 678 {2}\(WhatsApp: https:\/\/wa\.me\/34612345678\)/.test(m.body) && /Perfil: Fisioterapeuta/.test(m.body) && /Equipo de interés: Ecógrafo\nModelo: Acclarix AX8 \(EDAN\)/.test(m.body) && /Campaña: facebook \/ paid \/ otono/.test(m.body) && !/Email:/.test(m.body), 'Email: asunto con nombre y modelo, teléfono con enlace de WhatsApp, perfil, equipo, modelo y campaña', m && m.subject);
   const r2 = post(ctx, base);
   ok(r2.ok === true && r2.duplicate === true && sh.rows.length === 2 && mails.length === 1, 'doPost(): el mismo event_id no se duplica');
   ok(post(ctx, { ...base, event_id: '2', website: 'http://spam' }).ok === true && sh.rows.length === 2, 'doPost(): el campo trampa se descarta sin dar pistas');
@@ -134,7 +134,7 @@ const ok = (c, n, x = '') => res.push(`${c ? 'PASS' : 'FAIL'}  ${n}${x ? '  · '
     origen: 'web', pagina: 'https://www.vytalgroupem.com/ecografos/acclarix-ax8', nombre: 'Pablo Sanz', canal: 'WhatsApp',
     telefono: '+34 600 111 222', email: '', perfil: 'Clínica', equipo: 'Ecógrafo', modelo: 'Acclarix AX8 (EDAN)',
     consentimiento: 'Sí · 2026-10-01T10:00:00Z', utm_source: 'web', utm_medium: 'organico', utm_campaign: 'ecografos/acclarix-ax8',
-    utm_content: 'google.com', utm_term: '', fbclid: '', fbc: '', fbp: '', referrer: 'https://www.google.com/', landing_url: 'https://www.vytalgroupem.com/ecografos/acclarix-ax8',
+    utm_content: 'google.com', utm_term: '', referrer: 'https://www.google.com/', landing_url: 'https://www.vytalgroupem.com/ecografos/acclarix-ax8',
     dispositivo: 'iOS · móvil', idioma: 'es-ES', event_id: 'web-1', website: '',
   };
   const r = post(ctx, web);

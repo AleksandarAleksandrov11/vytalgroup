@@ -1,6 +1,6 @@
 # Fotos de fondo y de cabecera
 
-Fotos de bancos de imágenes con licencia libre para uso comercial sin atribución obligatoria (se citan igualmente). Recortadas a 2000 o 2400 px de ancho y convertidas a WebP; Astro genera los tamaños que pide cada página.
+Fotos de bancos de imágenes con licencia libre para uso comercial sin atribución obligatoria (se citan igualmente). Recortadas a 2000 o 2400 px de ancho y convertidas a WebP; Astro genera los tamaños que pide cada página. Las cuatro fotos de fondo de sección (`fondo-*`) se guardan ya desenfocadas a 1600 px: así se ven suaves y pesan muy poco (los originales están en el historial de git).
 
 | Archivo (src/assets/fotos) | Dónde se usa | Fuente | Autor | Licencia |
 |---|---|---|---|---|

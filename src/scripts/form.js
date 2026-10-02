@@ -14,8 +14,7 @@
 //   ya confirma el envío, sin depender de script.googleusercontent.com (que algunos navegadores y
 //   bloqueadores cortan) ni del aviso por email del script. Si tarda, el "gracias" sale al segundo
 //   y la petición sigue en segundo plano (keepalive); si falla de verdad, se reintenta una vez y,
-//   si vuelve a fallar, se muestra el error con los datos intactos. Lead se dispara una vez
-//   (eventID = event_id) al mostrar el "gracias".
+//   si vuelve a fallar, se muestra el error con los datos intactos.
 // · Tras el "gracias", "Enviar otra consulta" deja el formulario como nuevo, en la pregunta 1.
 // · UTM: los de la visita (anuncios, enlaces con UTM) o, si no hay, los de la web: utm_source "web",
 //   utm_medium según de dónde llegó (directo, organico, redes o referencia), utm_campaign la página
@@ -24,7 +23,6 @@
 import { COUNTRIES } from './paises.js';
 import { createSelect } from './select.js';
 import { getAttribution } from './attribution';
-import { lead } from './tracking';
 
 const TOTAL = 4;
 const MIN_MS = 3000;
@@ -402,9 +400,6 @@ function payload() {
     utm_campaign: u.utm_campaign || '',
     utm_content: u.utm_content || '',
     utm_term: u.utm_term || '',
-    fbclid: a.fbclid || '',
-    fbc: a.fbc || '',
-    fbp: a.fbp || '',
     referrer: a.referrer || '',
     landing_url: a.landing_url || location.href,
     dispositivo: device(),
@@ -478,7 +473,7 @@ async function submit() {
   try {
     if (bot) {
       await wait(800);
-      done(false);
+      done();
       return;
     }
     const endpoint = String(document.documentElement.dataset.sheets || '').trim();
@@ -509,7 +504,7 @@ async function submit() {
         failed();
       });
     }
-    done(true);
+    done();
   } catch (err) {
     if (err.message !== 'sin-endpoint') console.warn('[VytalGroup] No se pudo enviar el formulario:', err.message || err);
     failed();
@@ -525,7 +520,7 @@ function showEnd(el) {
   el.focus({ preventScroll: true });
   keepInView();
 }
-function done(real) {
+function done() {
   finished = true;
   const first = ui.name.value.trim().split(/\s+/)[0] || '';
   ui.doneTitle.textContent = first ? `Gracias, ${first}. Te escribimos muy pronto.` : 'Gracias. Te escribimos muy pronto.';
@@ -533,12 +528,6 @@ function done(real) {
   update();
   showEnd(ui.done);
   ui.live.textContent = ui.doneTitle.textContent;
-  try {
-    if (real && !state.leadSent) {
-      state.leadSent = true;
-      lead(state.eventId, state.modelo ? shortModel(state.modelo) : equipoFinal(), equipoFinal());
-    }
-  } catch (err) { console.warn('[VytalGroup] No se pudo registrar el Lead:', err); }
   window.dispatchEvent(new CustomEvent('vg:lead-done'));
 }
 function failed() {
@@ -568,7 +557,7 @@ function again() {
   form.querySelectorAll('.qf__err').forEach((e) => { e.textContent = ''; });
   ui.hint.hidden = true;
   showOther(false);
-  state = { ...state, step: 1, equipo: '', modelo: '', otro: '', perfil: '', sugFor: '', leadSent: false, eventId: uuid(), t0: performance.now() };
+  state = { ...state, step: 1, equipo: '', modelo: '', otro: '', perfil: '', sugFor: '', eventId: uuid(), t0: performance.now() };
   setContact('tel', false);
   stepEl(1).classList.add('is-active');
   update();

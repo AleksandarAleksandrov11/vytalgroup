@@ -6,8 +6,8 @@
 //  · html-validate → HTML válido en todas las páginas (reglas en .htmlvalidate.json).
 //  · qa-apps-script→ el Apps Script real (integrations/google-sheets.gs, el de la landing) contra una hoja
 //                    simulada: columnas, columna Modelo, duplicados, validación y los envíos de la web.
-//  · qa-form       → formulario (preselección, validación, envío, error, sin endpoint, antispam),
-//                    consentimiento y eventos del píxel (Meta simulado, sin salir a internet).
+//  · qa-form       → formulario (preselección, validación, envío, error, servidor lento, sin endpoint,
+//                    antispam), consentimiento, analítica de Vercel y que no se pida nada a Meta.
 //  · qa-ui         → cabecera, menús, catálogo (filtros, búsqueda, orden y URL), acordeones, guías,
 //                    teclado, movimiento reducido, CSP, 404 real y cabeceras de caché.
 //  · qa-a11y       → axe-core (WCAG 2.2 AA y buenas prácticas) en todas las páginas a 390 y 1440, más

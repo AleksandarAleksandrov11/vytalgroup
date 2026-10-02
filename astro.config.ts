@@ -4,8 +4,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE_URL } from './src/config';
 
-// Astro emite el original de toda imagen importada aunque la página solo use sus versiones AVIF y
-// WebP. Al terminar, se borra de dist/_astro todo lo que ningún HTML, CSS o JS referencia.
+// Astro emite el original de toda imagen importada aunque la página solo use sus versiones WebP.
+// Al terminar, se borra de dist/_astro todo lo que ningún HTML, CSS o JS referencia.
 const sinArchivosMuertos = (): AstroIntegration => ({
   name: 'vg-sin-archivos-muertos',
   hooks: {
@@ -47,6 +47,15 @@ export default defineConfig({
     assets: '_astro',
     // CSS en línea: la página pinta sin esperar a ninguna hoja de estilos (LCP en móvil)
     inlineStylesheets: 'always',
+  },
+  // Imágenes: todas en WebP. Codificador ajustado para que pesen poco sin perder calidad visible: esfuerzo máximo,
+  // submuestreo de color inteligente, transparencia con pérdida ligera (equipos recortados) y calidad 74 por defecto
+  // (cada imagen puede pedir la suya: el hero y las fotos de fondo).
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: { webp: { quality: 74, alphaQuality: 82, effort: 6, smartSubsample: true } },
+    },
   },
   devToolbar: { enabled: false },
   prefetch: false,

@@ -17,7 +17,7 @@ const SOLO = process.argv[2] ? process.argv[2].split(',') : null;
   let fails = 0;
   for (const [w, h, movil] of [[390, 844, true], [1440, 900, false]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: movil, hasTouch: movil, reducedMotion: 'reduce', bypassCSP: true });
-    await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: false })); } catch (e) { /* */ } });
+    await ctx.addInitScript(() => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false })); localStorage.setItem('vg_intro', '1'); } catch (e) { /* */ } });
     const p = await ctx.newPage();
     for (const r of rutas) {
       if (SOLO && !SOLO.includes(r)) continue;

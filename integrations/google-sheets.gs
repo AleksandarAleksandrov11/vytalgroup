@@ -1,7 +1,7 @@
 const SHEET_NAME = 'Leads';
 const TIMEZONE = 'Europe/Madrid';
 const SEND_EMAIL_NOTIFICATION = true;
-const NOTIFY_EMAIL = 'aaswebmarketing@gmail.com';
+const NOTIFY_EMAIL = 'vytalkinetech@gmail.com';
 
 const HEADERS = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Perfil', 'Equipo de interés', 'Modelo', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'event_id'];
 const MODELO_COL = HEADERS.indexOf('Modelo') + 1;

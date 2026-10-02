@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
 const BASE = process.env.BASE || `http://localhost:${process.env.PORT || 8081}`;
 const results = [];
 const ok = (cond, name, extra = '') => results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}${extra ? `  · ${extra}` : ''}`);
-const CONSENT = () => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false, marketing: false })); } catch (e) { /* */ } };
+const CONSENT = () => { try { localStorage.setItem('vg_consent', JSON.stringify({ v: 3, date: new Date().toISOString(), necessary: true, analytics: false })); localStorage.setItem('vg_intro', '1'); } catch (e) { /* */ } };
 
 async function open(b, path, { width = 1280, height = 900, mobile = false, reduced = false, js = true } = {}) {
   const ctx = await b.newContext({ viewport: { width, height }, isMobile: mobile, hasTouch: mobile, reducedMotion: reduced ? 'reduce' : 'no-preference', javaScriptEnabled: js });
@@ -206,24 +206,34 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await nos.ctx.close();
   });
 
-  await block('Inicio: intro de marca', async () => {
-    const { ctx, p } = await open(b, '/');
-    ok(await p.evaluate(() => sessionStorage.getItem('vg_intro') === '1' && !document.documentElement.classList.contains('intro-vista')), 'intro: se ve al abrir la web por primera vez en la sesión');
-    ok(await p.evaluate(() => { const i = document.querySelector('[data-intro]'); return !i || (getComputedStyle(i).pointerEvents === 'none' && i.getBoundingClientRect().top >= 0); }), 'intro: no recibe clics (nunca bloquea los botones) y no tapa la cabecera');
-    await p.waitForTimeout(2600);
-    ok(await p.evaluate(() => !document.querySelector('[data-intro]') && /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/.test(getComputedStyle(document.querySelector('.h1 .w > span')).transform)), 'intro: sube como un telón, desaparece y el titular ya está en su sitio');
+  await block('Intro de marca (solo la primera vez)', async () => {
+    // Contexto sin vg_intro: es la primera vez que se abre la web en este navegador
+    const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    const p = await ctx.newPage();
     await p.goto(BASE + '/ecografos', { waitUntil: 'domcontentloaded' });
+    ok(await p.evaluate(() => localStorage.getItem('vg_intro') === '1' && document.documentElement.classList.contains('con-intro')), 'intro: aparece al abrir la web por primera vez (en cualquier página)');
+    ok(await p.evaluate(() => { const i = document.querySelector('[data-intro]'); if (!i) return false; const r = i.getBoundingClientRect(); const hd = document.querySelector('.hd'); return getComputedStyle(i).pointerEvents === 'none' && r.top === 0 && r.height >= innerHeight - 1 && +getComputedStyle(i).zIndex > +getComputedStyle(hd).zIndex; }), 'intro: ocupa toda la pantalla, por encima de la cabecera, y no recibe clics');
+    await p.waitForTimeout(2800);
+    ok(await p.evaluate(() => !document.querySelector('[data-intro]') && /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/.test(getComputedStyle(document.querySelector('.h1 .w > span')).transform)), 'intro: sube como un telón, desaparece y el titular entra después');
     await p.goto(BASE + '/', { waitUntil: 'networkidle' });
-    ok(await p.evaluate(() => !document.querySelector('[data-intro]') && document.documentElement.classList.contains('intro-vista')), 'intro: no se repite en la misma sesión');
+    ok(await p.evaluate(() => !document.querySelector('[data-intro]') && !document.documentElement.classList.contains('con-intro')), 'intro: no se repite al navegar');
+    const p2 = await ctx.newPage();
+    await p2.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+    ok(await p2.evaluate(() => !document.documentElement.classList.contains('con-intro')), 'intro: tampoco al volver a abrir la web (solo la primera vez)');
     await ctx.close();
-    const r = await open(b, '/', { reduced: true });
-    ok(await r.p.evaluate(() => !document.querySelector('[data-intro]')), 'intro: no aparece con movimiento reducido');
-    await r.ctx.close();
-    const k = await open(b, '/', { width: 390, height: 844, mobile: true });
-    await k.p.evaluate(() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift' })));
-    await k.p.waitForTimeout(800);
-    ok(await k.p.evaluate(() => document.documentElement.classList.contains('intro-saltada') && !document.querySelector('[data-intro]')), 'intro: un gesto (tecla, clic, rueda, toque o scroll) la adelanta');
-    await k.ctx.close();
+    const r = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
+    const pr = await r.newPage();
+    await pr.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+    ok(await pr.evaluate(() => !document.documentElement.classList.contains('con-intro') && !document.querySelector('[data-intro]')), 'intro: no aparece con movimiento reducido');
+    await r.close();
+    const k = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const pk = await k.newPage();
+    await pk.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+    await pk.waitForTimeout(200);
+    await pk.evaluate(() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift' })));
+    await pk.waitForTimeout(900);
+    ok(await pk.evaluate(() => document.documentElement.classList.contains('intro-saltada') && !document.querySelector('[data-intro]')), 'intro: un gesto (tecla, clic, rueda, toque o scroll) la adelanta');
+    await k.close();
   });
 
   await block('Botón flotante de WhatsApp', async () => {

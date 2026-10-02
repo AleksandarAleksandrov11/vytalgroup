@@ -7,7 +7,6 @@
 import { captureAttribution } from './attribution';
 import { initConsent } from './consent';
 import { initAnalytics } from './analytics';
-import { initTracking, catalogDownload, contact } from './tracking';
 
 const html = document.documentElement;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -18,26 +17,19 @@ const $$ = <T extends Element = HTMLElement>(s: string, c: ParentNode = document
 const hasIO = 'IntersectionObserver' in window;
 const belowFold = (el: Element) => el.getBoundingClientRect().top > window.innerHeight;
 
-// ------------------------------------------------------------------ inicio: intro de marca (una vez por sesión)
-// La intro va dentro del hero y la anima el CSS (también sin JS). Aquí solo se decide: si ya se vio en esta
-// sesión (o hay movimiento reducido), se quita al momento; si no, se marca como vista y cualquier gesto
-// (clic, tecla, rueda, toque o scroll) la adelanta. El aviso de cookies espera a que termine.
+// ------------------------------------------------------------------ intro de marca (solo la primera vez)
+// La decide intro-head.js antes de pintar (html.con-intro) y la anima el CSS. Aquí: cualquier gesto (clic, tecla,
+// rueda, toque o scroll) la adelanta, al terminar se quita del DOM y el aviso de cookies espera a que acabe.
 const intro = $('[data-intro]');
-let introEnCurso = false;
-if (intro) {
-  let vista = false;
-  try { vista = sessionStorage.getItem('vg_intro') === '1'; sessionStorage.setItem('vg_intro', '1'); } catch { /* sin almacenamiento: se ve */ }
-  if (vista || reduced) { html.classList.add('intro-vista'); intro.remove(); }
-  else {
-    introEnCurso = true;
-    const saltar = () => html.classList.add('intro-saltada');
-    ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach((ev) => window.addEventListener(ev, saltar, { once: true, passive: true }));
-    intro.addEventListener('animationend', (e) => { if (e.target === intro) intro.remove(); });
-  }
+const introEnCurso = !!intro && html.classList.contains('con-intro');
+if (intro && !introEnCurso) intro.remove();
+if (intro && introEnCurso) {
+  const saltar = () => html.classList.add('intro-saltada');
+  ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach((ev) => window.addEventListener(ev, saltar, { once: true, passive: true }));
+  intro.addEventListener('animationend', (e) => { if (e.target === intro) intro.remove(); });
 }
 
 captureAttribution();
-initTracking();
 initAnalytics();
 initConsent({ delay: introEnCurso ? 2000 : 900 });
 
@@ -536,22 +528,6 @@ $$('[data-map]').forEach((map) => {
   io.observe(map);
 });
 
-// ------------------------------------------------------------------ hero del inicio: la foto sigue un poco al cursor
-// Solo con ratón y sin movimiento reducido; mueve la foto unos píxeles (propiedad translate, en CSS).
-const hx = $('[data-hero].hx');
-if (hx && fine && !reduced) {
-  let raf = 0;
-  hx.addEventListener('pointermove', (e) => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      const r = hx.getBoundingClientRect();
-      hx.style.setProperty('--mx', (((e as PointerEvent).clientX - r.left) / r.width - 0.5).toFixed(3));
-      hx.style.setProperty('--my', (((e as PointerEvent).clientY - r.top) / r.height - 0.5).toFixed(3));
-    });
-  }, { passive: true });
-  hx.addEventListener('pointerleave', () => { hx.style.removeProperty('--mx'); hx.style.removeProperty('--my'); });
-}
-
 // ------------------------------------------------------------------ maqueta 3D del catálogo: abanico e inclinación
 $$('[data-mockup]').forEach((m) => {
   if (!hasIO || reduced) { m.classList.add('is-open'); return; }
@@ -736,19 +712,6 @@ if (word && hasIO && !reduced && word.getBoundingClientRect().top >= window.inne
   const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); word.classList.add('is-in'); } }, { threshold: 0.35 });
   io.observe(word);
 }
-
-// ------------------------------------------------------------------ eventos del píxel
-document.addEventListener('click', (e) => {
-  const t = e.target as Element;
-  const cat = t.closest<HTMLElement>('[data-catalog]');
-  if (cat) catalogDownload(cat.dataset.origen || location.pathname);
-  const a = t.closest<HTMLAnchorElement>('a[href^="https://wa.me"], a[href^="tel:"], a[href^="mailto:"]');
-  if (a) {
-    const href = a.getAttribute('href')!;
-    const canal = href.startsWith('tel:') ? 'Teléfono' : href.startsWith('mailto:') ? 'Email' : 'WhatsApp';
-    contact(canal, a.dataset.origen || location.pathname);
-  }
-});
 
 html.classList.add('js');
 requestAnimationFrame(onScroll);

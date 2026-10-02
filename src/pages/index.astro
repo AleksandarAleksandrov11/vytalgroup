@@ -42,23 +42,11 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
   og="/og/inicio.jpg"
   seccion="inicio"
   jsonld={[organization(), website(), faqPage(FAQ_GENERAL)]}
-  bodyClass="has-intro"
 >
   <!-- 1 · Hero: titular corto sobre fondo marino y, a la derecha (debajo en móvil), una foto real de una
-       ecografía de hombro con sonda inalámbrica que se funde con el fondo. Al abrir la web (una vez por sesión),
-       una intro de marca ocupa el hero y sube como un telón; después la foto se descubre tras una cortina
-       turquesa, el titular sube por palabras y un brillo turquesa se mueve despacio detrás del texto. -->
+       ecografía de hombro con sonda inalámbrica que se funde con el fondo. Entrada única al cargar: la foto se
+       descubre tras una cortina con filo de luz turquesa y el titular sube por palabras; después, quieto. -->
   <section class="hx on-dark" data-hero aria-labelledby="hero-title">
-    <div class="hx__intro" data-intro aria-hidden="true">
-      <div class="hx__intro-in">
-        <div class="hx__intro-logo">
-          <svg class="hx__intro-mark" viewBox="0 0 214 171"><use href="#logo" width="1117" height="171"/></svg>
-          <svg class="hx__intro-word" viewBox="270 0 847 171"><use href="#logo" width="1117" height="171"/></svg>
-        </div>
-        <span class="hx__intro-line"></span>
-      </div>
-    </div>
-    <span class="hx__glow" aria-hidden="true"></span>
     <div class="hx__media">
       <Img name="fotos/hero-ecografia-hombro" alt="Fisioterapeuta haciendo una ecografía de hombro con una sonda inalámbrica y la imagen en una tablet" sizes="(min-width: 900px) calc(150vh - 132px), 100vw" widths={[480, 720, 960, 1280, 1600, 2000, 2400]} quality={70} priority class="hx__photo" />
     </div>
@@ -151,7 +139,7 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
 
   <!-- 5 · Todo tu equipamiento -->
   <section class="sec sec--photo on-dark more" aria-labelledby="more-title">
-    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ultrasonido-terapeutico" alt="Fisioterapeuta aplicando ultrasonido terapéutico en el tobillo de un paciente" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600, 2000]} quality={62} /></div>
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ultrasonido-terapeutico" alt="Fisioterapeuta aplicando ultrasonido terapéutico en el tobillo de un paciente" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600]} quality={60} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="more-title" data-lines>Más equipos para <em>tu consulta.</em></h2>

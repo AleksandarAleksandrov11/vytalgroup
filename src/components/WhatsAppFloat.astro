@@ -32,7 +32,7 @@ const { texto = 'Hola, vengo de la web de VytalGroup y me gustaría que me aseso
   @media (max-width: 639px) { html.has-cookie-banner .waf { --waf-b: calc(var(--ck-h, 210px) + 24px); } }
   html.menu-open .waf { opacity: 0; pointer-events: none; transform: scale(.9); }
   @media (prefers-reduced-motion: no-preference) {
-    .waf { animation: waf-in .6s var(--ease) 1s backwards; }
+    .waf { animation: waf-in .6s var(--ease) calc(var(--hx-d, 0s) + 1s) backwards; }
   }
   @keyframes waf-in { from { opacity: 0; transform: translateY(16px) scale(.92); } }
   @media print { .waf { display: none; } }

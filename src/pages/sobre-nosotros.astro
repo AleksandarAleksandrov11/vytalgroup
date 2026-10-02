@@ -149,15 +149,21 @@ const PRINCIPIOS = [
     </div>
   </section>
 
-  <!-- Alcance: la Tierra de noche entre América y Europa, con las rutas de envío desde España -->
+  <!-- Alcance: mapa limpio de América y Europa con un punto por destino y las rutas desde España -->
   <section class="sec sec--dark on-dark alc" aria-labelledby="alcance-title">
-    <div class="wrap">
-      <div class="sec__head">
+    <div class="wrap alc__grid">
+      <div class="alc__copy">
         <h2 class="h2" id="alcance-title" data-lines>Alcance <em>internacional.</em></h2>
         <p class="lead" data-rv>Coordinamos la importación y la entrega internacional de cada equipo en la UE, USA y LATAM.</p>
+        <ul class="alc__leg" data-rv>
+          <li><span class="alc__ico alc__ico--o" aria-hidden="true"></span><span><strong>España</strong>, nuestra base</span></li>
+          <li><span class="alc__ico" aria-hidden="true"></span><span><strong>Unión Europea</strong></span></li>
+          <li><span class="alc__ico" aria-hidden="true"></span><span><strong>Estados Unidos</strong>: California, Texas, Florida, Nueva York, Pensilvania e Illinois</span></li>
+          <li><span class="alc__ico" aria-hidden="true"></span><span><strong>Latinoamérica</strong>: los 20 países, de México a Argentina y Chile</span></li>
+        </ul>
       </div>
+      <WorldMap />
     </div>
-    <WorldMap />
   </section>
 
   <CtaFinal />

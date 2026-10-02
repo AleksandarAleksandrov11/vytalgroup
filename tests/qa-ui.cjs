@@ -105,7 +105,7 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     const az = await visibles(p);
     const sorted = [...az].sort((a, b2) => a.localeCompare(b2, 'es', { sensitivity: 'base' }));
     ok(JSON.stringify(az) === JSON.stringify(sorted) && p.url().includes('orden=az'), 'catálogo: orden A a Z (y en la URL)');
-    ok(await p.$eval('link[rel="canonical"]', (l) => l.href) === 'https://vytalgroup.com/catalogo', 'catálogo: canonical sin parámetros');
+    ok(await p.$eval('link[rel="canonical"]', (l) => l.href) === 'https://www.vytalgroupem.com/catalogo', 'catálogo: canonical sin parámetros');
     await ctx.close();
     const r = await open(b, '/catalogo?categoria=ecografia&q=acclarix');
     const eco = await visibles(r.p);
@@ -201,8 +201,29 @@ const visibles = (p) => p.$$eval('[data-list] [data-item]', (els) => els.filter(
     await m.ctx.close();
     const nos = await open(b, '/sobre-nosotros');
     ok(await nos.p.evaluate(() => { const h = document.querySelector('.phero'); const m = document.querySelector('.bm'); return !!m && h.nextElementSibling === m && !m.querySelector('.bm__title'); }), 'marcas: en Sobre nosotros, bajo el hero y sin título');
-    ok(await nos.p.evaluate(() => { const s = document.querySelector('.alc'); return !!s && s.classList.contains('sec--dark') && !!s.querySelector('.map .map__img') && s.querySelectorAll('.map__arcs path').length === 11; }), 'alcance internacional: mapa nocturno de la Tierra con las 11 rutas desde España');
+    ok(await nos.p.evaluate(() => { const s = document.querySelector('.alc'); return !!s && s.classList.contains('sec--dark') && !s.querySelector('.sec__photo') && !!s.querySelector('.am .am__tierra') && s.querySelectorAll('.am__p--latam').length === 20 && s.querySelectorAll('.am__p--usa').length === 6 && s.querySelectorAll('.am__p--ue').length === 8 && !!s.querySelector('.am__o'); }), 'alcance internacional: mapa limpio con un punto en cada país de Latinoamérica (20), 6 estados de EE. UU. y la UE');
+    ok(await nos.p.evaluate(() => { const n = [...document.querySelectorAll('.am__p title')].map((t) => t.textContent); return n.length === 34 && new Set(n).size === 34 && ['México', 'Brasil', 'República Dominicana', 'Texas', 'Florida', 'Alemania'].every((x) => n.includes(x)); }), 'alcance internacional: cada punto lleva el nombre de su país o estado');
     await nos.ctx.close();
+  });
+
+  await block('Inicio: intro de marca', async () => {
+    const { ctx, p } = await open(b, '/');
+    ok(await p.evaluate(() => sessionStorage.getItem('vg_intro') === '1' && !document.documentElement.classList.contains('intro-vista')), 'intro: se ve al abrir la web por primera vez en la sesión');
+    ok(await p.evaluate(() => { const i = document.querySelector('[data-intro]'); return !i || (getComputedStyle(i).pointerEvents === 'none' && i.getBoundingClientRect().top >= 0); }), 'intro: no recibe clics (nunca bloquea los botones) y no tapa la cabecera');
+    await p.waitForTimeout(2600);
+    ok(await p.evaluate(() => !document.querySelector('[data-intro]') && /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/.test(getComputedStyle(document.querySelector('.h1 .w > span')).transform)), 'intro: sube como un telón, desaparece y el titular ya está en su sitio');
+    await p.goto(BASE + '/ecografos', { waitUntil: 'domcontentloaded' });
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    ok(await p.evaluate(() => !document.querySelector('[data-intro]') && document.documentElement.classList.contains('intro-vista')), 'intro: no se repite en la misma sesión');
+    await ctx.close();
+    const r = await open(b, '/', { reduced: true });
+    ok(await r.p.evaluate(() => !document.querySelector('[data-intro]')), 'intro: no aparece con movimiento reducido');
+    await r.ctx.close();
+    const k = await open(b, '/', { width: 390, height: 844, mobile: true });
+    await k.p.evaluate(() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift' })));
+    await k.p.waitForTimeout(800);
+    ok(await k.p.evaluate(() => document.documentElement.classList.contains('intro-saltada') && !document.querySelector('[data-intro]')), 'intro: un gesto (tecla, clic, rueda, toque o scroll) la adelanta');
+    await k.ctx.close();
   });
 
   await block('Botón flotante de WhatsApp', async () => {

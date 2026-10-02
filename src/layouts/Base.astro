@@ -5,7 +5,7 @@ import '../styles/base.css';
 import '../styles/hero.css';
 import geistUrl from '../assets/fonts/geist.woff2?url';
 import serifUrl from '../assets/fonts/instrument-serif-italic.woff2?url';
-import { SHEETS_ENDPOINT, META_PIXEL_ID, SITE_URL, VERCEL_ANALYTICS } from '../config';
+import { SHEETS_ENDPOINT, META_PIXEL_ID, SITE_URL, VERCEL_ANALYTICS, GOOGLE_SITE_VERIFICATION, META_DOMAIN_VERIFICATION } from '../config';
 import Sprite from '../components/Sprite.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -58,6 +58,8 @@ if (!nodos.some((n: any) => n['@type'] === 'Person')) nodos.push(persona());
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#FAFBFC">
 <meta name="format-detection" content="telephone=no">
+{GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION}>}
+{META_DOMAIN_VERIFICATION && <meta name="facebook-domain-verification" content={META_DOMAIN_VERIFICATION}>}
 <meta property="og:type" content={ogType === 'product' ? 'website' : ogType}>
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="VytalGroup">

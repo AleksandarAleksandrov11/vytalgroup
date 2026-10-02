@@ -183,3 +183,18 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 - Prueba real contra la hoja del cliente: agradecimiento a 1,39 s, una sola petición y la fila con `web / directo / contacto`.
 - Accesibilidad: el botón flotante de WhatsApp quedaba fuera de toda zona de referencia (axe, regla `region`, en las 156 combinaciones); va dentro de un `<aside>` con nombre.
 - Pruebas de la ronda 6: SEO 1984/1984, HTML válido, Apps Script 27/27 (con los envíos de la web), formulario 65/65, interfaz 83/83 (hero, WhatsApp flotante y mapa nuevos), accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en 8 de las 9 plantillas y 99 de rendimiento en el catálogo, LCP entre 1,38 y 1,64 s y CLS de 0,002 como máximo.
+
+## Ronda 7 (dominio, alcance, fotos, animaciones y publicación)
+- [x] Dominio `https://www.vytalgroupem.com` (el principal en Vercel; `vytalgroupem.com` redirige a él): canonical, Open Graph, JSON-LD, sitemap, `robots.txt`, `llms.txt` y pie de las imágenes para compartir. `vytalgroup.vercel.app` redirige al dominio
+- [x] Variables de entorno de Vercel para todo lo configurable (`META_PIXEL_ID`, `SHEETS_ENDPOINT`, `SITE_URL`, `VERCEL_ANALYTICS`) y para verificar el dominio en Google y en Meta con etiqueta (`GOOGLE_SITE_VERIFICATION`, `META_DOMAIN_VERIFICATION`), sin tocar código
+- [x] Alcance internacional rehecho y limpio: mapa en vectores de América y Europa, un punto en cada país de Latinoamérica (20), seis estados de EE. UU. (California, Texas, Florida, Nueva York, Pensilvania e Illinois) y ocho países de la UE, España como origen, ocho rutas de referencia y leyenda; fuera la foto nocturna de la NASA
+- [x] Fotos de fondo de sección sin la veladura que las apagaba (del 66 al 86 % de marino a entre el 24 y el 62 %, más densa solo donde hay texto), con más calidad (62 en vez de 32) y, en móvil y tableta, como banda superior que se funde con el marino
+- [x] Animación inicial al abrir la web: intro de marca dentro del hero (símbolo, nombre y línea de carga, y el panel sube como un telón), una vez por sesión, sin bloquear clics y con salto inmediato a cualquier gesto
+- [x] Hero con entrada "wow": cortina marina con filo de luz turquesa que descubre la foto con zoom, titular por palabras, brillo turquesa en movimiento detrás del texto y foto que sigue al cursor en escritorio
+- [x] Apps Script: un email de aviso que falla ya no convierte en error un lead guardado (lo notaba la landing)
+- [x] Guía para publicar paso a paso en el README (apartado 8): fusionar en `main`, Vercel Analytics, datos legales, Apps Script, Meta Pixel, Search Console y comprobación final
+
+## Registro de la ronda 7
+- Dominio comprobado desde fuera: `https://www.vytalgroupem.com` responde con HTTPS y `vytalgroupem.com` y `http://` redirigen a él (308). El Apps Script desplegado responde `{"ok":true}` y la hoja solo conserva una fila de prueba.
+- Intro medida con Lighthouse (perfil limpio, así que la intro se ve): el inicio sigue en 100 de rendimiento (LCP 1,6 s, Speed Index 2,3 s, CLS 0,001). La intro no retrasa el LCP porque la foto se pinta debajo desde el principio.
+- Pruebas de la ronda 7: SEO 1986/1986, HTML válido, Apps Script 28/28 (con el email que falla), formulario 65/65, interfaz 90/90 (intro, mapa y fotos nuevas), accesibilidad 156/156 y maquetación 180/180. Lighthouse móvil 100 · 100 · 100 · 100 en 8 de las 9 plantillas y 99 de rendimiento en el catálogo; LCP entre 1,43 y 1,72 s. Enlaces: 266 internos con sus anclas, 176 de WhatsApp, teléfono, correo y externos, sin ninguno roto.

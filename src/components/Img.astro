@@ -18,7 +18,7 @@ interface Props {
   pictureClass?: string;
   vt?: string;
   parallax?: boolean;
-  /** Calidad WebP (por defecto la de cada códec). Las fotos de fondo bajo capa marina bajan a 32. */
+  /** Calidad WebP (por defecto la de cada códec). Las fotos de fondo de sección van a 62. */
   quality?: number;
 }
 const { name, alt, sizes, widths = [240, 320, 480, 640], priority = false, class: cls, pictureClass, vt, parallax = false, quality } = Astro.props;

@@ -32,11 +32,47 @@
   .hx__media::after { background: linear-gradient(0deg, rgba(11, 25, 41, .5), rgba(11, 25, 41, 0) 26%), linear-gradient(180deg, rgba(11, 25, 41, .3), rgba(11, 25, 41, 0) 18%); }
 }
 @media (min-width: 1400px) { .hx__media { width: 60%; } }
-/* Entrada: la foto se asienta con un zoom muy leve (solo transform: puede ser el LCP) */
-@media (prefers-reduced-motion: no-preference) {
-  .hx__photo { animation: hx-zoom 1.8s var(--ease) backwards; }
+
+/* ---------- Intro de marca y entrada del hero ----------
+   Al abrir la web (una vez por sesión, lo decide main.ts) la intro ocupa el hero: el símbolo gira y se asienta,
+   "VytalGroup" se descubre de izquierda a derecha y una línea turquesa se carga; después sube como un telón
+   con un filo de luz. Todo el contenido del hero (y la cinta de datos y el botón de WhatsApp) espera --hx-d.
+   No tapa la cabecera, no recibe clics (nunca bloquea nada) y con movimiento reducido no existe. */
+.has-intro { --hx-d: 1.05s; }
+html.intro-vista .has-intro, html.intro-saltada .has-intro { --hx-d: 0s; }
+.hx__intro { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding-top: var(--hd); background: radial-gradient(60% 55% at 50% 52%, #12304A, var(--navy) 70%); pointer-events: none; animation: intro-telon .85s cubic-bezier(.76, 0, .24, 1) 1.05s forwards; }
+.hx__intro::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--teal-light) 30%, #FFF 50%, var(--teal-light) 70%, transparent); box-shadow: 0 0 28px 6px rgba(143, 220, 220, .32); }
+html.intro-saltada .hx__intro { animation: intro-telon .5s cubic-bezier(.76, 0, .24, 1) forwards; }
+.hx__intro-in { display: grid; justify-items: center; gap: 26px; animation: intro-sube .85s cubic-bezier(.76, 0, .24, 1) 1.05s forwards; }
+.hx__intro-logo { display: flex; align-items: center; gap: clamp(10px, 1.4vw, 16px); }
+.hx__intro svg { --logo-m: url(#vgd); --logo-a: #FFF; --logo-b: #5CC8C8; display: block; height: clamp(40px, 5.4vw, 58px); width: auto; overflow: hidden; }
+.hx__intro-mark { aspect-ratio: 214 / 171; animation: intro-simbolo .95s cubic-bezier(.34, 1.56, .64, 1) .12s backwards; }
+.hx__intro-word { aspect-ratio: 847 / 171; height: clamp(30px, 4vw, 44px) !important; animation: intro-palabra .8s var(--ease) .42s backwards; }
+.hx__intro-line { width: clamp(150px, 22vw, 260px); height: 2px; border-radius: 2px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+.hx__intro-line::before { content: ""; display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-light)); transform-origin: left; animation: intro-carga .7s var(--ease) .3s backwards; }
+@keyframes intro-telon { to { transform: translateY(-101%); } }
+@keyframes intro-sube { to { transform: translateY(-40px); opacity: 0; } }
+@keyframes intro-simbolo { from { opacity: 0; transform: scale(.35) rotate(-35deg); } }
+@keyframes intro-palabra { from { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-14px); } }
+@keyframes intro-carga { from { transform: scaleX(0); } }
+
+/* Brillo turquesa que se mueve despacio detrás del titular (solo transform, en su propia capa) */
+.hx__glow { position: absolute; z-index: -2; left: -18%; top: -10%; width: 78%; height: 120%; pointer-events: none; background: radial-gradient(closest-side, rgba(72, 160, 168, .3), rgba(72, 160, 168, .1) 55%, transparent); }
+/* Foto: tras la intro, una cortina marina con un filo de luz turquesa la descubre de izquierda a derecha mientras se
+   asienta con un zoom; en escritorio sigue unos píxeles al cursor (--mx y --my desde main.ts) */
+.hx__media::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, var(--teal-light) 0, var(--teal) 1.4%, #173A50 9%, var(--navy) 55%); transform: scaleX(0); transform-origin: right; }
+@media (min-width: 900px) {
+  .hx__media picture { scale: 1.05; translate: calc(var(--mx, 0) * -18px) calc(var(--my, 0) * -12px); transition: translate 1.2s var(--ease); }
 }
-@keyframes hx-zoom { from { transform: scale(1.07); } }
+@media (prefers-reduced-motion: no-preference) {
+  .hx__photo { animation: hx-zoom 2.4s var(--ease) var(--hx-d, 0s) backwards; }
+  .hx__media::before { animation: hx-cortina 1.05s cubic-bezier(.76, 0, .24, 1) calc(var(--hx-d, 0s) + .05s) backwards; }
+  .hx__glow { animation: hx-brillo 16s ease-in-out var(--hx-d, 0s) infinite alternate; }
+}
+@media (prefers-reduced-motion: reduce) { .hx__intro { display: none; } .has-intro { --hx-d: 0s; } }
+@keyframes hx-zoom { from { transform: scale(1.18); } }
+@keyframes hx-cortina { from { transform: scaleX(1); } }
+@keyframes hx-brillo { from { transform: translate3d(-4%, -6%, 0) scale(1); } to { transform: translate3d(14%, 10%, 0) scale(1.18); } }
 
 /* ---------- 4 · Ecografía en profundidad (sticky) ---------- */
 .eco__grid { display: grid; gap: 24px; }

@@ -120,7 +120,15 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .sec__photo { position: absolute; inset: 0; z-index: -2; }
 .sec__photo picture { display: block; height: 100%; }
 .sec__photo img { width: 100%; height: 100%; object-fit: cover; }
-.sec--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(11, 25, 41, .84) 0%, rgba(11, 25, 41, .66) 50%, rgba(11, 25, 41, .86) 100%); }
+/* Velo ligero: la foto se ve; solo un poco más de marino arriba (titular) y abajo (enlaces), donde hay texto
+   directamente sobre la foto. Las tarjetas son blancas y no lo necesitan */
+.sec--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(11, 25, 41, .62) 0%, rgba(11, 25, 41, .3) 32%, rgba(11, 25, 41, .24) 64%, rgba(11, 25, 41, .62) 100%); }
+/* Titular y enlaces con una sombra suave, para leerse sobre cualquier zona de la foto */
+.sec--photo .sec__head .h2, .sec--photo .sec__cta .link { text-shadow: 0 2px 18px rgba(11, 25, 41, .55), 0 1px 3px rgba(11, 25, 41, .45); }
+/* En móvil y tableta la sección es muy alta: la foto ocupa la parte de arriba y se funde con el marino */
+@media (max-width: 1023px) {
+  .sec__photo { bottom: auto; height: min(100%, 720px); -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent); mask-image: linear-gradient(180deg, #000 58%, transparent); }
+}
 :is(.sec--dark, .sec--photo) .h2 em { color: var(--teal-light); }
 :is(.sec--dark, .sec--photo) .lead { color: var(--on-dark); }
 :is(.sec--dark, .sec--photo) .link { color: #FFF; text-decoration-color: rgba(255, 255, 255, .4); }
@@ -165,10 +173,11 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 .h1 .w { display: inline-block; vertical-align: top; padding: 0 .08em .14em; margin: 0 -.08em -.14em; clip-path: inset(-.4em -.1em 0 -.1em); }
 .h1 .w > span { display: inline-block; }
 @media (prefers-reduced-motion: no-preference) {
-  .h1 .w > span { transform: translateY(110%); animation: word-up var(--t-in-long) var(--ease) forwards; animation-delay: calc(60ms + var(--i, 0) * 90ms); }
-  [data-enter] { opacity: 0; animation: fade-up var(--t-in-long) var(--ease) forwards; animation-delay: var(--ed, .35s); }
+  /* --hx-d: espera de la intro de marca del inicio (0 en el resto de páginas) */
+  .h1 .w > span { transform: translateY(110%); animation: word-up var(--t-in-long) var(--ease) forwards; animation-delay: calc(var(--hx-d, 0s) + 60ms + var(--i, 0) * 90ms); }
+  [data-enter] { opacity: 0; animation: fade-up var(--t-in-long) var(--ease) forwards; animation-delay: calc(var(--hx-d, 0s) + var(--ed, .35s)); }
   /* El visual de las cabeceras solo se desplaza: con opacidad 0 Chrome no lo cuenta como LCP */
-  [data-enter-move] { animation: move-up var(--t-in-long) var(--ease) backwards; animation-delay: var(--ed, .25s); }
+  [data-enter-move] { animation: move-up var(--t-in-long) var(--ease) backwards; animation-delay: calc(var(--hx-d, 0s) + var(--ed, .25s)); }
 }
 @keyframes word-up { to { transform: none; } }
 @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }

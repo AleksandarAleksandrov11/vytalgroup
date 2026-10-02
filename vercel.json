@@ -104,6 +104,17 @@
   ],
   "redirects": [
     {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "vytalgroup.vercel.app"
+        }
+      ],
+      "destination": "https://www.vytalgroupem.com/$1",
+      "permanent": true
+    },
+    {
       "source": "/index",
       "destination": "/",
       "permanent": true

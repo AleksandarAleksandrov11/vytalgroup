@@ -84,7 +84,7 @@ const tituloH1 = !yaLoDice ? `${pre} *${p.nombre}*` : corte > 0 ? `${p.nombre.sl
           <div class="gal__main">
             {p.imagenes.map((n, i) => (
               <div class:list={['gal__slide', { 'is-active': i === 0, 'gal__slide--foto': esFoto(n), stage: !esFoto(n) }]} style={escena(n)} data-slide inert={i !== 0}>
-                <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 720, 960]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
+                <Img name={n} alt={alt(i)} sizes="(min-width: 1200px) 600px, (min-width: 900px) 50vw, 92vw" widths={[320, 480, 640, 720, 960, 1280]} priority={i === 0} vt={i === 0 ? `p-${p.slug}` : undefined} />
               </div>
             ))}
             <button class="gal__zoom" type="button" data-zoom-open aria-label="Ampliar la imagen"><svg class="icon" aria-hidden="true"><use href="#i-zoom"/></svg></button>
@@ -92,7 +92,7 @@ const tituloH1 = !yaLoDice ? `${pre} *${p.nombre}*` : corte > 0 ? `${p.nombre.sl
           {p.imagenes.length > 1 && (
             <div class="gal__thumbs" role="group" aria-label="Imágenes del equipo">
               {p.imagenes.map((n, i) => (
-                <button class="gal__thumb" type="button" data-thumb aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Ver imagen ${i + 1} de ${p.imagenes.length}`}><Img name={n} alt={alt(i)} sizes="88px" widths={[96, 192]} /></button>
+                <button class="gal__thumb" type="button" data-thumb aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Ver imagen ${i + 1} de ${p.imagenes.length}`}><Img name={n} alt={alt(i)} sizes="88px" widths={[96, 192, 264]} /></button>
               ))}
             </div>
           )}

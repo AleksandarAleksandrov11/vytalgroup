@@ -45,7 +45,7 @@ const PASOS = [
     <div slot="visual" class="mos">
       {MOSAICO.map((m) => (
         <figure class="mos__item" style={`--foco:${m.foco}`}>
-          <Img name={m.img} alt={m.alt} sizes="(min-width: 1200px) 272px, (min-width: 900px) 23vw, 46vw" widths={[240, 360, 540]} class="mos__img" />
+          <Img name={m.img} alt={m.alt} sizes="(min-width: 1200px) 272px, (min-width: 900px) 23vw, 46vw" widths={[272, 400, 544, 720, 816]} class="mos__img" />
           <figcaption class="mos__cap">{m.t}</figcaption>
         </figure>
       ))}

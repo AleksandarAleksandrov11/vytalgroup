@@ -15,7 +15,7 @@ const alt = repr ? altProducto(repr) : `Equipo de ${c.corto.toLowerCase()}`;
 const H = nivel;
 ---
 <a class:list={['cc', 'lift', { 'cc--big': big }]} href={c.ruta} data-halo data-tilt>
-  <span class="cc__media stage" style={escena(c.imagen)} data-rvi><Img name={c.imagen} alt={alt} sizes={sizes} widths={[240, 360, 480, 640]} parallax /></span>
+  <span class="cc__media stage" style={escena(c.imagen)} data-rvi><Img name={c.imagen} alt={alt} sizes={sizes} widths={[240, 360, 480, 640, 960, 1280]} parallax /></span>
   <span class="cc__arrow" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
   <div class="cc__head"><H class="cc__name">{c.nombre}</H>{cuenta && <span class="cc__count">{n} {n === 1 ? 'equipo' : 'equipos'}</span>}</div>
   <span class="cc__desc">{c.descripcion}</span>

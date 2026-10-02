@@ -48,7 +48,7 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
        descubre tras una cortina con filo de luz turquesa y el titular sube por palabras; después, quieto. -->
   <section class="hx on-dark" data-hero aria-labelledby="hero-title">
     <div class="hx__media">
-      <Img name="fotos/hero-ecografia-hombro" alt="Fisioterapeuta haciendo una ecografía de hombro con una sonda inalámbrica y la imagen en una tablet" sizes="(min-width: 900px) calc(150vh - 132px), 100vw" widths={[480, 720, 960, 1280, 1600, 2000, 2400]} quality={70} priority class="hx__photo" />
+      <Img name="fotos/hero-ecografia-hombro" alt="Fisioterapeuta haciendo una ecografía de hombro con una sonda inalámbrica y la imagen en una tablet" sizes="(min-width: 900px) calc(150vh - 132px), 100vw" widths={[480, 720, 960, 1280, 1600, 2000, 2400]} priority class="hx__photo" />
     </div>
     <div class="wrap hx__wrap">
       <div class="hx__copy">
@@ -76,7 +76,7 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
           <div class="eco__frame">
             {ecoPasos.map((s, i) => (
               <div class:list={['eco__shot', { 'is-active': i === 0 }]} data-shot>
-                <Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(min-width: 900px) 560px, 1px" widths={[480, 640]} />
+                <Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(min-width: 900px) 560px, 1px" widths={[480, 640, 960, 1280]} />
               </div>
             ))}
             <span class="eco__bars">{ecoPasos.map((_, i) => <span class:list={{ 'is-active': i === 0 }} data-bar></span>)}</span>
@@ -85,7 +85,7 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
         <ol class="eco__steps">
           {ecoPasos.map((s, i) => (
             <li class:list={['eco__step', { 'is-active': i === 0 }]} data-step>
-              <div class="eco__inline" data-rvi><Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(max-width: 899px) 88vw, 1px" widths={[320, 480, 640]} /></div>
+              <div class="eco__inline" data-rvi><Img name={s.p.imagenes[0]} alt={altProducto(s.p)} sizes="(max-width: 899px) 88vw, 1px" widths={[320, 480, 640, 960, 1280]} /></div>
               <p class="eco__kicker">{s.t}</p>
               <h3 class="eco__name">{s.p.nombre} <span>{s.p.marca}</span></h3>
               <p class="eco__txt">{s.d}</p>
@@ -118,7 +118,7 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
       <div class="panels" data-rv>
         {diatermias.map((p, i) => (
           <div class:list={['panel dia__panel', { 'is-active': i === 0 }]} role="tabpanel" id={`panel-dia-${i}`} aria-labelledby={`tab-dia-${i}`} inert={i !== 0}>
-            <div class="dia__media stage" style={escena(p.imagenes[0])}><Img name={p.imagenes[0]} alt={altProducto(p)} sizes="(min-width: 900px) 560px, 92vw" widths={[320, 480, 640]} /></div>
+            <div class="dia__media stage" style={escena(p.imagenes[0])}><Img name={p.imagenes[0]} alt={altProducto(p)} sizes="(min-width: 900px) 560px, 92vw" widths={[320, 480, 640, 960, 1280]} /></div>
             <div class="dia__body">
               <p class="dia__brand">{p.marca}</p>
               <h3 class="dia__name">{p.nombre}</h3>
@@ -139,7 +139,7 @@ const titulo = 'Equipos médicos de alta calidad. *Sin letra pequeña.*';
 
   <!-- 5 · Todo tu equipamiento -->
   <section class="sec sec--photo on-dark more" aria-labelledby="more-title">
-    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ultrasonido-terapeutico" alt="Fisioterapeuta aplicando ultrasonido terapéutico en el tobillo de un paciente" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600]} quality={60} /></div>
+    <div class="sec__photo" aria-hidden="true"><Img name="fotos/fondo-ultrasonido-terapeutico" alt="Fisioterapeuta aplicando ultrasonido terapéutico en el tobillo de un paciente" sizes="(max-width: 767px) 250vw, (max-width: 1023px) 150vw, 100vw" widths={[640, 1080, 1600, 2000]} quality={80} /></div>
     <div class="wrap">
       <div class="sec__head">
         <h2 class="h2" id="more-title" data-lines>Más equipos para <em>tu consulta.</em></h2>

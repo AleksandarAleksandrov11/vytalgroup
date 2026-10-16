@@ -65,17 +65,21 @@ export const itemList = (nombre: string, productos: Producto[]) => ({
   })),
 });
 
-export const product = (p: Producto, imagenes: string[]) => ({
-  '@type': 'Product',
-  '@id': `${absUrl(urlFicha(p)!)}#producto`,
-  name: p.nombre,
-  brand: { '@type': 'Brand', name: p.marca },
+// Ficha de equipo como ItemPage y no como Product: Google exige a todo Product un precio (offers) o valoraciones
+// (review, aggregateRating) y la web no publica ninguno de los dos (el precio va según configuración). Sin ellos,
+// Search Console marcaba cada ficha como "problema crítico" de fragmentos de productos sin ganar nada a cambio.
+export const itemPage = (p: Producto, imagenes: string[]) => ({
+  '@type': 'ItemPage',
+  '@id': `${absUrl(urlFicha(p)!)}#pagina`,
+  url: absUrl(urlFicha(p)!),
+  name: `${p.nombre} de ${p.marca}`,
   description: p.descripcion || seoDescription(p),
   image: imagenes,
-  category: CAT[p.categoria].nombre,
-  url: absUrl(urlFicha(p)!),
-  ...(p.codigos.length === 1 ? { sku: p.codigos[0] } : {}),
-  ...(p.modelos?.length ? { model: p.modelos.map((m) => m.nombre).join(', ') } : {}),
+  primaryImageOfPage: { '@type': 'ImageObject', url: imagenes[0] },
+  about: CAT[p.categoria].nombre,
+  inLanguage: 'es-ES',
+  isPartOf: { '@id': WEB_ID },
+  publisher: { '@id': ORG_ID },
 });
 
 export const article = (o: { titulo: string; descripcion: string; url: string; imagen: string; fecha: string; actualizada?: string }) => ({

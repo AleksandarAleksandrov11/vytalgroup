@@ -17,7 +17,7 @@ import { altProducto, etiquetaModelo, relacionados, seoDescription, seoTitle, ur
 import { EMPRESA, wa } from '../data/empresa';
 import { imagen, escena } from '../lib/imagenes';
 import { h1Html, unidades } from '../lib/texto';
-import { product, faqPage } from '../lib/seo';
+import { itemPage, faqPage } from '../lib/seo';
 import { faqsFicha, sujeto, deSujeto } from '../data/faqs';
 import { SITE_URL } from '../config';
 
@@ -55,7 +55,7 @@ const tituloH1 = !yaLoDice ? `${pre} *${p.nombre}*` : corte > 0 ? `${p.nombre.sl
   ogType="product"
   seccion={c.id === 'ecografia' ? 'ecografos' : c.id === 'diatermia' ? 'diatermias' : 'equipos'}
   migas={migas}
-  jsonld={[product(p, ldImgs.map((i) => `${SITE_URL}${i.src}`)), faqPage(faqs)]}
+  jsonld={[itemPage(p, ldImgs.map((i) => `${SITE_URL}${i.src}`)), faqPage(faqs)]}
   waTexto={`Hola, vengo de la web de VytalGroup y me interesa el equipo ${p.nombre} de ${p.marca}. ¿Me podéis asesorar?`}
 >
   <section class="phero fp on-dark" data-hero aria-labelledby="page-title">

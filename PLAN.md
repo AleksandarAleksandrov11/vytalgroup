@@ -227,3 +227,6 @@ Referencias: brief completo, landing publicada (https://vsl-vytalgroup.vercel.ap
 
 ## Ronda 10 (fichas)
 - [x] Sección de garantía y servicio de las 53 fichas con el título grande como el resto de secciones: "Tu equipo, con *garantía y servicio.*", con el cambio a la cursiva serif turquesa sobre "garantía y servicio" (antes era una etiqueta pequeña en mayúsculas). La sección toma el espaciado normal de las demás
+
+## Ronda 11 (Search Console)
+- [x] Aviso de Search Console "Fragmentos de productos: debe especificarse offers, review o aggregateRating": las 53 fichas pasan de `Product` a `ItemPage` en el JSON-LD. Google exige precio o valoraciones a todo `Product` y la web no publica ninguno (el precio va según configuración), así que el tipo `Product` solo generaba el error sin dar ningún resultado enriquecido. Se mantienen FAQPage, BreadcrumbList y el resto del grafo. SEO 1988/1988 y HTML válido

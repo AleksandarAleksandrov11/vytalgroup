@@ -72,7 +72,7 @@ for (const [r, s] of pages) {
   } catch (e) { ok(false, `${r}: JSON-LD válido`, e.message); }
   if (r !== '/') ok(tipos.includes('BreadcrumbList') || r === '/404', `${r}: BreadcrumbList`);
   if (r === '/') ok(tipos.includes('Organization') && tipos.includes('WebSite'), '/: Organization y WebSite');
-  if (/^\/(ecografos|diatermias|equipos\/[^/]+)\/[^/]+$/.test(r)) ok(tipos.includes('Product'), `${r}: Product`);
+  if (/^\/(ecografos|diatermias|equipos\/[^/]+)\/[^/]+$/.test(r)) ok(tipos.includes('ItemPage') && !tipos.includes('Product'), `${r}: ItemPage y sin Product (Google exige precio o valoraciones a Product)`);
   if (['/ecografos', '/diatermias', '/catalogo'].includes(r) || /^\/equipos\/[^/]+$/.test(r)) ok(tipos.includes('ItemList'), `${r}: ItemList`);
   if (/^\/guias\/.+/.test(r)) ok(tipos.includes('Article'), `${r}: Article`);
   if (r === '/sobre-nosotros') ok(tipos.includes('AboutPage'), `${r}: AboutPage`);

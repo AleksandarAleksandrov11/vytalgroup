@@ -20,6 +20,7 @@
 .ft a, .ft button { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: rgba(255, 255, 255, .86); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font-size: inherit; text-align: inherit; line-height: 1.3; }
 .ft__list .icon { width: 18px; height: 18px; color: var(--teal-on-dark); }
 .ft a:hover, .ft button:hover { color: #FFF; text-decoration: underline; text-underline-offset: 4px; }
+.ft__bottom a { display: inline; min-height: 0; color: inherit; }
 .ft__contact { margin-top: 4px; }
 .ft__bottom { display: grid; justify-items: center; gap: 4px; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, .1); font-size: .8125rem; text-align: center; color: rgba(255, 255, 255, .56); }
 /* "VytalGroup" a todo el ancho: "Vytal" en blanco y "Group" en turquesa, como el logo */
